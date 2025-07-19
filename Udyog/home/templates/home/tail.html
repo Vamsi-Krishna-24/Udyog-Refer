@@ -1,0 +1,49 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Blue UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 min-h-screen">
+    <!-- Top Right: Icons + Brand -->
+    <div class="absolute top-6 right-8 flex items-center space-x-4">
+      <!-- Notification Bell -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-700 hover:scale-110 transition cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V5a2 2 0 00-4 0v.083A6 6 0 004 11v3.159c0 .538-.214 1.055-.595 1.436L2 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+      </svg>
+
+      <!-- Friends Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-700 hover:scale-110 transition cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-2a4 4 0 100-8 4 4 0 000 8zm6 0a4 4 0 100-8 4 4 0 000 8z" />
+      </svg>
+
+      <!-- Dummy Circle -->
+      <div class="w-6 h-6 rounded-full bg-blue-600 hover:bg-blue-800 transition"></div>
+
+      <!-- Brand -->
+      <div class="text-2xl font-bold text-blue-800 tracking-wide font-serif italic text-right leading-tight">
+        <div>UDYOG</div>
+        <div>REFER</div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="fixed top-1/2 left-4 -translate-y-1/2 h-[90vh] w-20 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 text-white rounded-3xl shadow-xl flex flex-col items-center justify-center space-y-6">
+      <!-- Circle 1 -->
+      <div class="w-16 h-16 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center shadow-md cursor-pointer text-sm font-medium text-white hover:-translate-y-1 hover:translate-x-1 hover:bg-white/50 hover:shadow-2xl transition duration-300 ease-in-out">
+        Home
+      </div>
+      <!-- Circle 2 -->
+      <div class="w-16 h-32 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center shadow-md cursor-pointer text-sm font-medium text-white hover:-translate-y-1 hover:translate-x-1 hover:bg-white/50 hover:shadow-2xl transition duration-300 ease-in-out">
+        User
+      </div>
+      <!-- Circle 3 -->
+      <div class="w-16 h-64 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center shadow-md cursor-pointer text-sm font-medium text-white hover:-translate-y-1 hover:translate-x-1 hover:bg-white/50 hover:shadow-2xl transition duration-300 ease-in-out">
+        Refer
+      </div>
+    </div>
+  </body>
+</html>
