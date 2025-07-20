@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Active Referrals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-20 bg-gray-900 text-white flex flex-col items-center py-6">
+        <div class="flex-1 flex flex-col justify-center space-y-6">
+          <!-- Active Referrals Icon -->
+          <a href="referrals.html" class="relative group">
+            <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+              </svg>
+            </div>
+            <span
+              class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">
+              Active Referrals
+            </span>
+          </a>
+
+          <!-- What's Hot Now Icon -->
+          <a href="trending" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <span
+              class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">
+              What's Hot Now
+            </span>
+          </a>
+
+          <!-- My Tracker Icon -->
+          <a href="tracker" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3" />
+              </svg>
+            </div>
+            <span
+              class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">
+              My Tracker
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 p-6 overflow-y-auto">
+        <div class="text-3xl font-bold mb-4">Active Referrals</div>
+
+        <div class="grid gap-6">
+          <!-- You can duplicate this block to simulate 10 dummy referrals -->
+          <div class="bg-white rounded-xl p-6 shadow border border-gray-200">
+            <div class="flex justify-between">
+              <div>
+                <h2 class="text-xl font-bold text-gray-800">Vamsi Krishna</h2>
+                <p class="text-sm text-gray-500">IT</p>
+              </div>
+              <div class="text-right">
+                <p class="text-sm text-gray-600">Google INC</p>
+                <p class="text-sm text-gray-500">10 successful referrals</p>
+                <p class="text-sm text-gray-600">Lead ML engineer</p>
+              </div>
+            </div>
+            <div class="mt-3 flex justify-between items-center">
+              <p class="text-sm text-gray-500 italic">
+                Can refer to: Data analyst, Data scientist, Data engineer
+              </p>
+              <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
+                Request Referral
+              </button>
+            </div>
+          </div>
+
+          <!-- 2 more samples shown -->
+          <div class="bg-white rounded-xl p-6 shadow border border-gray-200">
+            <div class="flex justify-between">
+              <div>
+                <h2 class="text-xl font-bold text-gray-800">Pavan Jampana</h2>
+                <p class="text-sm text-gray-500">IT</p>
+              </div>
+              <div class="text-right">
+                <p class="text-sm text-gray-600">Amazon</p>
+                <p class="text-sm text-gray-500">10 successful referrals</p>
+                <p class="text-sm text-gray-600">Cyber Security Analyst</p>
+              </div>
+            </div>
+            <div class="mt-3 flex justify-between items-center">
+              <p class="text-sm text-gray-500 italic">
+                Can refer to: Security Engineer, Cyber-Risk Analyst
+              </p>
+              <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
+                Request Referral
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 shadow border border-gray-200">
+            <div class="flex justify-between">
+              <div>
+                <h2 class="text-xl font-bold text-gray-800">Tim Cook</h2>
+                <p class="text-sm text-gray-500">CEO</p>
+              </div>
+              <div class="text-right">
+                <p class="text-sm text-gray-600">Apple INC</p>
+                <p class="text-sm text-gray-500">1k+ successful referrals</p>
+                <p class="text-sm text-gray-600">Chief Executive Officer</p>
+              </div>
+            </div>
+            <div class="mt-3 flex justify-between items-center">
+              <p class="text-sm text-gray-500 italic">Can refer to: COO, CFO, CHO</p>
+              <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
+                Request Referral
+              </button>
+            </div>
+          </div>
+
+          <!-- Add 7 more dummy entries similarly -->
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

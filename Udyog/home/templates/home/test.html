@@ -7,18 +7,44 @@
 
 <body class="bg-white min-h-screen">
   <div class="flex justify-center items-center h-screen">
-    <div class="flex flex-col items-center gap-4">
+    <form id="nameForm" class="flex flex-col items-center gap-4">
       <input
         type="text"
+        id="nameInput"
         placeholder="Enter your name"
         class="border border-gray-300 rounded-xl px-4 py-2 text-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
       />
       <button
+        type="submit"
         class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md text-lg"
       >
         Submit
       </button>
-    </div>
+    </form>
   </div>
+
+  <!-- ✅ JavaScript BELOW BODY so it can find elements -->
+  <script>
+    document.getElementById("nameForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const nameValue = document.getElementById("nameInput").value;
+
+      fetch("/api/name/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: nameValue }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          alert("Name submitted successfully!");
+          console.log(data);
+        })
+        .catch((err) => console.error("Error:", err));
+    });
+  </script>
 </body>
 </html>
