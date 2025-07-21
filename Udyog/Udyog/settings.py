@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'Udyog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'udyogrefer',              
+        'USER': 'surisettivamsikrishna',                   
+        'PASSWORD': 'Vamsi@2408', 
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
