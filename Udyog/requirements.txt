@@ -4,3 +4,4 @@ djangorestframework
 psycopg
 dj-database-url
 whitenoise
+environ 
