@@ -141,3 +141,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if os.environ.get('RENDER'):
     DEBUG = False
+
