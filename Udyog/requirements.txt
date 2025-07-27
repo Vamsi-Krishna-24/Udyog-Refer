@@ -1,7 +1,0 @@
-django
-gunicorn
-djangorestframework
-psycopg
-dj-database-url
-whitenoise
-environ 
