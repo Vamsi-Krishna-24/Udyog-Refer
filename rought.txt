@@ -1,0 +1,16 @@
+'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'udyogrefer',              
+        'USER': 'surisettivamsikrishna',                   
+        'PASSWORD': 'Vamsi@2408', 
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+
+To test this locally the above will work!
+
+
+DATABASES = {
+    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
+}
+To test on Cloud - Render
