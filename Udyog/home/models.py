@@ -8,6 +8,7 @@ class Name(models.Model):
 
 class User(models.Model):
     name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)          
-    password = models.CharField(max_length=100)    
+    email = models.EmailField(unique=True, null=False, blank=False)   
+    password = models.CharField(max_length=100)
+
 
