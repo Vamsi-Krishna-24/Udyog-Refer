@@ -5,7 +5,7 @@ from .views import NameCreateAPIView, SignupAPIView, LoginAPIView
 
 urlpatterns = [
     path('',views.login,name='login'), 
-    path('login/',views.login,name='login/'), 
+
     path('api/login/', LoginAPIView.as_view(), name='login_api'),
     path('api/signup/', SignupAPIView.as_view(), name='signup_api'),
     path('signup',views.signup,name='signup'), 

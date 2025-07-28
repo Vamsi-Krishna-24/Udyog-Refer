@@ -13,7 +13,7 @@
       <div class="w-20 bg-gray-900 text-white flex flex-col items-center py-6">
         <div class="flex-1 flex flex-col justify-center space-y-6">
           <!-- Active Referrals Icon -->
-          <a href="referrals.html" class="relative group">
+          <a href="{% url 'active_referals' %}" class="relative group">
             <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
               <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24">
@@ -28,7 +28,7 @@
           </a>
 
           <!-- What's Hot Now Icon -->
-          <a href="trending" class="relative group">
+          <a href="{% url 'trending' %}" class="relative group">
             <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
               <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24">
@@ -43,7 +43,7 @@
           </a>
 
           <!-- My Tracker Icon -->
-          <a href="tracker" class="relative group">
+          <a href="{% url 'tracker' %}" class="relative group">
             <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
               <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24">

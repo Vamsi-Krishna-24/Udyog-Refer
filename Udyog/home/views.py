@@ -66,4 +66,4 @@ def trending(request):
     return render(request, 'home/trending.html')
 
 def tracker(request):
-    return render(request, 'home/active_referals.html')
+    return render(request, 'home/tracker.html')
