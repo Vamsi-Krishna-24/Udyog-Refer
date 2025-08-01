@@ -41,7 +41,7 @@ class LoginAPIView(APIView):
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 def signup(request):
-    return render(request, 'home/signup.html')
+    return render(request, 'home/launchpad.html')
 
 class SignupAPIView(APIView):
     def post(self, request):

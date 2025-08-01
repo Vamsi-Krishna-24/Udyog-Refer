@@ -31,7 +31,24 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.email
     
+class referal_req(models.Model):
+    phone_number=models.CharField(max_length=10)
+    location = models.CharField(max_length=100)
+    Linkdin_URL = models.URLField(max_length=200)
+    Github_URL = models.URLField(max_length=200)
+    Bio =   models.TextField()
 
-class Fruit(models.Model):
-    name = models.CharField(max_length=100)
-    color= models.CharField(max_length=50)
+class Referee(models.Model):    
+    company_name = models.CharField(max_length=100)
+    your_role = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=15)
+    mail_id= models.EmailField(max_length=100)
+    linkedin_url = models.URLField(max_length=200)
+    github_url = models.URLField(max_length=200)
+    bio =   models.TextField()
+
+
+    
