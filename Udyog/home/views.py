@@ -3,17 +3,23 @@ from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
+from .models import User
+
+
 from .serializers import UserSerializer
 from django.shortcuts import redirect
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .token_serializer import MyTokenObtainPairSerializer
+from rest_framework.permissions import IsAuthenticated
 
 class NameCreateAPIView(APIView):
     def post(self, request):
-        serializer = NameSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "Name saved!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # Create your views here.
@@ -67,3 +73,19 @@ def trending(request):
 
 def tracker(request):
     return render(request, 'home/tracker.html')
+
+
+
+
+
+#extra added for authorising
+
+class MyTokenView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+    
+class ActiveReferralsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"message": "This is a protected route"})
