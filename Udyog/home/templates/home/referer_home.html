@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Referrer Dashboard | Udyog Refer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      function toggleModal() {
+        document.getElementById("referModal").classList.toggle("hidden");
+        document.getElementById("overlay").classList.toggle("hidden");
+      }
+    </script>
+  </head>
+  <body class="bg-gray-100 font-sans">
+
+    <!-- Overlay -->
+    <div id="overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Modal -->
+    <div id="referModal" class="hidden fixed z-50 inset-0 flex items-center justify-center">
+      <div class="bg-white rounded-lg p-8 w-full max-w-md shadow-lg">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Post a New Refer</h2>
+        <form class="space-y-4">
+          <input type="text" placeholder="Company Name" class="w-full p-2 border border-gray-300 rounded" />
+          <input type="text" placeholder="Role" class="w-full p-2 border border-gray-300 rounded" />
+          <input type="text" placeholder="Referral Domains (e.g. Dev, Data, Design)" class="w-full p-2 border border-gray-300 rounded" />
+          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Post Referral</button>
+        </form>
+        <button onclick="toggleModal()" class="mt-4 text-sm text-gray-600 hover:underline">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Page Layout -->
+    <div class="flex h-screen">
+
+      <!-- Sidebar -->
+      <div class="w-20 bg-gray-900 text-white flex flex-col items-center py-6 space-y-6">
+        <!-- Refere -->
+        <a href="#" class="group relative">
+          <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+            </svg>
+          </div>
+          <span class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">Refere</span>
+        </a>
+
+        <!-- My Earnings -->
+        <a href="#" class="group relative">
+          <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4c1.1 0 2.1-.45 2.83-1.17M16 4v2m0 12v2m-8-8H4m16 0h-4" />
+            </svg>
+          </div>
+          <span class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">My Earnings</span>
+        </a>
+      </div>
+
+      <!-- Topbar -->
+      <div class="flex-1 flex flex-col">
+        <div class="flex justify-end items-center px-6 py-4 space-x-4">
+          <!-- Settings Icon -->
+          <a href="#" class="group relative">
+            <svg class="w-6 h-6 text-gray-600 hover:text-gray-900 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 4v2m0 12v2m8-8h2M4 12H2m15.36 6.36l1.42 1.42M6.34 6.34L4.92 4.92m0 14.14l1.42-1.42M17.66 6.34l1.42-1.42" />
+            </svg>
+            <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100">Settings</span>
+          </a>
+
+          <!-- Logout Icon -->
+          <a href="#" class="group relative">
+            <svg class="w-6 h-6 text-gray-600 hover:text-red-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+            </svg>
+            <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100">Logout</span>
+          </a>
+        </div>
+
+        <!-- Main Body -->
+        <div class="flex-1 flex flex-col items-center justify-center">
+          <button onclick="toggleModal()" class="flex items-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Post a New Refer</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

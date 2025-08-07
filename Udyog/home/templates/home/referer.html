@@ -4,6 +4,39 @@
     <meta charset="UTF-8" />
     <title>UDYOG REFER</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add this inside <head> -->
+<script>
+  async function submitRefererProfile() {
+    const data = {
+      company_name: document.querySelector('input[placeholder="Company Name *"]').value,
+      your_role: document.querySelector('input[placeholder="Your Role *"]').value,
+      first_name: document.querySelector('input[placeholder="First Name *"]').value,
+      middle_name: document.querySelector('input[placeholder="Middle Name *"]').value,
+      last_name: document.querySelector('input[placeholder="Last Name *"]').value,
+      phone_number: document.querySelector('input[placeholder="Phone Number *"]').value,
+      mail_id: document.querySelector('input[placeholder="Mail ID *"]').value,
+      linkedin_url: document.querySelector('input[placeholder="LinkedIn URL *"]').value,
+      github_url: document.querySelector('input[placeholder="GitHub URL *"]').value,
+      bio: document.querySelector('textarea[placeholder*="Brief bio"]').value
+    }
+
+    const response = await fetch('/api/referer/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+
+    if (response.status === 201) {
+      window.location.href = '/referer_home'
+    } else {
+      const error = await response.json()
+      alert(error.message || "Something went wrong.")
+    }
+  }
+</script>
+
+
+    
   </head>
 
   <body class="bg-[#0d1124] min-h-screen text-white px-4 py-8">
@@ -18,8 +51,8 @@
         <h2 class="text-xl font-semibold mb-4">Professional Details</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <input type="text" placeholder="Company Name" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
-          <input type="text" placeholder="Your Role" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
+          <input type="text" placeholder="Company Name *" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
+          <input type="text" placeholder="Your Role *" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -51,23 +84,23 @@
         <h2 class="text-xl font-semibold mb-4">Personal Details</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <input type="text" placeholder="First Name" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
-          <input type="text" placeholder="Middle Name" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
-          <input type="text" placeholder="Last Name" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
+          <input type="text" placeholder="First Name *" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
+          <input type="text" placeholder="Middle Name *" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
+          <input type="text" placeholder="Last Name *" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <input type="text" placeholder="Phone Number" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
-          <input type="email" placeholder="Mail ID" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
+          <input type="text" placeholder="Phone Number *" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
+          <input type="email" placeholder="Mail ID *"  class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <input type="text" placeholder="LinkedIn URL" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
-          <input type="text" placeholder="GitHub URL" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
+          <input type="text" placeholder="LinkedIn URL *" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
+          <input type="text" placeholder="GitHub URL *" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none" />
         </div>
 
         <label class="block font-medium mb-2">Bio (Tell us about yourself)</label>
-        <textarea rows="3" placeholder="Brief bio here..." class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none resize-none mb-6"></textarea>
+        <textarea rows="3" placeholder="Brief bio here... *" class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none resize-none mb-6"></textarea>
 
         <select class="bg-slate-700 p-3 rounded-md w-full text-gray-300 focus:outline-none mb-6">
           <option>How did you hear about us</option>
@@ -77,10 +110,11 @@
         </select>
 
         <div class="flex justify-between">
+          <div class="flex justify-between">
           <button class="bg-gray-600 px-6 py-2 rounded hover:bg-gray-500">Back</button>
-          <a href="">
-          <button class="bg-blue-600 px-6 py-2 rounded hover:bg-blue-500">Complete Setup</button>
-          </a>
+          <button onclick="submitRefererProfile()" class="bg-blue-600 px-6 py-2 rounded hover:bg-blue-500">Complete Setup</button>
+          </div>
+
         </div>
       </div>
 

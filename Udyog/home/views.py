@@ -3,10 +3,9 @@ from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import User
+from .models import User, referal_req, Referer
 
-
-from .serializers import UserSerializer
+from .serializers import UserSerializer, Referalrequestserializer, RefererSerializer
 from django.shortcuts import redirect
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .token_serializer import MyTokenObtainPairSerializer
@@ -40,8 +39,26 @@ class LoginAPIView(APIView):
         else:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
+class ReferralRequestAPIView(APIView):
+    def post(self, request):
+        serializer = Referalrequestserializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Referral data saved!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class RefererAPIView(APIView):
+    def post(self,request):
+        serializer = RefererSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Referer data saved!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
+    
+
 def signup(request):
-    return render(request, 'home/launchpad.html')
+    return render(request, 'home/signup.html')
+
 
 class SignupAPIView(APIView):
     def post(self, request):
@@ -73,6 +90,10 @@ def trending(request):
 
 def tracker(request):
     return render(request, 'home/tracker.html')
+
+
+def referer_home(request):
+    return render(request, 'home/referer_home.html')
 
 
 

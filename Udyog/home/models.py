@@ -38,7 +38,8 @@ class referal_req(models.Model):
     Github_URL = models.URLField(max_length=200)
     Bio =   models.TextField()
 
-class Referee(models.Model):    
+
+class Referer(models.Model):    
     company_name = models.CharField(max_length=100)
     your_role = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
