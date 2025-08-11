@@ -21,7 +21,7 @@
           class="w-full px-4 py-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600" required />
         <input id="password" type="password" placeholder="Password"
           class="w-full px-4 py-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600" required />
-        <button onclick="login()" 
+        <button id="loginBtn" onclick="login()"
           class="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold transition">
           Log in
         </button>
@@ -42,28 +42,51 @@
       </p>
     </div>
 
+    <!-- put this AT THE BOTTOM, just before </body> -->
     <script>
-      async function login() {
-        const data = {
-          username: document.getElementById('username').value,
-          password: document.getElementById('password').value
-        }
+      // helper: parse JSON if possible, else text
+      async function parseMaybeJson(resp) {
+        const ct = resp.headers.get('content-type') || '';
+        if (ct.includes('application/json')) return await resp.json();
+        return { error: await resp.text() };
+      }
 
-        const response = await fetch('/api/login/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        })
+      // Enter key submits
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') login();
+      });
 
-        const resData = await response.json()
+      window.login = async function () {
+        const btn = document.getElementById('loginBtn');
+        const msg = document.getElementById('message');
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
 
-        if (response.ok && resData.redirect) {
-          window.location.href = resData.redirect
-        } else {
-          document.getElementById('message').innerText = resData.error || "Something went wrong"
+        msg.textContent = '';
+        btn.disabled = true; btn.classList.add('opacity-60','cursor-not-allowed');
+
+        try {
+          const resp = await fetch('/api/login/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+
+          const data = await parseMaybeJson(resp);
+
+          if (resp.ok) {
+            if (data.access) localStorage.setItem('access', data.access);
+            if (data.refresh) localStorage.setItem('refresh', data.refresh);
+            window.location.href = data.redirect || '/activereferals';
+          } else {
+            msg.textContent = data.error || `Login failed (status ${resp.status})`;
+          }
+        } catch (err) {
+          msg.textContent = 'Network error. Please try again.';
+        } finally {
+          btn.disabled = false; btn.classList.remove('opacity-60','cursor-not-allowed');
         }
       }
     </script>
-
   </body>
 </html>

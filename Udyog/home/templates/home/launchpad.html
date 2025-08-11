@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,7 +8,6 @@
 
   <body class="bg-[#0d1117] min-h-screen flex items-center justify-center text-white">
     <div class="flex flex-col items-center space-y-6 text-center">
-
       <!-- Title -->
       <div>
         <div class="text-6xl font-extrabold text-gray-200 tracking-widest">UR</div>
@@ -17,28 +17,66 @@
 
       <!-- Buttons -->
       <div class="flex flex-col items-center space-y-5 w-80">
-        <!-- Button 1 -->
-        <a href="/refer" class="w-full">
-          <button class="w-full py-3 bg-blue-500 rounded-lg hover:bg-blue-700 font-semibold">
-            I can REFER
-          </button>
-        </a>
+        <!-- Refer button -->
+        <button
+          class="w-full py-3 bg-blue-500 rounded-lg hover:bg-blue-700 font-semibold"
+          onclick="setRoleAndGo('referrer', '/referer_home')"
+        >
+          I can REFER
+        </button>
 
-        <!-- Button 2 -->
-        <a href="/referal_req" class="w-full">
-          <button class="w-full py-3 bg-blue-700 rounded-lg hover:bg-blue-500 font-semibold">
-            I want a REFERRAL
-          </button>
-        </a>
+        <!-- Referral button -->
+        <button
+          class="w-full py-3 bg-blue-700 rounded-lg hover:bg-blue-500 font-semibold"
+          onclick="setRoleAndGo('referee', '/active_referals')"
+        >
+          I want a REFERRAL
+        </button>
 
         <!-- Logout -->
         <div class="mt-8">
-      <a href="/logout">
-        <button class="text-sm text-red-400 hover:text-red-200 underline">Logout</button>
-      </a>
-    </div>
+          <a href="/logout">
+            <button class="text-sm text-red-400 hover:text-red-200 underline">Logout</button>
+          </a>
+        </div>
       </div>
-
     </div>
+
+    <script>
+      const USER_ID = {{ user.id|default:"null" }}
+      const USER_EMAIL = {{ user.email|default:'' }}
+
+      async function setRoleAndGo(role, nextUrl) {
+        try {
+          const payload = { role };
+          if (USER_ID !== null) payload.user_id = USER_ID;
+          else if (USER_EMAIL) payload.email = USER_EMAIL;
+          else {
+            alert("User identifier missing: set USER_ID or USER_EMAIL.");
+            return;
+          }
+
+          const res = await fetch('api/set-role/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            console.error('Role update failed:', err);
+            alert('Failed to set role. Please try again.');
+            return;
+          }
+
+          window.location.href = nextUrl;
+        } catch (e) {
+          console.error(e);
+          alert('Something went wrong. Please try again.');
+        }
+      }
+    </script>
   </body>
 </html>

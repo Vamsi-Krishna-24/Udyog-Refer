@@ -11,7 +11,9 @@ async function submitReferral() {
     location: document.getElementById('location').value,
     Linkdin_URL: document.getElementById('linkedin').value,
     Github_URL: document.getElementById('github').value,
-    Bio: document.getElementById('bio').value
+    Bio: document.getElementById('bio').value,
+    Currently_working: document.getElementById('Currently_working').value,
+    role: "requester"
   }
 
   const response = await fetch('/api/referral-request/', {
@@ -54,7 +56,19 @@ async function submitReferral() {
 
         <label class="block font-medium mb-2">Bio (Tell us about yourself)</label>
         <textarea id="bio" rows="3" placeholder="Brief bio here..." class="bg-slate-700 p-3 rounded-md w-full placeholder-gray-300 focus:outline-none resize-none mb-4"></textarea>
+
+          <div class="mb-4">
+            <label for="Currently_working" class="block font-medium mb-2">Are you currently working?</label>
+            <select id="Currently_working" class="bg-slate-700 p-3 rounded-md w-full text-gray-300 focus:outline-none">
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+
       </div>
+
+
 
       <!-- Education -->
       <div class="bg-slate-800 p-6 rounded-lg shadow-md w-full text-white">

@@ -17,7 +17,9 @@
       mail_id: document.querySelector('input[placeholder="Mail ID *"]').value,
       linkedin_url: document.querySelector('input[placeholder="LinkedIn URL *"]').value,
       github_url: document.querySelector('input[placeholder="GitHub URL *"]').value,
-      bio: document.querySelector('textarea[placeholder*="Brief bio"]').value
+      bio: document.querySelector('textarea[placeholder*="Brief bio"]').value,
+      role: "referer"
+
     }
 
     const response = await fetch('/api/referer/', {

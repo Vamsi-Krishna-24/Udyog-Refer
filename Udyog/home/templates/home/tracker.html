@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+async function fetchProtectedData() {
+    const token = localStorage.getItem("access");
+    const response = await fetch("/api/active-referrals/", {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        console.log("Protected data:", data);
+    } else {
+        alert("Unauthorized. Please log in again.");
+        window.location.href = "/";  // redirect to login
+    }
+}
+
+fetchProtectedData();
+</script>
   </head>
   <body class="bg-gray-100 font-sans">
     <div class="flex h-screen">
