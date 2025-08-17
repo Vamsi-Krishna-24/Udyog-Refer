@@ -4,29 +4,34 @@
   <meta charset="UTF-8" />
   <title>Sign Up | Udyog Refer</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    async function signup() {
+<script>
+async function signup(){
   const data = {
     username: document.getElementById('name').value,
     email: document.getElementById('email').value,
     password: document.getElementById('password').value
-  }
+  };
 
   const response = await fetch('/api/signup/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
-  })
+  });
 
-  const resData = await response.json()
+  const resData = await response.json();
+
   if (response.status === 201) {
+    // store values for launchpad to use
+    localStorage.setItem('uid', String(resData.user_id));
+    localStorage.setItem('email', resData.email); // optional but useful
     window.location.href = '/launchpad';
   } else {
-    document.getElementById('response').innerText = JSON.stringify(resData)
+    document.getElementById('response').innerText = JSON.stringify(resData);
   }
 }
+</script>
 
-  </script>
+
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex items-center justify-center px-4">
 
