@@ -159,5 +159,26 @@
         </div>
       </div>
     </div>
+
+<!--Testing the JWT in a different way-->
+
+<script>
+  const token = localStorage.getItem("access_token");
+
+  if (!token) {
+    window.location.href = "/no_token";  ///// -----> redirect if no token
+  } else {
+    fetch("/api/protected-ping/", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => {
+      if (!res.ok) {
+        window.location.href = "/no_token"; ///// -----> redirect if token invalid
+      }
+    });
+  }
+</script>
   </body>
 </html>

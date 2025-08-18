@@ -131,6 +131,12 @@ def referal_req(request):
 def active_referals(request):
     return render(request, 'home/active_referals.html')
 
+class ProtectedPingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"detail": "Token is valid"})
+
 
 def trending(request):
     return render(request, 'home/trending.html')
@@ -144,7 +150,9 @@ def referer_home(request):
 
 
 
-
+##There is no Token/ User trying to login without password
+def no_token(request):
+    return render(request, 'home/no_token.html')
 
 #extra added for authorising
 

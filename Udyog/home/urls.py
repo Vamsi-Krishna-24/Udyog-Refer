@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from django.urls import path
 from .views import MyTokenView
-from .views import NameCreateAPIView, SignupAPIView, LoginAPIView, ReferralRequestAPIView, SetRoleView
+from .views import NameCreateAPIView, SignupAPIView, LoginAPIView, ReferralRequestAPIView, SetRoleView, ProtectedPingView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -29,5 +29,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/referral-request/', ReferralRequestAPIView.as_view(), name='referral_api'),
     path('api/referer/', views.RefererAPIView.as_view(), name='referer_api'),
+    path('api/protected-ping/', ProtectedPingView.as_view(), name='ping'),
+    path('no_token', views.no_token, name='no_token'),
 ]
 
