@@ -1,44 +1,60 @@
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+# models.py
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
-class UserManager(AbstractBaseUser, PermissionsMixin):
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def get_by_natural_key(self, username):
+        # lets Django authenticate with your USERNAME_FIELD (email)
+        return self.get(**{self.model.USERNAME_FIELD: username})
+
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError("Email is required")
-        email = self.normalize_email(email)
+        email = self.normalize_email(email).lower()
         user = self.model(email=email, **extra_fields)
-        user.set_password(password)
+        user.set_password(password)  # hashes
         user.save(using=self._db)
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
         return self.create_user(email, password, **extra_fields)
 
-class User(AbstractBaseUser):
-    username = models.CharField(max_length=100, unique=True)
+class User(AbstractBaseUser, PermissionsMixin):
+    # identity
     email = models.EmailField(unique=True)
+    username = models.CharField(max_length=100, unique=True)
+
+    # your custom field
+    ROLE_REFERRER = 'referrer'
+    ROLE_REFEREE  = 'referee'
+    ROLE_CHOICES  = [(ROLE_REFERRER, 'Referrer'), (ROLE_REFEREE, 'Referee')]
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True, default=None)
+
+    # required by Django admin/auth
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    is_staff  = models.BooleanField(default=False)
+    # is_superuser comes from PermissionsMixin (and becomes a DB column)
+
+    USERNAME_FIELD  = "email"         # login by email
+    REQUIRED_FIELDS = ["username"]    # asked when createsuperuser runs
 
     objects = UserManager()
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
-
-        # -----> add constants once
-    ROLE_REFERRER = 'referrer'
-    ROLE_REFEREE  = 'referee'
-    ROLE_CHOICES = [(ROLE_REFERRER, 'Referrer'), (ROLE_REFEREE, 'Referee')]
-
-    # -----> add the column
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True, default=None)
-
-
     def __str__(self):
         return self.email
+
     
 class referal_req(models.Model):
     phone_number=models.CharField(max_length=10)

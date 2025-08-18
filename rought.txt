@@ -14,3 +14,25 @@ DATABASES = {
     'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
 }
 To test on Cloud - Render
+
+
+
+
+
+
+#######Normal Login main :
+        if user is not None:
+            # Login successful → redirect
+            return Response({"redirect": "/active_referals"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+#### In chatgpt Role-based redirection setup
+
+SetUserRoleAPIView — securityNameCreateAPIView
+
+Anyone who knows an email could hit this and change roles.
+
+-----> At minimum, verify the user (e.g., compare to logged‑in user or a one‑time token). If you skip

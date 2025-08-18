@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
@@ -29,17 +30,25 @@ def login(request):
 
 class LoginAPIView(APIView):
     def post(self, request):
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
 
-        user = authenticate(username=username, password=password)
+        # authenticate expects the parameter named "username",
+        # but it uses your USERNAME_FIELD (email) under the hood.
+        user = authenticate(request, username=email, password=password)
 
-        if user is not None:
-            # Login successful → redirect
-            return Response({"redirect": "/active_referals"}, status=status.HTTP_200_OK)
-        else:
+        if user is None:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
+        # redirect based on role
+        if user.role == 'referrer':
+            next_path = '/active_referals'
+        elif user.role == 'referee':
+            next_path = '/referer_home'
+        else:
+            next_path = '/launchpad'  # role not set yet
+
+        return Response({"redirect": next_path}, status=status.HTTP_200_OK)
 class ReferralRequestAPIView(APIView):
     def post(self, request):
         serializer = Referalrequestserializer(data=request.data)
