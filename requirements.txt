@@ -5,3 +5,4 @@ psycopg
 dj-database-url
 whitenoise
 environ 
+djangorestframework-simplejwt
