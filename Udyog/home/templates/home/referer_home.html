@@ -10,6 +10,50 @@
         document.getElementById("overlay").classList.toggle("hidden");
       }
     </script>
+
+<!--Adding a script to trigger the refferal api-->
+<script>
+document.addEventListener('DOMContentLoaded', () => {   ///// ensure DOM ready
+
+  const form  = document.getElementById('referForm');     // ---> form node
+  const token = localStorage.getItem('access_token');     // ---> JWT
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();                                   // ---> stop page reload
+
+    const payload = {                                     // ---> match serializer
+      company_name:     document.getElementById('company').value.trim(),
+      Role:             document.getElementById('role').value.trim(),
+      Refferal_Domains: document.getElementById('domains').value.trim(),
+    };
+
+    console.log('POST /api/referrals/ payload ->', payload);  ///// debug
+
+    const res = await fetch('/api/referrals/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,               // ---> auth
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const text = await res.text();
+    console.log('STATUS', res.status, 'BODY', text);      ///// see result
+
+    if (!res.ok) { alert('Failed: ' + text); return; }
+
+    alert('Referral posted');                              // ---> success
+    // optional: clear or close modal
+    // form.reset();
+    // toggleModal();
+  });
+
+});
+</script>
+
+
+
   </head>
   <body class="bg-gray-100 font-sans">
 
@@ -20,12 +64,13 @@
     <div id="referModal" class="hidden fixed z-50 inset-0 flex items-center justify-center">
       <div class="bg-white rounded-lg p-8 w-full max-w-md shadow-lg">
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Post a New Refer</h2>
-        <form class="space-y-4">
-          <input type="text" placeholder="Company Name" class="w-full p-2 border border-gray-300 rounded" />
-          <input type="text" placeholder="Role" class="w-full p-2 border border-gray-300 rounded" />
-          <input type="text" placeholder="Referral Domains (e.g. Dev, Data, Design)" class="w-full p-2 border border-gray-300 rounded" />
-          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Post Referral</button>
-        </form>
+<form id="referForm" class="space-y-4">
+  <input name="company" id="company" type="text" placeholder="Company Name" class="w-full p-2 border rounded" />
+  <input name="role" id="role" type="text" placeholder="Role" class="w-full p-2 border rounded" />
+  <input name="domains" id="domains" type="text" placeholder="Referral Domains" class="w-full p-2 border rounded" />
+  <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Post Referral</button>
+</form>
+
         <button onclick="toggleModal()" class="mt-4 text-sm text-gray-600 hover:underline">Cancel</button>
       </div>
     </div>
@@ -108,6 +153,49 @@
       }
     });
   }
+</script>
+<!--ADDING JS TO SEND POST-->
+<script>
+  ///// token ---> JWT from localStorage
+  const token = localStorage.getItem("access_token");
+
+  // -----> attach submit
+  document.getElementById("referForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      company_name: document.getElementById("company").value.trim(),  ///// match serializer
+      Role: document.getElementById("role").value.trim(),
+      Refferal_Domains: document.getElementById("domains").value.trim(),
+    };
+
+    try {
+      const res = await fetch("/api/referrals/", {                 ///// IMPORTANT: trailing slash
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,                        ///// JWT header
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        // show server reason
+        const err = await res.json().catch(() => ({}));
+        alert("Failed: " + (err.detail || JSON.stringify(err)));
+        return;
+      }
+
+      // success
+      // toggleModal();   ///// if you have this function
+      alert("Referral posted");
+      // optional: redirect or clear form
+      // window.location.href = "/referer_home"; 
+      // OR notify the other page via polling/websocket later
+    } catch (e2) {
+      alert("Network error: " + e2.message);
+    }
+  });
 </script>
 
 

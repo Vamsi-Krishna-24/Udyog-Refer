@@ -4,13 +4,17 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from .models import User, referal_req, Referer
-from .serializers import UserSerializer, Referalrequestserializer, RefererSerializer
+from .models import User, referal_req, Referer, Referral_post
+from .serializers import UserSerializer, Referalrequestserializer, RefererSerializer, ReferralPostSerializer
+from .permissions import IsReferrerOnCreate
 from django.shortcuts import redirect, get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .token_serializer import MyTokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
+from rest_framework import viewsets
+
 
 
 class NameCreateAPIView(APIView):
@@ -32,23 +36,29 @@ class LoginAPIView(APIView):
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
-
-        # authenticate expects the parameter named "username",
-        # but it uses your USERNAME_FIELD (email) under the hood.
         user = authenticate(request, username=email, password=password)
-
         if user is None:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "Invalid credentials"}, status=401)
 
-        # redirect based on role
+        # -----> mint tokens + add custom claims
+        refresh = RefreshToken.for_user(user)
+        refresh['role'] = getattr(user, 'role', None)   # -----> custom claim
+        refresh['email'] = getattr(user, 'email', None)
+
+        # -----> correct redirect by role
         if user.role == 'referrer':
-            next_path = '/active_referals'
-        elif user.role == 'referee':
             next_path = '/referer_home'
+        elif user.role == 'referee':
+            next_path = '/active_referals'
         else:
-            next_path = '/launchpad'  # role not set yet
+            next_path = '/launchpad'
 
-        return Response({"redirect": next_path}, status=status.HTTP_200_OK)
+        return Response({
+            "redirect": next_path,
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+        }, status=200)
+    
 class ReferralRequestAPIView(APIView):
     def post(self, request):
         serializer = Referalrequestserializer(data=request.data)
@@ -165,3 +175,51 @@ class ActiveReferralsView(APIView):
 
     def get(self, request):
         return Response({"message": "This is a protected route"})
+    
+
+
+# defining a class so that when Referer posts then that will hit up in the screen of Referer
+class ReferralPostListCreate(APIView):               # ///// /api/referrals/ (GET, POST)
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        qs = Referral_post.objects.select_related("referrer").order_by("-created_at")
+        data = ReferralPostSerializer(qs, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        # only referrers can create
+        if getattr(request.user, "role", "").lower() != "referrer":
+            return Response({"detail": "Only referrers can post."},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        ser = ReferralPostSerializer(data=request.data)
+        if not ser.is_valid():
+            return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        obj = ser.save(referrer=request.user)        # ///// attach logged-in user
+        return Response(ReferralPostSerializer(obj).data,
+                        status=status.HTTP_201_CREATED)
+
+
+
+class ReferralPostViewSet(viewsets.ModelViewSet):
+    queryset = Referral_post.objects.order_by("-created_at")
+    serializer_class = ReferralPostSerializer
+    permission_classes = [permissions.IsAuthenticated]   # or IsAuthenticated if you want JWT only
+
+
+
+##TEST View to check passage of user role back to server
+class MeAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        u = request.user
+        return Response({
+            "id": u.id,
+            "email": getattr(u, "email", None),
+            "role": getattr(u, "role", None),   # -----> your custom field
+            "is_staff": getattr(u, "is_staff", False),
+        })

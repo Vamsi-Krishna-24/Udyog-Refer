@@ -67,6 +67,20 @@ document.getElementById("login-btn").addEventListener("click", async function(e)
 });
 </script>
 
+<script>
+  // -----> call /api/login/
+const r = await fetch('/api/login/', { method:'POST', headers:{'Content-Type':'application/json'},
+  body: JSON.stringify({ email, password })
+});
+const data = await r.json();
+localStorage.setItem('access_token', data.access);
+localStorage.setItem('refresh_token', data.refresh);
+window.location = data.redirect;  // -----> server decided
+</script>
+
+
+
+
 
   </body>
 </html>

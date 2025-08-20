@@ -1,7 +1,5 @@
 from rest_framework import serializers
-from .models import User, referal_req, Referer
-
-# serializers.py
+from .models import User, referal_req, Referer, Referral_post
 from rest_framework import serializers
 from .models import User
 
@@ -44,5 +42,13 @@ class RefererSerializer(serializers.ModelSerializer):
         
 
 
+## Creating another serializer for posting REFERRAL in DB 
 
-        
+class ReferralPostSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = Referral_post
+          fields =['company_name','Role','Refferal_Domains']
+          extra_kwargs = {
+                'created_at': {'required': True},
+                'referrer': {'required': True},
+            }

@@ -4,6 +4,7 @@ from django.db import models
 # models.py
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.conf import settings
 
 
 class UserManager(BaseUserManager):
@@ -75,6 +76,14 @@ class Referer(models.Model):
     linkedin_url = models.URLField(max_length=200)
     github_url = models.URLField(max_length=200)
     bio =   models.TextField()
+
+
+class Referral_post(models.Model):
+    referrer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    company_name= models.CharField(max_length=100)
+    Role = models.CharField(max_length=100)
+    Refferal_Domains = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)  
 
 
     
