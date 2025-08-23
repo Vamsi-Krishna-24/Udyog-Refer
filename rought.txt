@@ -43,3 +43,47 @@ Anyone who knows an email could hit this and change roles.
 
 const t2 = localStorage.getItem('access_token');
 JSON.parse(atob(t2.split('.')[1]));
+
+
+
+
+Deleted the SCRIPT 03 in Refferer Home:
+      <script>
+         document.addEventListener('DOMContentLoaded', () => {   ///// ensure DOM ready
+         
+           const form  = document.getElementById('referForm');     // ---> form node
+           const token = localStorage.getItem('access_token');     // ---> JWT
+         
+           form.addEventListener('submit', async (e) => {
+             e.preventDefault();                                   // ---> stop page reload
+         
+             const payload = {                                     // ---> match serializer
+               company_name:     document.getElementById('company').value.trim(),
+               Role:             document.getElementById('role').value.trim(),
+               Refferal_Domains: document.getElementById('domains').value.trim(),
+             };
+         
+             console.log('POST /api/referrals/ payload ->', payload);  ///// debug
+         
+             const res = await fetch('/api/referrals/', {
+               method: 'POST',
+               headers: {
+                 'Content-Type': 'application/json',
+                 'Authorization': `Bearer ${token}`,               // ---> auth
+               },
+               body: JSON.stringify(payload),
+             });
+         
+             const text = await res.text();
+             console.log('STATUS', res.status, 'BODY', text);      ///// see result
+         
+             if (!res.ok) { alert('Failed: ' + text); return; }
+         
+             triggerSuccessAnimation();
+             // optional: clear or close modal
+             // form.reset();
+             // toggleModal();
+           });
+         
+         });
+      </script>

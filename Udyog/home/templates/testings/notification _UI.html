@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referral Notification</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    @keyframes loadingLine {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    .loading-bar {
+      animation: loadingLine 2s ease-in-out forwards;
+    }
+
+    @keyframes draw {
+      0% { stroke-dasharray: 48; stroke-dashoffset: 48; }
+      100% { stroke-dasharray: 48; stroke-dashoffset: 0; }
+    }
+    .tick, .cross {
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: draw 1s ease forwards;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .pop-in { animation: popIn 0.6s ease forwards; }
+
+    @keyframes fadeOut { to { opacity: 0; } }
+    .fade-out { animation: fadeOut 1s ease forwards; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+    .shake { animation: shake 0.6s ease; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+
+  <!-- Dialog Notification -->
+  <div id="dialog" class="fixed top-5 right-5 w-72 shadow-lg rounded-lg border border-gray-300 bg-white">
+    <div class="h-1 bg-blue-400 rounded-t-lg loading-bar"></div>
+    <div class="p-6 text-center">
+      <p class="text-gray-800 font-medium mb-3">Referral Posting...</p>
+    </div>
+  </div>
+
+  <!-- Success State -->
+  <div id="successContainer" class="hidden flex flex-col items-center justify-center fixed inset-0 bg-white/70">
+    <svg class="w-28 h-28 text-green-500 pop-in" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
+      <path class="tick" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+    </svg>
+    <p class="mt-4 text-lg font-medium text-gray-700 pop-in">Your referral has been successfully posted.</p>
+    <p class="text-gray-500 pop-in">Thank you for your time.</p>
+  </div>
+
+  <!-- Failure State -->
+  <div id="failureContainer" class="hidden flex flex-col items-center justify-center fixed inset-0 bg-white/70">
+    <svg id="failureIcon" class="w-28 h-28 text-red-500 pop-in" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
+      <path class="cross" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+    </svg>
+    <p class="mt-4 text-lg font-medium text-red-600 pop-in">Oops, it failed.</p>
+    <p class="text-gray-500 pop-in">Please try again.</p>
+  </div>
+
+  <script>
+    // Change this variable to "success" or "failure"
+    const status = "failure"; // try "success" too
+
+    setTimeout(() => {
+      document.getElementById('dialog').style.display = 'none';
+
+      if (status === "success") {
+        const success = document.getElementById('successContainer');
+        success.classList.remove('hidden');
+
+        // Confetti on success
+        confetti({ particleCount: 150, spread: 120, origin: { y: 0.6 } });
+
+        setTimeout(() => { success.classList.add('fade-out'); }, 4000);
+
+      } else {
+        const failure = document.getElementById('failureContainer');
+        failure.classList.remove('hidden');
+
+        // Add shake effect to red X
+        document.getElementById('failureIcon').classList.add('shake');
+
+        setTimeout(() => { failure.classList.add('fade-out'); }, 4000);
+      }
+
+    }, 2200);
+  </script>
+
+</body>
+</html>
