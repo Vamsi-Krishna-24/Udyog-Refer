@@ -36,3 +36,10 @@ SetUserRoleAPIView — securityNameCreateAPIView
 Anyone who knows an email could hit this and change roles.
 
 -----> At minimum, verify the user (e.g., compare to logged‑in user or a one‑time token). If you skip
+
+
+
+###To get the access token:
+
+const t2 = localStorage.getItem('access_token');
+JSON.parse(atob(t2.split('.')[1]));

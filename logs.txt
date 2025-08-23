@@ -1,0 +1,250 @@
+2025-08-20T20:12:56.088004941Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-08-20T20:12:56.088006951Z            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088009131Z   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+2025-08-20T20:12:56.088011271Z   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+2025-08-20T20:12:56.088013361Z   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+2025-08-20T20:12:56.088015392Z   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+2025-08-20T20:12:56.088017592Z   File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+2025-08-20T20:12:56.088019642Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2025-08-20T20:12:56.088021712Z   File "/opt/render/project/src/Udyog/Udyog/urls.py", line 22, in <module>
+2025-08-20T20:12:56.088023782Z     path('',include('home.urls')),
+2025-08-20T20:12:56.088025942Z             ~~~~~~~^^^^^^^^^^^^^
+2025-08-20T20:12:56.088027992Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/conf.py", line 39, in include
+2025-08-20T20:12:56.088030002Z     urlconf_module = import_module(urlconf_module)
+2025-08-20T20:12:56.088032122Z   File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+2025-08-20T20:12:56.088034183Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-08-20T20:12:56.088051334Z            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088054034Z   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+2025-08-20T20:12:56.088061624Z   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+2025-08-20T20:12:56.088064195Z   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+2025-08-20T20:12:56.088066255Z   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+2025-08-20T20:12:56.088068315Z   File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+2025-08-20T20:12:56.088070395Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2025-08-20T20:12:56.088072425Z   File "/opt/render/project/src/Udyog/home/urls.py", line 4, in <module>
+2025-08-20T20:12:56.088074975Z     from . import views
+2025-08-20T20:12:56.088077135Z   File "/opt/render/project/src/Udyog/home/views.py", line 3, in <module>
+2025-08-20T20:12:56.088079225Z     from rest_framework_simplejwt.tokens import RefreshToken
+2025-08-20T20:12:56.088081316Z ModuleNotFoundError: No module named 'rest_framework_simplejwt'
+2025-08-20T20:12:56.088083196Z 
+2025-08-20T20:12:56.088085156Z During handling of the above exception, another exception occurred:
+2025-08-20T20:12:56.088087036Z 
+2025-08-20T20:12:56.088089086Z Traceback (most recent call last):
+2025-08-20T20:12:56.088095446Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+2025-08-20T20:12:56.088097717Z     response = get_response(request)
+2025-08-20T20:12:56.088099797Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 120, in __call__
+2025-08-20T20:12:56.088101757Z     response = response or self.get_response(request)
+2025-08-20T20:12:56.088103877Z                            ~~~~~~~~~~~~~~~~~^^^^^^^^^
+2025-08-20T20:12:56.088105917Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 57, in inner
+2025-08-20T20:12:56.088107857Z     response = response_for_exception(request, exc)
+2025-08-20T20:12:56.088109947Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 141, in response_for_exception
+2025-08-20T20:12:56.088112087Z     response = handle_uncaught_exception(
+2025-08-20T20:12:56.088114307Z         request, get_resolver(get_urlconf()), sys.exc_info()
+2025-08-20T20:12:56.088116418Z     )
+2025-08-20T20:12:56.088118438Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 182, in handle_uncaught_exception
+2025-08-20T20:12:56.088120518Z     return debug.technical_500_response(request, *exc_info)
+2025-08-20T20:12:56.088122688Z            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088124878Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 69, in technical_500_response
+2025-08-20T20:12:56.088127448Z     html = reporter.get_traceback_html()
+2025-08-20T20:12:56.088129788Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 428, in get_traceback_html
+2025-08-20T20:12:56.088132019Z     c = Context(self.get_traceback_data(), use_l10n=False)
+2025-08-20T20:12:56.088134259Z                 ~~~~~~~~~~~~~~~~~~~~~~~^^
+2025-08-20T20:12:56.088136499Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 411, in get_traceback_data
+2025-08-20T20:12:56.088138699Z     c["raising_view_name"] = get_caller(self.request)
+2025-08-20T20:12:56.088141129Z                              ~~~~~~~~~~^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088143829Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 102, in get_caller
+2025-08-20T20:12:56.08814634Z     resolver_match = resolve(request.path)
+2025-08-20T20:12:56.08814888Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/base.py", line 25, in resolve
+2025-08-20T20:12:56.08815113Z     return get_resolver(urlconf).resolve(path)
+2025-08-20T20:12:56.08815317Z            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+2025-08-20T20:12:56.0881553Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 666, in resolve
+2025-08-20T20:12:56.08815747Z     for pattern in self.url_patterns:
+2025-08-20T20:12:56.08815941Z                    ^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.08816154Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/utils/functional.py", line 47, in __get__
+2025-08-20T20:12:56.088163521Z     res = instance.__dict__[self.name] = self.func(instance)
+2025-08-20T20:12:56.088165601Z                                          ~~~~~~~~~^^^^^^^^^^
+2025-08-20T20:12:56.088167891Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 718, in url_patterns
+2025-08-20T20:12:56.088170161Z     patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+2025-08-20T20:12:56.088177961Z                        ^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088180402Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/utils/functional.py", line 47, in __get__
+2025-08-20T20:12:56.088182652Z     res = instance.__dict__[self.name] = self.func(instance)
+2025-08-20T20:12:56.088184682Z                                          ~~~~~~~~~^^^^^^^^^^
+2025-08-20T20:12:56.088186742Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+2025-08-20T20:12:56.088188712Z     return import_module(self.urlconf_name)
+2025-08-20T20:12:56.088190812Z   File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+2025-08-20T20:12:56.088192872Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-08-20T20:12:56.088203543Z            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088206353Z   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+2025-08-20T20:12:56.088208633Z   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+2025-08-20T20:12:56.088210653Z   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+2025-08-20T20:12:56.088212704Z   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+2025-08-20T20:12:56.088214793Z   File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+2025-08-20T20:12:56.088216904Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2025-08-20T20:12:56.088219024Z   File "/opt/render/project/src/Udyog/Udyog/urls.py", line 22, in <module>
+2025-08-20T20:12:56.088221114Z     path('',include('home.urls')),
+2025-08-20T20:12:56.088223134Z             ~~~~~~~^^^^^^^^^^^^^
+2025-08-20T20:12:56.088225174Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/conf.py", line 39, in include
+2025-08-20T20:12:56.088227254Z     urlconf_module = import_module(urlconf_module)
+2025-08-20T20:12:56.088229525Z   File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+2025-08-20T20:12:56.088231605Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-08-20T20:12:56.088233655Z            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088235685Z   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+2025-08-20T20:12:56.088237885Z   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+2025-08-20T20:12:56.088239935Z   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+2025-08-20T20:12:56.088241915Z   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+2025-08-20T20:12:56.088243925Z   File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+2025-08-20T20:12:56.088245946Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2025-08-20T20:12:56.088247946Z   File "/opt/render/project/src/Udyog/home/urls.py", line 4, in <module>
+2025-08-20T20:12:56.088249976Z     from . import views
+2025-08-20T20:12:56.088252066Z   File "/opt/render/project/src/Udyog/home/views.py", line 3, in <module>
+2025-08-20T20:12:56.088254036Z     from rest_framework_simplejwt.tokens import RefreshToken
+2025-08-20T20:12:56.088256056Z ModuleNotFoundError: No module named 'rest_framework_simplejwt'
+2025-08-20T20:12:56.088257886Z 
+2025-08-20T20:12:56.088259796Z During handling of the above exception, another exception occurred:
+2025-08-20T20:12:56.088261616Z 
+2025-08-20T20:12:56.088263567Z Traceback (most recent call last):
+2025-08-20T20:12:56.088265587Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+2025-08-20T20:12:56.088271677Z     response = get_response(request)
+2025-08-20T20:12:56.088274067Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 120, in __call__
+2025-08-20T20:12:56.088276277Z     response = response or self.get_response(request)
+2025-08-20T20:12:56.088278297Z                            ~~~~~~~~~~~~~~~~~^^^^^^^^^
+2025-08-20T20:12:56.088280477Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 57, in inner
+2025-08-20T20:12:56.088282698Z     response = response_for_exception(request, exc)
+2025-08-20T20:12:56.088285008Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 141, in response_for_exception
+2025-08-20T20:12:56.088287128Z     response = handle_uncaught_exception(
+2025-08-20T20:12:56.088289148Z         request, get_resolver(get_urlconf()), sys.exc_info()
+2025-08-20T20:12:56.088291128Z     )
+2025-08-20T20:12:56.088293178Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 182, in handle_uncaught_exception
+2025-08-20T20:12:56.088295309Z     return debug.technical_500_response(request, *exc_info)
+2025-08-20T20:12:56.088297229Z            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088299209Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 69, in technical_500_response
+2025-08-20T20:12:56.088301559Z     html = reporter.get_traceback_html()
+2025-08-20T20:12:56.088303659Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 428, in get_traceback_html
+2025-08-20T20:12:56.088305619Z     c = Context(self.get_traceback_data(), use_l10n=False)
+2025-08-20T20:12:56.088307619Z                 ~~~~~~~~~~~~~~~~~~~~~~~^^
+2025-08-20T20:12:56.088309619Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 411, in get_traceback_data
+2025-08-20T20:12:56.088311569Z     c["raising_view_name"] = get_caller(self.request)
+2025-08-20T20:12:56.088313559Z                              ~~~~~~~~~~^^^^^^^^^^^^^^
+2025-08-20T20:12:56.08831566Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 102, in get_caller
+2025-08-20T20:12:56.0883194Z     resolver_match = resolve(request.path)
+2025-08-20T20:12:56.08832166Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/base.py", line 25, in resolve
+2025-08-20T20:12:56.0883236Z     return get_resolver(urlconf).resolve(path)
+2025-08-20T20:12:56.08832565Z            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+2025-08-20T20:12:56.08832777Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 666, in resolve
+2025-08-20T20:12:56.08832968Z     for pattern in self.url_patterns:
+2025-08-20T20:12:56.088331751Z                    ^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088342101Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/utils/functional.py", line 47, in __get__
+2025-08-20T20:12:56.088344831Z     res = instance.__dict__[self.name] = self.func(instance)
+2025-08-20T20:12:56.088347012Z                                          ~~~~~~~~~^^^^^^^^^^
+2025-08-20T20:12:56.088349082Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 718, in url_patterns
+2025-08-20T20:12:56.088351262Z     patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+2025-08-20T20:12:56.088353432Z                        ^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088355562Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/utils/functional.py", line 47, in __get__
+2025-08-20T20:12:56.088362153Z     res = instance.__dict__[self.name] = self.func(instance)
+2025-08-20T20:12:56.088364542Z                                          ~~~~~~~~~^^^^^^^^^^
+2025-08-20T20:12:56.088366693Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+2025-08-20T20:12:56.088368693Z     return import_module(self.urlconf_name)
+2025-08-20T20:12:56.088370863Z   File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+2025-08-20T20:12:56.088372903Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-08-20T20:12:56.088375143Z            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088377273Z   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+2025-08-20T20:12:56.088379463Z   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+2025-08-20T20:12:56.088381434Z   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+2025-08-20T20:12:56.088383464Z   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+2025-08-20T20:12:56.088385414Z   File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+2025-08-20T20:12:56.088387454Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2025-08-20T20:12:56.088389434Z   File "/opt/render/project/src/Udyog/Udyog/urls.py", line 22, in <module>
+2025-08-20T20:12:56.088391434Z     path('',include('home.urls')),
+2025-08-20T20:12:56.088393454Z             ~~~~~~~^^^^^^^^^^^^^
+2025-08-20T20:12:56.088395504Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/conf.py", line 39, in include
+2025-08-20T20:12:56.088397575Z     urlconf_module = import_module(urlconf_module)
+2025-08-20T20:12:56.088399675Z   File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+2025-08-20T20:12:56.088401625Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-08-20T20:12:56.088403795Z            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088405815Z   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+2025-08-20T20:12:56.088407815Z   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+2025-08-20T20:12:56.088410405Z   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+2025-08-20T20:12:56.088412436Z   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+2025-08-20T20:12:56.088414506Z   File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+2025-08-20T20:12:56.088416526Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2025-08-20T20:12:56.088418536Z   File "/opt/render/project/src/Udyog/home/urls.py", line 4, in <module>
+2025-08-20T20:12:56.088420506Z     from . import views
+2025-08-20T20:12:56.088422516Z   File "/opt/render/project/src/Udyog/home/views.py", line 3, in <module>
+2025-08-20T20:12:56.088424526Z     from rest_framework_simplejwt.tokens import RefreshToken
+2025-08-20T20:12:56.088426566Z ModuleNotFoundError: No module named 'rest_framework_simplejwt'
+2025-08-20T20:12:56.088428386Z 
+2025-08-20T20:12:56.088430386Z During handling of the above exception, another exception occurred:
+2025-08-20T20:12:56.088432217Z 
+2025-08-20T20:12:56.088434297Z Traceback (most recent call last):
+2025-08-20T20:12:56.088436427Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/workers/sync.py", line 134, in handle
+2025-08-20T20:12:56.088438447Z     self.handle_request(listener, req, client, addr)
+2025-08-20T20:12:56.088440477Z     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088450788Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/workers/sync.py", line 177, in handle_request
+2025-08-20T20:12:56.088453178Z     respiter = self.wsgi(environ, resp.start_response)
+2025-08-20T20:12:56.088455528Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/wsgi.py", line 124, in __call__
+2025-08-20T20:12:56.088457728Z     response = self.get_response(request)
+2025-08-20T20:12:56.088459968Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 140, in get_response
+2025-08-20T20:12:56.088462148Z     response = self._middleware_chain(request)
+2025-08-20T20:12:56.088464309Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 57, in inner
+2025-08-20T20:12:56.088466489Z     response = response_for_exception(request, exc)
+2025-08-20T20:12:56.088469049Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 141, in response_for_exception
+2025-08-20T20:12:56.088471559Z     response = handle_uncaught_exception(
+2025-08-20T20:12:56.088474079Z         request, get_resolver(get_urlconf()), sys.exc_info()
+2025-08-20T20:12:56.088476539Z     )
+2025-08-20T20:12:56.08848672Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 182, in handle_uncaught_exception
+2025-08-20T20:12:56.08848955Z     return debug.technical_500_response(request, *exc_info)
+2025-08-20T20:12:56.08849176Z            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088494Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 69, in technical_500_response
+2025-08-20T20:12:56.088496181Z     html = reporter.get_traceback_html()
+2025-08-20T20:12:56.088498271Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 428, in get_traceback_html
+2025-08-20T20:12:56.088500371Z     c = Context(self.get_traceback_data(), use_l10n=False)
+2025-08-20T20:12:56.088502411Z                 ~~~~~~~~~~~~~~~~~~~~~~~^^
+2025-08-20T20:12:56.088504521Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 411, in get_traceback_data
+2025-08-20T20:12:56.088506561Z     c["raising_view_name"] = get_caller(self.request)
+2025-08-20T20:12:56.088508721Z                              ~~~~~~~~~~^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088510731Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/views/debug.py", line 102, in get_caller
+2025-08-20T20:12:56.088512751Z     resolver_match = resolve(request.path)
+2025-08-20T20:12:56.088514862Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/base.py", line 25, in resolve
+2025-08-20T20:12:56.088516882Z     return get_resolver(urlconf).resolve(path)
+2025-08-20T20:12:56.088518802Z            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+2025-08-20T20:12:56.088520832Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 666, in resolve
+2025-08-20T20:12:56.088522762Z     for pattern in self.url_patterns:
+2025-08-20T20:12:56.088527272Z                    ^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088539723Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/utils/functional.py", line 47, in __get__
+2025-08-20T20:12:56.088542213Z     res = instance.__dict__[self.name] = self.func(instance)
+2025-08-20T20:12:56.088544433Z                                          ~~~~~~~~~^^^^^^^^^^
+2025-08-20T20:12:56.088546724Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 718, in url_patterns
+2025-08-20T20:12:56.088553354Z     patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+2025-08-20T20:12:56.088555694Z                        ^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088557924Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/utils/functional.py", line 47, in __get__
+2025-08-20T20:12:56.088560054Z     res = instance.__dict__[self.name] = self.func(instance)
+2025-08-20T20:12:56.088562185Z                                          ~~~~~~~~~^^^^^^^^^^
+2025-08-20T20:12:56.088564225Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+2025-08-20T20:12:56.088566375Z     return import_module(self.urlconf_name)
+2025-08-20T20:12:56.088570655Z   File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+2025-08-20T20:12:56.088572865Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-08-20T20:12:56.088574935Z            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088577006Z   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+2025-08-20T20:12:56.088579155Z   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+2025-08-20T20:12:56.088581356Z   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+2025-08-20T20:12:56.088583406Z   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+2025-08-20T20:12:56.088585446Z   File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+2025-08-20T20:12:56.088587416Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2025-08-20T20:12:56.088589386Z   File "/opt/render/project/src/Udyog/Udyog/urls.py", line 22, in <module>
+2025-08-20T20:12:56.088591576Z     path('',include('home.urls')),
+2025-08-20T20:12:56.088593667Z             ~~~~~~~^^^^^^^^^^^^^
+2025-08-20T20:12:56.088595676Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/django/urls/conf.py", line 39, in include
+2025-08-20T20:12:56.088597727Z     urlconf_module = import_module(urlconf_module)
+2025-08-20T20:12:56.088599807Z   File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+2025-08-20T20:12:56.088601817Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-08-20T20:12:56.088603837Z            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-08-20T20:12:56.088605787Z   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+2025-08-20T20:12:56.088607767Z   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+2025-08-20T20:12:56.088609857Z   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+2025-08-20T20:12:56.088611788Z   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+2025-08-20T20:12:56.088613778Z   File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+2025-08-20T20:12:56.088615778Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2025-08-20T20:12:56.088617808Z   File "/opt/render/project/src/Udyog/home/urls.py", line 4, in <module>
+2025-08-20T20:12:56.088619878Z     from . import views
+2025-08-20T20:12:56.088621938Z   File "/opt/render/project/src/Udyog/home/views.py", line 3, in <module>
+2025-08-20T20:12:56.088632959Z     from rest_framework_simplejwt.tokens import RefreshToken
+2025-08-20T20:12:56.088635729Z ModuleNotFoundError: No module named 'rest_framework_simplejwt'

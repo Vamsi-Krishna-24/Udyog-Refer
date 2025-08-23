@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {   ///// ensure DOM ready
 
     if (!res.ok) { alert('Failed: ' + text); return; }
 
-    alert('Referral posted');                              // ---> success
+    showNotification("Referral posted", "success");
     // optional: clear or close modal
     // form.reset();
     // toggleModal();
@@ -132,6 +132,17 @@ document.addEventListener('DOMContentLoaded', () => {   ///// ensure DOM ready
             <span>Post a New Refer</span>
           </button>
         </div>
+
+        <!-- Notification Template-->
+         <!-- Notification -->
+        <div id="notification" class="hidden fixed top-5 right-5 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg z-50">
+          <strong class="font-bold">Success!</strong>
+          <span class="block sm:inline">Referral posted</span>
+        </div>
+
+
+
+
       </div>
     </div>
 
@@ -182,21 +193,44 @@ document.addEventListener('DOMContentLoaded', () => {   ///// ensure DOM ready
       if (!res.ok) {
         // show server reason
         const err = await res.json().catch(() => ({}));
-        alert("Failed: " + (err.detail || JSON.stringify(err)));
+        showNotification("Failed to post referral", "error");
         return;
       }
 
       // success
       // toggleModal();   ///// if you have this function
-      alert("Referral posted");
+      showNotification("Referral posted", "success");
       // optional: redirect or clear form
       // window.location.href = "/referer_home"; 
       // OR notify the other page via polling/websocket later
     } catch (e2) {
-      alert("Network error: " + e2.message);
+      showNotification("Failed to post referral", "error");
+
     }
   });
 </script>
+
+<!-- Notification Helper -->
+<script>
+  function showNotification(message, type = "success") {
+    const notif = document.getElementById("notification");
+    notif.querySelector("span").textContent = message;
+
+    // color based on type
+    if (type === "success") {
+      notif.className = "fixed top-5 right-5 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg z-50";
+    } else {
+      notif.className = "fixed top-5 right-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg z-50";
+    }
+
+    notif.classList.remove("hidden");
+
+    setTimeout(() => {
+      notif.classList.add("hidden");
+    }, 3000); ///// hide after 3s
+  }
+</script>
+
 
 
   </body>
