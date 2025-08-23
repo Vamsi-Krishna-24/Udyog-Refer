@@ -49,34 +49,27 @@ document.getElementById("login-btn").addEventListener("click", async function(e)
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const response = await fetch("/api/token/", {
+  const response = await fetch("/api/login/", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
   });
 
+  const data = await response.json();
+
   if (response.ok) {
-    const data = await response.json();
-    localStorage.setItem("access_token", data.access); ///// save token locally \\\\\\
-    window.location.href = "/active_referals"; ///// go to protected page \\\\\\
+    // save tokens
+    localStorage.setItem("access_token", data.access);
+    localStorage.setItem("refresh_token", data.refresh);
+
+    // server decides where to go
+    window.location.href = data.redirect;
   } else {
-    alert("Login failed");
+    alert(data.error || "Login failed");
   }
 });
 </script>
 
-<script>
-  // -----> call /api/login/
-const r = await fetch('/api/login/', { method:'POST', headers:{'Content-Type':'application/json'},
-  body: JSON.stringify({ email, password })
-});
-const data = await r.json();
-localStorage.setItem('access_token', data.access);
-localStorage.setItem('refresh_token', data.refresh);
-window.location = data.redirect;  // -----> server decided
-</script>
 
 
 
