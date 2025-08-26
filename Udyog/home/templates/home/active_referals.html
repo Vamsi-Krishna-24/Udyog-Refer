@@ -7,50 +7,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
 
-  <body class="bg-gray-100 font-sans">
-    <div class="relative flex min-h-screen">
-
-          <!-- Top Right Mini Navbar -->
-    <div class="absolute top-4 right-6 z-20 flex items-center gap-4">
-      <!-- Settings Icon -->
-      <a href="#" class="group relative">
-        <svg class="w-6 h-6 text-gray-600 hover:text-gray-900 transition" fill="none" stroke="currentColor" stroke-width="2"
-          viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M12 4v2m0 12v2m8-8h2M4 12H2m15.36 6.36l1.42 1.42M6.34 6.34L4.92 4.92m0 14.14l1.42-1.42M17.66 6.34l1.42-1.42" />
-        </svg>
-        <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100"> PA - Launchin..</span>
-      </a>
-
-      <!-- Logout Icon -->
-      <a href="{% url 'login' %}" class="group relative">
-        <svg class="w-6 h-6 text-gray-600 hover:text-red-600 transition" fill="none" stroke="currentColor" stroke-width="2"
-          viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
-        </svg>
-        <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100">Logout</span>
-      </a>
-    </div>
-
-
-      <!-- Sidebar -->
-      <aside class="w-20 bg-gray-900 text-white flex flex-col items-center py-6">
+    <body class="bg-gray-100 font-sans">
+    <div class="flex min-h-screen">
+      
+      <!-- Sidebar (fixed icons) -->
+      <aside class="w-20 bg-gray-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
         <div class="flex-1 flex flex-col justify-center space-y-6">
           <!-- Active Referrals Icon -->
           <a href="{% url 'active_referals' %}" class="relative group">
             <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
-              
               <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
               </svg>
             </div>
-            <span
-              class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">
-              Active Referrals
-            </span>
           </a>
 
           <!-- What's Hot Now Icon -->
@@ -62,10 +33,6 @@
                   d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <span
-              class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">
-              What's Hot Now
-            </span>
           </a>
 
           <!-- My Tracker Icon -->
@@ -77,23 +44,63 @@
                   d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3" />
               </svg>
             </div>
-            <span
-              class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">
-              My Tracker
-            </span>
           </a>
         </div>
       </aside>
 
-      <!-- Main Content -->
+      <!-- Main Content Area -->
+      <div class="flex-1 ml-20 flex flex-col">
+        
+        <!-- Top Bar -->
+        <header class="sticky top-0 z-10 bg-gray-100 flex justify-between items-center px-6 py-4 shadow">
+          <h1 class="text-2xl font-bold">Active Referrals</h1>
 
-    <main class="flex-1 overflow-y-auto px-6 py-6">
-      <div class="max-w-6xl mx-auto">
-        <h1 class="text-3xl font-bold mb-4">Active Referrals</h1>
+          <div class="flex items-center gap-6">
+            <!-- Settings Icon -->
+            <a href="#" class="group relative">
+              <svg class="w-6 h-6 text-gray-600 hover:text-gray-900 transition" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 4v2m0 12v2m8-8h2M4 12H2m15.36 6.36l1.42 1.42M6.34 6.34L4.92 4.92m0 14.14l1.42-1.42M17.66 6.34l1.42-1.42" />
+              </svg>
+            </a>
 
-      <div class="grid gap-6" id="referralsGrid"></div>
-      </div>
-    </main>
+            <!-- Logout Icon -->
+            <a href="{% url 'login' %}" class="group relative">
+              <svg class="w-6 h-6 text-gray-600 hover:text-red-600 transition" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+              </svg>
+            </a>
+          </div>
+        </header>
+
+        <!-- Scrollable Content (referrals list with pagination) -->
+        <main class="flex-1 overflow-y-auto px-6 py-6">
+          <div class="max-w-6xl mx-auto">
+            
+            <!-- Dynamic referrals -->
+            <div id="referralsGrid" class="grid gap-6">
+              <!-- Example card -->
+              <div class="p-4 bg-white shadow rounded-lg">Referral Box 1</div>
+              <div class="p-4 bg-white shadow rounded-lg">Referral Box 2</div>
+              <div class="p-4 bg-white shadow rounded-lg">Referral Box 3</div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-center">
+              <nav  id="paginationNav" class="inline-flex space-x-2">
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">Prev</button>
+                <button class="px-3 py-1 rounded bg-blue-600 text-white">1</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">2</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">3</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">Next</button>
+              </nav>
+            </div>
+
+          </div>
+        </main>
 
 
      
@@ -101,10 +108,11 @@
 <!--Testing the JWT in a different way-->
 <!-- JWT guard + Live referrals (single script) -->
 <script>
-  ///// -----> ONE token variable (do not redeclare anywhere else)
   const token = localStorage.getItem("access_token");
+  let allReferrals = [];   ///// store all items from API
+  let currentPage = 1;
+  const pageSize = 10;
 
-  // Redirect if no/invalid token
   (async function guard() {
     if (!token) return (window.location.href = "/no_token");
     const pong = await fetch("/api/protected-ping/", {
@@ -113,37 +121,21 @@
     if (!pong.ok) window.location.href = "/no_token";
   })();
 
-  ///// Hook to the grid (make sure this div exists in your HTML)
-  // <div id="referralsGrid" class="grid gap-6"></div>
   const grid = document.getElementById("referralsGrid");
 
   function showLoading(count = 3) {
     grid.innerHTML = Array.from({ length: count }).map(() => `
       <div class="bg-white rounded-xl p-6 shadow border border-gray-200 animate-pulse">
-        <div class="flex justify-between">
-          <div>
-            <div class="h-5 w-40 bg-gray-200 rounded mb-2"></div>
-            <div class="h-4 w-20 bg-gray-200 rounded"></div>
-          </div>
-          <div class="text-right">
-            <div class="h-4 w-24 bg-gray-200 rounded mb-2 ml-auto"></div>
-            <div class="h-4 w-28 bg-gray-200 rounded mb-2 ml-auto"></div>
-            <div class="h-4 w-36 bg-gray-200 rounded ml-auto"></div>
-          </div>
-        </div>
-        <div class="mt-3 flex justify-between items-center">
-          <div class="h-4 w-64 bg-gray-200 rounded"></div>
-          <div class="h-9 w-32 bg-gray-200 rounded"></div>
-        </div>
+        <div class="h-5 w-40 bg-gray-200 rounded mb-2"></div>
+        <div class="h-4 w-20 bg-gray-200 rounded"></div>
       </div>
     `).join("");
   }
 
-  ///// Card uses YOUR keys
   function card(r) {
     const company = r.company_name || "—";
     const role    = r.Role || "—";
-    const domains = r.Refferal_Domains || "—";   // -----> spelling matches your serializer
+    const domains = r.Refferal_Domains || "—";
 
     return `
       <div class="bg-white rounded-xl p-6 shadow border border-gray-200">
@@ -178,19 +170,71 @@
     grid.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4">${msg}</div>`;
   }
 
+  ///// -----> render only current page
+  function renderPage() {
+    const start = (currentPage - 1) * pageSize;
+    const end   = start + pageSize;
+    const items = allReferrals.slice(start, end);
+
+    if (!items.length) return emptyState();
+    grid.innerHTML = items.map(card).join("");
+    renderPagination();
+  }
+
+  ///// -----> pagination controls
+  function renderPagination() {
+    const totalPages = Math.ceil(allReferrals.length / pageSize);
+    const nav = document.querySelector("#paginationNav");
+
+    if (totalPages <= 1) {
+      nav.innerHTML = "";
+      return;
+    }
+
+    let buttons = `
+      <button onclick="changePage(${Math.max(1, currentPage - 1)})"
+              class="px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}">
+        Prev
+      </button>
+    `;
+
+    for (let i = 1; i <= totalPages; i++) {
+      buttons += `
+        <button onclick="changePage(${i})"
+                class="px-3 py-1 rounded ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}">
+          ${i}
+        </button>`;
+    }
+
+    buttons += `
+      <button onclick="changePage(${Math.min(totalPages, currentPage + 1)})"
+              class="px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}">
+        Next
+      </button>
+    `;
+
+    nav.innerHTML = buttons;
+  }
+
+  ///// -----> page switch
+  function changePage(p) {
+    currentPage = p;
+    renderPage();
+  }
+
   async function loadReferrals() {
     showLoading();
     try {
       const res = await fetch("/api/referrals/", {
-        headers: { Authorization: `Bearer ${token}` }   // -----> IsAuthenticated
+        headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) return errorState(`API ${res.status}`);
 
       const payload = await res.json();
-      const items = Array.isArray(payload) ? payload : (payload.results || []); // handles both modes
+      allReferrals = Array.isArray(payload) ? payload : (payload.results || []);
 
-      if (!items.length) return emptyState();
-      grid.innerHTML = items.map(card).join("");
+      if (!allReferrals.length) return emptyState();
+      renderPage();
 
     } catch (e) {
       errorState("Network error");
@@ -198,17 +242,12 @@
   }
 
   function requestReferral(id) {
-    console.log("request referral", id);  // -----> wire to your route later
-    // location.href = `/referrals/${id}/request`;
+    console.log("request referral", id);
   }
 
   loadReferrals();
-  setInterval(loadReferrals, 10000);   // simple polling
+  setInterval(loadReferrals, 10000);
 </script>
-
-
-
-
 
   </body>
 </html>

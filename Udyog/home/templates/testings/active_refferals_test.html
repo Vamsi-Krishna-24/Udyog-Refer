@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Active Referrals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100 font-sans">
+    <div class="flex min-h-screen">
+      
+      <!-- Sidebar (fixed icons) -->
+      <aside class="w-20 bg-gray-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
+        <div class="flex-1 flex flex-col justify-center space-y-6">
+          <!-- Active Referrals Icon -->
+          <a href="{% url 'active_referals' %}" class="relative group">
+            <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+              </svg>
+            </div>
+          </a>
+
+          <!-- What's Hot Now Icon -->
+          <a href="{% url 'trending' %}" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+          </a>
+
+          <!-- My Tracker Icon -->
+          <a href="{% url 'tracker' %}" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3" />
+              </svg>
+            </div>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="flex-1 ml-20 flex flex-col">
+        
+        <!-- Top Bar -->
+        <header class="sticky top-0 z-10 bg-gray-100 flex justify-between items-center px-6 py-4 shadow">
+          <h1 class="text-2xl font-bold">Active Referrals</h1>
+
+          <div class="flex items-center gap-6">
+            <!-- Settings Icon -->
+            <a href="#" class="group relative">
+              <svg class="w-6 h-6 text-gray-600 hover:text-gray-900 transition" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 4v2m0 12v2m8-8h2M4 12H2m15.36 6.36l1.42 1.42M6.34 6.34L4.92 4.92m0 14.14l1.42-1.42M17.66 6.34l1.42-1.42" />
+              </svg>
+            </a>
+
+            <!-- Logout Icon -->
+            <a href="{% url 'login' %}" class="group relative">
+              <svg class="w-6 h-6 text-gray-600 hover:text-red-600 transition" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+              </svg>
+            </a>
+          </div>
+        </header>
+
+        <!-- Scrollable Content (referrals list with pagination) -->
+        <main class="flex-1 overflow-y-auto px-6 py-6">
+          <div class="max-w-6xl mx-auto">
+            
+            <!-- Dynamic referrals -->
+            <div id="referralsGrid" class="grid gap-6">
+              <!-- Example card -->
+              <div class="p-4 bg-white shadow rounded-lg">Referral Box 1</div>
+              <div class="p-4 bg-white shadow rounded-lg">Referral Box 2</div>
+              <div class="p-4 bg-white shadow rounded-lg">Referral Box 3</div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-center">
+              <nav class="inline-flex space-x-2">
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">Prev</button>
+                <button class="px-3 py-1 rounded bg-blue-600 text-white">1</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">2</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">3</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">Next</button>
+              </nav>
+            </div>
+
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
