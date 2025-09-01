@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
+    'channels',
     'rest_framework'
 ]
 
@@ -63,6 +64,11 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,   # -----> 10 cards per page
 }
 
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+}
 
 
 
@@ -84,7 +90,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Udyog.wsgi.application'
+ASGI_APPLICATION = "Udyog.asgi.application" 
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases

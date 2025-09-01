@@ -1,7 +1,9 @@
 from rest_framework import serializers
-from .models import User, referal_req, Referer, Referral_post
+from .models import User, referal_req, Referer, Referral_post, Job
 from rest_framework import serializers
 from .models import User
+from django.utils import timezone
+from datetime import timedelta
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -52,3 +54,35 @@ class ReferralPostSerializer(serializers.ModelSerializer):
                 'created_at': {'required': True},
                 'referrer': {'required': True},
             }
+          
+class JobSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(source="position")                 # UI expects title
+    apply_url = serializers.URLField(source="url", read_only=True)   # UI expects apply_url
+    description_short = serializers.SerializerMethodField()
+    posted_ago = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Job
+        fields = [
+            "id",
+            "title", "company", "location",
+            "description", "description_short",
+            "salary",
+            "apply_url", "url",
+            "published_at", "posted_ago",
+            "source", "external_id",
+        ]
+
+    def get_description_short(self, obj):
+        txt = obj.description or ""
+        return (txt[:180] + "…") if len(txt) > 180 else txt
+
+    def get_posted_ago(self, obj):
+        if not obj.published_at:
+            return ""
+        delta = timezone.now() - obj.published_at
+        # simple humanize
+        if delta < timedelta(minutes=1): return "just now"
+        if delta < timedelta(hours=1):   return f"{delta.seconds//60}m ago"
+        if delta < timedelta(days=1):    return f"{delta.seconds//3600}h ago"
+        return f"{delta.days}d ago"

@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from .models import User, referal_req, Referer, Referral_post
-from .serializers import UserSerializer, Referalrequestserializer, RefererSerializer, ReferralPostSerializer
+from .serializers import UserSerializer, Referalrequestserializer, RefererSerializer, ReferralPostSerializer, JobSerializer
 from .permissions import IsReferrerOnCreate
 from django.shortcuts import redirect, get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -14,6 +14,9 @@ from .token_serializer import MyTokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 from rest_framework import viewsets
+from .models import Job
+from .serializers import JobSerializer
+from rest_framework import viewsets, filters
 
 
 
@@ -223,3 +226,16 @@ class MeAPIView(APIView):
             "role": getattr(u, "role", None),   # -----> your custom field
             "is_staff": getattr(u, "is_staff", False),
         })
+    
+class JobViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = JobSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["company", "position", "location", "description"]
+
+    def get_queryset(self):
+        qs = Job.objects.order_by("-published_at", "-created_at")
+        loc = self.request.query_params.get("location")
+        if loc:
+            qs = qs.filter(location__icontains=loc)
+        return qs
+

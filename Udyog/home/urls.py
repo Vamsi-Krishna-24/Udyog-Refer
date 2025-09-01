@@ -10,6 +10,7 @@ from .views import (
     ReferralPostListCreate,                # -----> DRF ViewSet we added earlier
     ReferralPostViewSet,
     MeAPIView,
+    JobViewSet,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -21,6 +22,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 router = DefaultRouter()
 router.register(r"referrals", ReferralPostViewSet)
+router.register(r"jobs", JobViewSet, basename="jobs") 
 
 urlpatterns = [
     # ----- HTML pages

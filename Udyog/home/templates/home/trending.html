@@ -1,130 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>What's Hot Now</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>What’s Hot Now</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="flex min-h-screen">
 
-
-  </head>
-  <body class="bg-gray-100 font-sans">
-    <div class="flex h-screen">
-
-             <!-- Top Right Mini Navbar -->
-    <div class="absolute top-4 right-6 flex space-x-4">
-      <!-- Settings Icon -->
-      <a href="#" class="group relative">
-        <svg class="w-6 h-6 text-gray-600 hover:text-gray-900 transition" fill="none" stroke="currentColor" stroke-width="2"
-          viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M12 4v2m0 12v2m8-8h2M4 12H2m15.36 6.36l1.42 1.42M6.34 6.34L4.92 4.92m0 14.14l1.42-1.42M17.66 6.34l1.42-1.42" />
-        </svg>
-        <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100"> PA - Launchin..</span>
-      </a>
-
-      <!-- Logout Icon -->
-      <a href="{% url 'login' %}" class="group relative">
-        <svg class="w-6 h-6 text-gray-600 hover:text-red-600 transition" fill="none" stroke="currentColor" stroke-width="2"
-          viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
-        </svg>
-        <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100">Logout</span>
-      </a>
-    </div>
-
-      <!-- Sidebar -->
-      <div class="w-20 bg-gray-900 text-white flex flex-col items-center py-6">
-        <div class="flex-1 flex flex-col justify-center space-y-6">
-          <!-- Active Referrals Icon -->
-          <a href="active_referals" class="group cursor-pointer hover:bg-gray-800 p-3 rounded-full relative">
+    <!-- LEFT SIDEBAR (icons + names) -->
+    <aside class="w-24 bg-gray-900 text-white fixed inset-y-0 left-0 flex flex-col items-center py-6">
+      <div class="mt-4 flex-1 flex flex-col items-center space-y-6">
+        <!-- Active Referrals -->
+        <a href="{% url 'active_referals' %}" class="group flex flex-col items-center">
+          <div class="p-3 rounded-xl hover:bg-gray-700 transition">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/>
             </svg>
-            <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">Active Referrals</span>
-          </a>
-
-          <!-- What's Hot Now Icon -->
-          <div class="cursor-pointer bg-gray-800 p-3 rounded-full relative group">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">What’s Hot Now</span>
           </div>
+          <span class="text-xs text-gray-200">Referrals</span>
+        </a>
 
-          <!-- My Tracker Icon -->
-          <a href="tracker" class="group cursor-pointer hover:bg-gray-800 p-3 rounded-full relative">
+        <!-- What's Hot (active) -->
+        <a href="{% url 'trending' %}" class="group flex flex-col items-center">
+          <div class="p-3 rounded-xl bg-gray-800 ring-2 ring-white">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
             </svg>
-            <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">My Tracker</span>
-          </a>
-        </div>
+          </div>
+          <span class="text-xs text-gray-200">Hot Now</span>
+        </a>
+
+        <!-- Tracker -->
+        <a href="{% url 'tracker' %}" class="group flex flex-col items-center">
+          <div class="p-3 rounded-xl hover:bg-gray-700 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3"/>
+            </svg>
+          </div>
+          <span class="text-xs text-gray-200">Tracker</span>
+        </a>
       </div>
+    </aside>
 
-      <!-- Main Content -->
-      <div class="flex-1 p-8 overflow-y-auto">
-        <!-- Title Section -->
-        <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-blue-900">What’s Hot Now</h1>
-          <p class="text-gray-600 mt-2">What’s trending in career space?</p>
-        </div>
+    <!-- CONTENT (offset for sidebar) -->
+    <div class="flex-1 ml-24 flex flex-col">
 
-        <!-- Horizontal Tabs -->
-        <div class="flex space-x-4 overflow-x-auto pb-4 border-b border-gray-300">
-          <button class="flex-shrink-0 px-4 py-2 bg-blue-800 text-white rounded-full font-medium hover:bg-blue-600 transition">🆕 Fresh Jobs</button>
-          <button class="flex-shrink-0 px-4 py-2 bg-white border text-blue-800 rounded-full font-medium hover:bg-blue-100 transition">🏆 Hackathons</button>
-          <button class="flex-shrink-0 px-4 py-2 bg-white border text-blue-800 rounded-full font-medium hover:bg-blue-100 transition">📣 Hiring News</button>
-          <button class="flex-shrink-0 px-4 py-2 bg-white border text-blue-800 rounded-full font-medium hover:bg-blue-100 transition">📈 Trending Cos</button>
-        </div>
-
-        <!-- Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          <!-- Card 1 -->
-          <div class="bg-white shadow-md rounded-lg p-5 border-l-4 border-blue-800">
-            <h3 class="text-xl font-semibold text-blue-900">ML Engineer – OpenAI</h3>
-            <p class="text-gray-600 mt-1">Remote | 3h ago</p>
-            <p class="text-sm mt-2 text-gray-700">Build generative AI tools, work with latest LLMs. Apply ASAP!</p>
+      <!-- TOP BAR -->
+      <header class="sticky top-0 z-10 bg-gray-100 border-b">
+        <div class="max-w-6xl mx-auto px-6 py-4 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+          <!-- Left: title -->
+          <div class="justify-self-start">
+            <h1 class="text-2xl font-bold text-blue-900">What’s Hot Now</h1>
+            <p class="text-gray-600 text-sm -mt-0.5">What’s trending in career space?</p>
           </div>
 
-          <!-- Card 2 -->
-          <div class="bg-white shadow-md rounded-lg p-5 border-l-4 border-blue-800">
-            <h3 class="text-xl font-semibold text-blue-900">Frontend Dev – Razorpay</h3>
-            <p class="text-gray-600 mt-1">Bangalore | 10h ago</p>
-            <p class="text-sm mt-2 text-gray-700">Work on dashboard UI for thousands of fintech users.</p>
-          </div>
+          <!-- Center: pills -->
+          <nav class="justify-self-center flex items-center gap-3 flex-wrap">
+            <button class="px-4 py-2 rounded-full bg-blue-800 text-white text-sm font-medium">🆕 Fresh Jobs</button>
+            <button class="px-4 py-2 rounded-full border text-blue-800 text-sm font-medium">🏆 Hackathons</button>
+            <button class="px-4 py-2 rounded-full border text-blue-800 text-sm font-medium">📣 Hiring News</button>
+            <button class="px-4 py-2 rounded-full border text-blue-800 text-sm font-medium">📈 Trending Cos</button>
+          </nav>
 
-          <!-- Card 3 -->
-          <div class="bg-white shadow-md rounded-lg p-5 border-l-4 border-blue-800">
-            <h3 class="text-xl font-semibold text-blue-900">Data Analyst – Swiggy</h3>
-            <p class="text-gray-600 mt-1">Hyderabad | 8h ago</p>
-            <p class="text-sm mt-2 text-gray-700">Crack customer insights from delivery data, real-time dashboards.</p>
+          <!-- Right: settings + PA + logout -->
+          <div class="justify-self-end flex items-center gap-3">
+            <!-- Settings -->
+            <a href="#" class="p-2 rounded hover:bg-gray-200">
+              <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v2m0 12v2m8-8h2M4 12H2m15.36 6.36l1.42 1.42M6.34 6.34L4.92 4.92m0 14.14l1.42-1.42M17.66 6.34l1.42-1.42"/>
+              </svg>
+            </a>
+            <!-- Avatar "PA" -->
+            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-xs font-bold select-none">PA</div>
+            <!-- Logout -->
+            <a href="{% url 'login' %}" class="p-2 rounded hover:bg-gray-200">
+              <svg class="w-6 h-6 text-gray-700 hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1"/>
+              </svg>
+            </a>
           </div>
-
-          <!-- More Cards if needed... -->
         </div>
-      </div>
+      </header>
+
+      <!-- MAIN: left scrollable / right fixed -->
+      <main class="px-6 py-6">
+        <div class="max-w-6xl mx-auto grid grid-cols-12 gap-6 h-[calc(100vh-10rem)] overflow-hidden">
+
+          <!-- LEFT (filters + list) -->
+          <section class="col-span-12 lg:col-span-4 h-full overflow-y-auto pr-2">
+            <!-- Filters (sticky within left column) -->
+            <div class="sticky top-0 z-10 bg-gray-100/95 rounded-lg border border-gray-200 px-3 py-3 mb-4">
+              <div class="flex items-center gap-3">
+                <div class="flex-1 flex items-center gap-2 bg-white border rounded-full px-3 py-2 shadow-sm">
+                  <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 18a7 7 0 110-14 7 7 0 010 14z"/></svg>
+                  <input id="kwInput" type="text" placeholder="Keyword search" class="w-full outline-none text-sm placeholder-gray-400 bg-transparent"/>
+                </div>
+                <div class="flex-1 flex items-center gap-2 bg-white border rounded-full px-3 py-2 shadow-sm">
+                  <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c1.657 0 3-1.567 3-3.5S13.657 4 12 4 9 5.567 9 7.5 10.343 11 12 11z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 7.5c0 5-7.5 12-7.5 12S4.5 12.5 4.5 7.5a7.5 7.5 0 1115 0z"/></svg>
+                  <input id="locInput" type="text" placeholder="Location" class="w-full outline-none text-sm placeholder-gray-400 bg-transparent"/>
+                </div>
+                <button id="filterBtn" class="px-4 py-2 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">Search</button>
+                <button id="resetBtn"  class="px-4 py-2 rounded-full border text-sm hover:bg-gray-50">Reset</button>
+              </div>
+            </div>
+
+            <!-- Job list -->
+            <div id="jobList" class="space-y-4"></div>
+
+            <!-- Bottom pagination -->
+            <div class="mt-5">
+              <div class="bg-gray-100/95 rounded-lg border border-gray-200 px-3 py-3">
+                <nav id="pager" class="flex items-center justify-center gap-2 flex-wrap select-none"></nav>
+              </div>
+            </div>
+          </section>
+
+          <!-- RIGHT (detail, not scrollable) -->
+          <aside class="col-span-12 lg:col-span-8 h-full">
+            <div id="jobDetail" class="bg-white shadow rounded-lg border border-gray-200 p-6 h-full">
+              <div id="detailEmpty" class="h-full flex items-center justify-center text-center text-gray-500">
+                <div>
+                  <div class="text-lg font-semibold text-gray-800">Select a job to view details</div>
+                  <div class="text-sm">Click any card on the left.</div>
+                </div>
+              </div>
+              <div id="detailBody" class="hidden h-full flex flex-col gap-5">
+                <div>
+                  <h2 id="dTitle" class="text-2xl lg:text-3xl font-bold text-blue-900"></h2>
+                  <p id="dMeta"  class="text-sm text-gray-500 mt-1"></p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="bg-blue-50 text-blue-900 border border-blue-100 rounded-md px-4 py-3">
+                    <span class="text-xs uppercase tracking-wide">Company</span>
+                    <div id="dCompany" class="font-medium"></div>
+                  </div>
+                  <div class="bg-blue-50 text-blue-900 border border-blue-100 rounded-md px-4 py-3">
+                    <span class="text-xs uppercase tracking-wide">Location</span>
+                    <div id="dLocation" class="font-medium"></div>
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-sm font-semibold text-gray-700">Job Description</h3>
+                  <p id="dDesc" class="text-gray-800 mt-2 leading-relaxed"></p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <a id="dApply" href="#" target="_blank" class="inline-flex items-center justify-center px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">Apply Now</a>
+                  <button class="px-4 py-2 rounded-md border text-sm hover:bg-gray-50">Save</button>
+                  <button class="px-4 py-2 rounded-md border text-sm hover:bg-gray-50">Share</button>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </main>
     </div>
+  </div>
 
-<script>
-  const token = localStorage.getItem("access_token");
+  <!-- DYNAMIC JS -->
+  <script>
+    const API_URL   = "/api/jobs/"; // change if needed
+    const PAGE_SIZE = 5;
 
-  if (!token) {
-    window.location.href = "/no_token";  ///// -----> redirect if no token
-  } else {
-    fetch("/api/protected-ping/", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((res) => {
-      if (!res.ok) {
-        window.location.href = "/no_token"; ///// -----> redirect if token invalid
+    let page = 1, keyword = "", locationStr = "";
+
+    const jobList    = document.getElementById('jobList');
+    const pager      = document.getElementById('pager');
+    const kwInput    = document.getElementById('kwInput');
+    const locInput   = document.getElementById('locInput');
+    const filterBtn  = document.getElementById('filterBtn');
+    const resetBtn   = document.getElementById('resetBtn');
+
+    const detailEmpty= document.getElementById('detailEmpty');
+    const detailBody = document.getElementById('detailBody');
+    const dTitle     = document.getElementById('dTitle');
+    const dMeta      = document.getElementById('dMeta');
+    const dCompany   = document.getElementById('dCompany');
+    const dLocation  = document.getElementById('dLocation');
+    const dDesc      = document.getElementById('dDesc');
+    const dApply     = document.getElementById('dApply');
+
+    function buildURL() {
+      const url = new URL(API_URL, window.location.origin);
+      if (keyword)     url.searchParams.set("search", keyword);
+      if (locationStr) url.searchParams.set("location", locationStr);
+      url.searchParams.set("page", page);
+      url.searchParams.set("page_size", PAGE_SIZE);
+      return url.toString();
+    }
+
+    function skeletonList(n=3){
+      jobList.innerHTML = Array.from({length:n}).map(()=>`
+        <div class="bg-white rounded-lg p-5 shadow animate-pulse">
+          <div class="h-4 w-1/2 bg-gray-200 rounded mb-2"></div>
+          <div class="h-3 w-1/3 bg-gray-200 rounded mb-4"></div>
+          <div class="h-3 w-5/6 bg-gray-200 rounded"></div>
+        </div>
+      `).join("");
+    }
+
+    function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+
+    function jobItemTemplate(j){
+      const title   = j.title || "Untitled Role";
+      const company = j.company || "—";
+      const loc     = j.location || "—";
+      const when    = j.posted_ago || "";
+      const snippet = j.snippet || j.description_short || "";
+      const apply   = j.apply_url || "#";
+      return `
+        <article class="job-card bg-white shadow rounded-lg p-5 border-l-4 border-blue-800 cursor-pointer hover:shadow-md transition"
+          data-title="${escapeHtml(title)}"
+          data-meta="${escapeHtml(loc)}${when ? ' · '+escapeHtml(when) : ''}"
+          data-desc="${escapeHtml(snippet)}"
+          data-location="${escapeHtml(loc)}"
+          data-company="${escapeHtml(company)}"
+          data-apply="${apply}">
+          <h3 class="text-base font-semibold text-blue-900">${title}</h3>
+          <p class="text-gray-600 mt-1 text-sm">${loc}${when ? ' | '+when : ''}</p>
+          <p class="text-sm mt-2 text-gray-700 line-clamp-2">${snippet}</p>
+        </article>
+      `;
+    }
+
+    function bindListClicks(){
+      jobList.querySelectorAll('.job-card').forEach(card=>{
+        card.addEventListener('click', ()=>{
+          dTitle.textContent    = card.dataset.title;
+          dMeta.textContent     = card.dataset.meta;
+          dCompany.textContent  = card.dataset.company;
+          dLocation.textContent = card.dataset.location;
+          dDesc.textContent     = card.dataset.desc;
+          dApply.href           = card.dataset.apply || '#';
+
+          detailEmpty.classList.add('hidden');
+          detailBody.classList.remove('hidden');
+
+          document.querySelectorAll('.job-card').forEach(c=>c.classList.remove('ring','ring-blue-300'));
+          card.classList.add('ring','ring-blue-300');
+        });
+      });
+    }
+
+    function renderPager(totalCount){
+      const totalPages = Math.max(1, Math.ceil((totalCount||0)/PAGE_SIZE));
+      const maxButtons = 5;
+      const start = Math.max(1, page - Math.floor(maxButtons/2));
+      const end   = Math.min(totalPages, start + maxButtons - 1);
+
+      const btn = (label,target,disabled=false,active=false)=>`
+        <button data-page="${target}" ${disabled?'disabled':''}
+          class="px-3 py-1 rounded-md border text-sm ${active?'bg-blue-600 text-white border-blue-600':'hover:bg-gray-50'} ${disabled?'opacity-50 cursor-not-allowed':''}">
+          ${label}
+        </button>`;
+      let html='';
+      html += btn('‹', Math.max(1,page-1), page===1);
+      for(let p=start;p<=end;p++) html += btn(p,p,false,p===page);
+      html += btn('›', page+1, false);
+      pager.innerHTML = html;
+    }
+
+    async function loadJobs(){
+      skeletonList();
+      try{
+        const res = await fetch(buildURL());
+        const data = await res.json();
+        const items = Array.isArray(data) ? data : (data.results || []);
+        const count = Array.isArray(data) ? items.length : (data.count ?? items.length);
+
+        if(!items.length){
+          jobList.innerHTML = `<div class="text-center text-gray-500">No jobs found.</div>`;
+          renderPager(0);
+          return;
+        }
+
+        jobList.innerHTML = items.map(jobItemTemplate).join("");
+        bindListClicks();
+        renderPager(count);
+      }catch(e){
+        jobList.innerHTML = `<div class="text-red-600">Failed to load jobs.</div>`;
+        pager.innerHTML = "";
       }
-    });
-  }
-</script>
+    }
 
-  </body>
+    filterBtn.addEventListener('click', ()=>{ keyword=kwInput.value.trim(); locationStr=locInput.value.trim(); page=1; loadJobs(); });
+    resetBtn .addEventListener('click', ()=>{ kwInput.value=""; locInput.value=""; keyword=""; locationStr=""; page=1; loadJobs(); });
+    [kwInput,locInput].forEach(i=>i.addEventListener('keydown',e=>{ if(e.key==='Enter') filterBtn.click(); }));
+    pager.addEventListener('click', e=>{ const b=e.target.closest('button[data-page]'); if(!b||b.disabled) return; page=Number(b.dataset.page); loadJobs(); });
+
+    document.addEventListener('DOMContentLoaded', loadJobs);
+  </script>
+</body>
 </html>

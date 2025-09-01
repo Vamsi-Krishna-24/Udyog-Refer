@@ -52,7 +52,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["username"]    # asked when createsuperuser runs
 
     objects = UserManager()
-
     def __str__(self):
         return self.email
 
@@ -84,6 +83,32 @@ class Referral_post(models.Model):
     Role = models.CharField(max_length=100)
     Refferal_Domains = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)  
+
+# -----> EDIT your Jobs model like this
+from django.db import models
+
+class Job(models.Model):
+    # auto 'id' stays as primary key
+    source = models.CharField(max_length=50, db_index=True)                 # e.g. "remotive"
+    external_id = models.CharField(max_length=64, db_index=True)            # API id as str
+    company = models.CharField(max_length=255)
+    location = models.CharField(max_length=255, default="Remote")
+    position = models.CharField(max_length=255)
+    url = models.URLField()
+    salary = models.CharField(max_length=255, blank=True, default="Not disclosed")
+    description = models.TextField()
+    published_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["source", "external_id"], name="uniq_source_external")
+        ]
+
+    def __str__(self):
+        return f"{self.company} – {self.position}"
+
 
 
     
