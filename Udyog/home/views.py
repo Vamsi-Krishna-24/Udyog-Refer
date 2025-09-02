@@ -228,6 +228,7 @@ class MeAPIView(APIView):
         })
     
 class JobViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsAuthenticated]
     serializer_class = JobSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ["company", "position", "location", "description"]

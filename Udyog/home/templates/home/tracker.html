@@ -32,34 +32,44 @@
       </a>
     </div>
 
-      <!-- Sidebar -->
-      <div class="w-20 bg-gray-900 text-white flex flex-col items-center py-6">
+       <!-- Sidebar (fixed icons) -->
+      <aside class="w-20 bg-gray-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
         <div class="flex-1 flex flex-col justify-center space-y-6">
           <!-- Active Referrals Icon -->
-          <a href="{% url 'active_referals' %}" class="group cursor-pointer hover:bg-gray-800 p-3 rounded-full relative">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
-            </svg>
-            <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">Active Referrals</span>
+          <a href="{% url 'active_referals' %}" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+              </svg>
+            </div>
           </a>
 
           <!-- What's Hot Now Icon -->
-          <a href="{% url 'trending' %}" class="group cursor-pointer hover:bg-gray-800 p-3 rounded-full relative">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">What’s Hot Now</span>
+          <a href="{% url 'trending' %}" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
           </a>
 
-          <!-- My Tracker Icon (Active) -->
-          <div class="cursor-pointer bg-gray-800 p-3 rounded-full relative group">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3" />
-            </svg>
-            <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">My Tracker</span>
-          </div>
+          <!-- My Tracker Icon -->
+          <a href="{% url 'tracker' %}" class="relative group">
+            <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3" />
+              </svg>
+            </div>
+          </a>
         </div>
-      </div>
+      </aside>
+
 
       <!-- Main Content -->
       <div class="flex-1 bg-gray-100 p-6">

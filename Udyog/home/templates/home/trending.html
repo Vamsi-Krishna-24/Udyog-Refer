@@ -9,40 +9,43 @@
 <body class="bg-gray-100 font-sans">
   <div class="flex min-h-screen">
 
-    <!-- LEFT SIDEBAR (icons + names) -->
-    <aside class="w-24 bg-gray-900 text-white fixed inset-y-0 left-0 flex flex-col items-center py-6">
-      <div class="mt-4 flex-1 flex flex-col items-center space-y-6">
-        <!-- Active Referrals -->
-        <a href="{% url 'active_referals' %}" class="group flex flex-col items-center">
-          <div class="p-3 rounded-xl hover:bg-gray-700 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/>
-            </svg>
-          </div>
-          <span class="text-xs text-gray-200">Referrals</span>
-        </a>
+ <!-- Sidebar (fixed icons) -->
+      <aside class="w-20 bg-gray-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
+        <div class="flex-1 flex flex-col justify-center space-y-6">
+          <!-- Active Referrals Icon -->
+          <a href="{% url 'active_referals' %}" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+              </svg>
+            </div>
+          </a>
 
-        <!-- What's Hot (active) -->
-        <a href="{% url 'trending' %}" class="group flex flex-col items-center">
-          <div class="p-3 rounded-xl bg-gray-800 ring-2 ring-white">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-          </div>
-          <span class="text-xs text-gray-200">Hot Now</span>
-        </a>
+          <!-- What's Hot Now Icon -->
+          <a href="{% url 'trending' %}" class="relative group">
+            <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+          </a>
 
-        <!-- Tracker -->
-        <a href="{% url 'tracker' %}" class="group flex flex-col items-center">
-          <div class="p-3 rounded-xl hover:bg-gray-700 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3"/>
-            </svg>
-          </div>
-          <span class="text-xs text-gray-200">Tracker</span>
-        </a>
-      </div>
-    </aside>
+          <!-- My Tracker Icon -->
+          <a href="{% url 'tracker' %}" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3" />
+              </svg>
+            </div>
+          </a>
+        </div>
+      </aside>
 
     <!-- CONTENT (offset for sidebar) -->
     <div class="flex-1 ml-24 flex flex-col">
@@ -265,7 +268,7 @@
     async function loadJobs(){
       skeletonList();
       try{
-        const res = await fetch(buildURL());
+        const res = await authFetch(buildURL());
         const data = await res.json();
         const items = Array.isArray(data) ? data : (data.results || []);
         const count = Array.isArray(data) ? items.length : (data.count ?? items.length);
@@ -292,5 +295,30 @@
 
     document.addEventListener('DOMContentLoaded', loadJobs);
   </script>
+  <script>
+  // ---- ONE global token (no duplicates)
+  const token = localStorage.getItem("access_token");
+
+  // Minimal guard: block the page if token missing/invalid
+  (async () => {
+    if (!token) return (window.location.href = "/no_token");
+    try {
+      const res = await fetch("/api/protected-ping/", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) window.location.href = "/no_token";
+    } catch {
+      window.location.href = "/no_token";
+    }
+  })();
+
+  // Helper to add the Authorization header to any fetch
+  function authFetch(url, options = {}) {
+    const headers = { ...(options.headers || {}) };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    return fetch(url, { ...options, headers });
+  }
+</script>
+
 </body>
 </html>
