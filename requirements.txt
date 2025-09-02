@@ -6,3 +6,6 @@ dj-database-url
 whitenoise
 environ 
 djangorestframework-simplejwt
+channels 
+daphne
+redis
