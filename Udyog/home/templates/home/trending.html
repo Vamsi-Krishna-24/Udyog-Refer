@@ -1,28 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>What’s Hot Now</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Lottie player (for PA modal) -->
+  <!-- Lottie for “coming soon” modal -->
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
-  <!-- Subtle pulse glow for the PA button -->
-  <style>
-    @keyframes paGlow {
-      0%   { box-shadow: 0 0 0 0 rgba(59,130,246,.55); }
-      70%  { box-shadow: 0 0 0 14px rgba(59,130,246,0); }
-      100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
-    }
-    .pa-glow { animation: paGlow 2s ease-out infinite; }
-    @media (prefers-reduced-motion: reduce) { .pa-glow { animation: none; } }
-  </style>
-
-  <!-- JWT guard + authFetch helper -->
+  <!-- JWT guard + auth fetch (ONE token only) -->
   <script>
     const token = localStorage.getItem("access_token");
+
     (async () => {
       if (!token) return (window.location.href = "/no_token");
       try {
@@ -34,57 +23,70 @@
         window.location.href = "/no_token";
       }
     })();
+
     function authFetch(url, options = {}) {
       const headers = { ...(options.headers || {}) };
       if (token) headers.Authorization = `Bearer ${token}`;
       return fetch(url, { ...options, headers });
     }
   </script>
+
+  <!-- Tiny CSS for the glowing Personal Assist button -->
+  <style>
+    @keyframes paPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(59,130,246,.45); }
+      70%  { box-shadow: 0 0 0 10px rgba(59,130,246,0); }
+      100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+    }
+    .pa-glow {
+      animation: paPulse 2s infinite;
+    }
+  </style>
 </head>
 
 <body class="bg-gray-100 font-sans">
   <div class="flex min-h-screen">
 
- <!-- Sidebar (fixed icons) -->
-      <aside class="w-20 bg-gray-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
-        <div class="flex-1 flex flex-col justify-center space-y-6">
-          <!-- Active Referrals Icon -->
-          <a href="{% url 'active_referals' %}" class="relative group">
-            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
-              </svg>
-            </div>
-          </a>
+    <!-- LEFT SIDEBAR (exact look you asked for) -->
+    <aside class="w-20 bg-gray-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
+      <div class="flex-1 flex flex-col justify-center space-y-6">
+        <!-- Active Referrals Icon -->
+        <a href="{% url 'active_referals' %}" class="relative group">
+          <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/>
+            </svg>
+          </div>
+        </a>
 
-          <!-- What's Hot Now Icon -->
-          <a href="{% url 'trending' %}" class="relative group">
-            <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-          </a>
+        <!-- What's Hot Now Icon (active) -->
+        <a href="{% url 'trending' %}" class="relative group">
+          <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+        </a>
 
-          <!-- My Tracker Icon -->
-          <a href="{% url 'tracker' %}" class="relative group">
-            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3" />
-              </svg>
-            </div>
-          </a>
-        </div>
-      </aside>
+        <!-- My Tracker Icon -->
+        <a href="{% url 'tracker' %}" class="relative group">
+          <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 17v-2a4 4 0 014-4h3m4 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-5a2 2 0 012-2h3"/>
+            </svg>
+          </div>
+        </a>
+      </div>
+    </aside>
 
     <!-- CONTENT (offset for sidebar) -->
-    <div class="flex-1 ml-24 flex flex-col">
+    <div class="flex-1 ml-20 flex flex-col">
 
       <!-- TOP BAR -->
       <header class="sticky top-0 z-10 bg-gray-100 border-b">
@@ -98,35 +100,38 @@
           <!-- Center: pills -->
           <nav class="justify-self-center flex items-center gap-3 flex-wrap">
             <button class="px-4 py-2 rounded-full bg-blue-800 text-white text-sm font-medium">🆕 Fresh Jobs</button>
-            <button type="button" onclick="openComingSoon('Hackathons')"
-              class="px-4 py-2 rounded-full border text-blue-800 text-sm font-medium hover:bg-blue-50">🏆 Hackathons</button>
-            <button type="button" onclick="openComingSoon('Hiring News')"
-              class="px-4 py-2 rounded-full border text-blue-800 text-sm font-medium hover:bg-blue-50">📣 Hiring News</button>
-            <button type="button" onclick="openComingSoon('Trending Companies')"
-              class="px-4 py-2 rounded-full border text-blue-800 text-sm font-medium hover:bg-blue-50">📈 Trending Cos</button>
+            <button onclick="openComingSoon('Hackathons')" class="px-4 py-2 rounded-full border text-blue-800 text-sm font-medium hover:bg-blue-50">🏆 Hackathons</button>
+            <button onclick="openComingSoon('Hiring News')" class="px-4 py-2 rounded-full border text-blue-800 text-sm font-medium hover:bg-blue-50">📣 Hiring News</button>
+            <button onclick="openComingSoon('Trending Companies')" class="px-4 py-2 rounded-full border text-blue-800 text-sm font-medium hover:bg-blue-50">📈 Trending Cos</button>
           </nav>
 
-          <!-- Right: PA (pulsing) + Logout -->
+          <!-- Right: Personal Assist (glow) + Settings + Logout -->
           <div class="justify-self-end flex items-center gap-3">
-            <!-- PA trigger (spark/rays icon) -->
+            <!-- Personal Assist trigger -->
             <button type="button" onclick="openPAModal()" aria-label="Open Personal Assist"
                     class="relative p-2 rounded hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-              <!-- pulsing aura -->
               <span class="absolute inset-0 rounded-full pa-glow pointer-events-none"></span>
-              <!-- the EXACT spark/rays icon you had -->
               <svg class="relative w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2">
-                <!-- same path as your current top-right icon -->
+                   stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round"
                       d="M12 6v.01M16.24 7.76v.01M18 12v.01M16.24 16.24v.01M12 18v.01M7.76 16.24v.01M6 12v.01M7.76 7.76v.01" />
                 <circle cx="12" cy="12" r="3" />
               </svg>
             </button>
 
+            <!-- Settings -->
+            <a href="#" class="p-2 rounded hover:bg-gray-200" aria-label="Settings">
+              <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2"
+                   viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 4v2m0 12v2m8-8h2M4 12H2m15.36 6.36l1.42 1.42M6.34 6.34L4.92 4.92m0 14.14l1.42-1.42M17.66 6.34l1.42-1.42"/>
+              </svg>
+            </a>
 
             <!-- Logout -->
             <a href="{% url 'login' %}" class="p-2 rounded hover:bg-gray-200" aria-label="Logout">
-              <svg class="w-6 h-6 text-gray-700 hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-gray-700 hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2"
+                   viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
                       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1"/>
               </svg>
@@ -135,42 +140,42 @@
         </div>
       </header>
 
-      <!-- MAIN: Left scrollable / Right fixed -->
+      <!-- MAIN: left scrollable / right fixed -->
       <main class="px-6 py-6">
         <div class="max-w-6xl mx-auto grid grid-cols-12 gap-6 h-[calc(100vh-10rem)] overflow-hidden">
 
-          <!-- LEFT: filters + list (scrollable) -->
+          <!-- LEFT (filters + list) -->
           <section class="col-span-12 lg:col-span-4 h-full overflow-y-auto pr-2">
             <!-- Filters -->
-            <div class="sticky top-0 z-10 bg-gray-100/95 backdrop-blur supports-[backdrop-filter]:bg-gray-100/60 rounded-lg border border-gray-200 px-3 py-3 mb-4">
+            <div class="sticky top-0 z-10 bg-gray-100/95 rounded-lg border border-gray-200 px-3 py-3 mb-4">
               <div class="flex items-center gap-3">
-                <!-- Keyword -->
                 <div class="flex-1 flex items-center gap-2 bg-white border rounded-full px-3 py-2 shadow-sm">
-                  <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 18a7 7 0 110-14 7 7 0 010 14z"/>
-                  </svg>
+                  <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                       viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round"
+                       d="M21 21l-4.35-4.35M11 18a7 7 0 110-14 7 7 0 010 14z"/></svg>
                   <input id="kwInput" type="text" placeholder="Keyword search"
                          class="w-full outline-none text-sm placeholder-gray-400 bg-transparent"/>
                 </div>
-                <!-- Location -->
                 <div class="flex-1 flex items-center gap-2 bg-white border rounded-full px-3 py-2 shadow-sm">
-                  <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c1.657 0 3-1.567 3-3.5S13.657 4 12 4 9 5.567 9 7.5 10.343 11 12 11z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 7.5c0 5-7.5 12-7.5 12S4.5 12.5 4.5 7.5a7.5 7.5 0 1115 0z"/>
-                  </svg>
+                  <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                       viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round"
+                       d="M12 11c1.657 0 3-1.567 3-3.5S13.657 4 12 4 9 5.567 9 7.5 10.343 11 12 11z"/><path
+                       stroke-linecap="round" stroke-linejoin="round"
+                       d="M19.5 7.5c0 5-7.5 12-7.5 12S4.5 12.5 4.5 7.5a7.5 7.5 0 1115 0z"/></svg>
                   <input id="locInput" type="text" placeholder="Location"
                          class="w-full outline-none text-sm placeholder-gray-400 bg-transparent"/>
                 </div>
-                <!-- Actions -->
-                <button id="filterBtn" class="px-4 py-2 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">Search</button>
-                <button id="resetBtn"  class="px-4 py-2 rounded-full border text-sm hover:bg-gray-50">Reset</button>
+                <button id="filterBtn"
+                        class="px-4 py-2 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">Search</button>
+                <button id="resetBtn"
+                        class="px-4 py-2 rounded-full border text-sm hover:bg-gray-50">Reset</button>
               </div>
             </div>
 
             <!-- Job list -->
             <div id="jobList" class="space-y-4"></div>
 
-            <!-- Pagination -->
+            <!-- Bottom pagination -->
             <div class="mt-5">
               <div class="bg-gray-100/95 rounded-lg border border-gray-200 px-3 py-3">
                 <nav id="pager" class="flex items-center justify-center gap-2 flex-wrap select-none"></nav>
@@ -178,7 +183,7 @@
             </div>
           </section>
 
-          <!-- RIGHT: detail (fixed area, not scrollable) -->
+          <!-- RIGHT (detail, not scrollable) -->
           <aside class="col-span-12 lg:col-span-8 h-full">
             <div id="jobDetail" class="bg-white shadow rounded-lg border border-gray-200 p-6 h-full">
               <div id="detailEmpty" class="h-full flex items-center justify-center text-center text-gray-500">
@@ -208,9 +213,7 @@
                 </div>
                 <div class="flex items-center gap-3">
                   <a id="dApply" href="#" target="_blank"
-                     class="inline-flex items-center justify-center px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">
-                    Apply Now
-                  </a>
+                     class="inline-flex items-center justify-center px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">Apply Now</a>
                   <button class="px-4 py-2 rounded-md border text-sm hover:bg-gray-50">Save</button>
                   <button class="px-4 py-2 rounded-md border text-sm hover:bg-gray-50">Share</button>
                 </div>
@@ -223,83 +226,96 @@
     </div>
   </div>
 
-  <!-- PA MODALS (PA + Coming Soon) -->
-  <!-- PA Modal -->
-  <div id="paModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"
-       onclick="backdropClose(event)">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 relative"
-         role="dialog" aria-modal="true" aria-labelledby="paTitle"
-         onclick="event.stopPropagation()">
-      <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
-              onclick="closePAModal()" aria-label="Close">✕</button>
+  <!-- Coming Soon Modal (for Hackathons / Hiring News / Trending Cos) -->
+  <div id="comingModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md text-center shadow-lg relative">
+      <button onclick="closeComingSoon()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600" aria-label="Close">✕</button>
+      <lottie-player
+        src="https://assets3.lottiefiles.com/packages/lf20_jcikwtux.json"
+        background="transparent" speed="1"
+        style="width: 200px; height: 200px; margin: auto;"
+        loop autoplay>
+      </lottie-player>
+      <h2 class="text-xl font-bold text-gray-800 mt-4" id="comingTitle">We’re building this feature!</h2>
+      <p id="comingMsg" class="text-gray-600 text-sm mt-2">This feature is under active development. Stay tuned!</p>
+    </div>
+  </div>
 
-      <div class="flex flex-col items-center text-center">
-        <lottie-player
-          src="https://lottie.host/4e83b4f0-d56c-4d2e-8e38-d1d187e0f83a/ai-ai.json"
-          background="transparent" speed="1" style="width: 220px; height: 220px" loop autoplay>
-        </lottie-player>
+  <!-- Personal Assist Modal (your AI chat UI) -->
+  <div id="paModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="w-[360px] rounded-2xl overflow-hidden shadow-xl bg-white border border-slate-200 relative">
+      <!-- close -->
+      <button onclick="closePAModal()" class="absolute top-3 right-3 z-10 text-white/80 hover:text-white" aria-label="Close">✕</button>
 
-        <h3 id="paTitle" class="text-xl font-bold text-gray-900 mt-2">Personal Assist (PA)</h3>
-        <p class="text-gray-600 text-sm mt-1">
-          PA is under development—soon you’ll get cross-platform job updates, WhatsApp chat,
-          resume hints, peer matching, and hackathon/internship alerts.
-        </p>
+      <!-- header -->
+      <div class="bg-gradient-to-b from-slate-900 to-black text-white px-5 py-4">
+        <h2 class="font-semibold text-lg flex items-center gap-2">🤖 AI Assistant</h2>
+      </div>
 
-        <div class="mt-4 grid grid-cols-2 gap-2 text-left w-full">
-          <div class="bg-blue-50 border border-blue-100 rounded-lg p-3">
-            <div class="text-xs font-semibold text-blue-700">Job feeds</div>
-            <div class="text-xs text-blue-900 mt-1">LinkedIn, Naukri, + more</div>
+      <!-- body -->
+      <div id="chatPA" class="bg-gradient-to-b from-slate-950 to-slate-900 text-slate-100 h-[420px] px-4 py-4 space-y-3 overflow-y-auto">
+        <div class="flex">
+          <div class="max-w-[80%] bg-slate-800/70 rounded-xl px-3 py-2 text-sm">
+            👋 Hey! I’m your AI career buddy — tracking jobs, trends, and apps across Udyog, WhatsApp, Insta & more.
+I learn from your resume, LinkedIn & beyond to guide your growth.
+Find peers, build projects, join hackathons — level up together.
+And we're just getting started. Currently under development ⚙️.....
+
           </div>
-          <div class="bg-blue-50 border border-blue-100 rounded-lg p-3">
-            <div class="text-xs font-semibold text-blue-700">WhatsApp</div>
-            <div class="text-xs text-blue-900 mt-1">Ask for updates anytime</div>
-          </div>
-          <div class="bg-blue-50 border border-blue-100 rounded-lg p-3">
-            <div class="text-xs font-semibold text-blue-700">Resume hints</div>
-            <div class="text-xs text-blue-900 mt-1">Community-powered tips</div>
-          </div>
-          <div class="bg-blue-50 border border-blue-100 rounded-lg p-3">
-            <div class="text-xs font-semibold text-blue-700">Peer matching</div>
-            <div class="text-xs text-blue-900 mt-1">Projects & hackathons</div>
-          </div>
+          
         </div>
+      </div>
 
-        <button class="mt-5 px-4 py-2 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700">
-          Notify me at launch
+      <!-- input bar -->
+      <div class="bg-black/95 p-3 flex items-center gap-2">
+        <input id="msgPA" type="text"
+               class="flex-1 bg-slate-800/70 text-slate-100 placeholder-slate-400 rounded-xl px-3 py-2 outline-none border border-slate-700 focus:border-slate-500"
+               placeholder="Type a message..." />
+        <button id="sendPA"
+                class="shrink-0 bg-white text-black rounded-xl px-3 py-2 font-medium hover:opacity-90 active:scale-95 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Generic "Coming Soon" Modal for pills -->
-  <div id="comingModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"
-       onclick="closeComingSoon()">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 relative"
-         role="dialog" aria-modal="true" onclick="event.stopPropagation()">
-      <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
-              onclick="closeComingSoon()" aria-label="Close">✕</button>
-
-      <div class="flex flex-col items-center text-center">
-        <lottie-player
-          src="https://lottie.host/9a3c8d9c-5d1a-4b4f-8a21-1d5b0ea9c2a9/coming-soon.json"
-          background="transparent" speed="1" style="width: 200px; height: 200px" loop autoplay>
-        </lottie-player>
-        <h3 id="comingTitle" class="text-xl font-bold text-gray-900 mt-2">Feature coming soon</h3>
-        <p class="text-gray-600 text-sm mt-1">
-          We’re building this right now. Check back soon!
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAGE JS (dynamic list + modals) -->
+  <!-- Dynamic JS -->
   <script>
-    /* ========== Config & State ========== */
-    const API_URL   = "/api/jobs/";
+    /* ========= Modals ========= */
+    function openComingSoon(feature){
+      document.getElementById('comingTitle').textContent = `“${feature}” is coming soon!`;
+      document.getElementById('comingMsg').textContent   = `We’re building ${feature}. Thanks for your patience.`;
+      const m = document.getElementById('comingModal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+    }
+    function closeComingSoon(){
+      const m = document.getElementById('comingModal');
+      m.classList.add('hidden'); m.classList.remove('flex');
+    }
+
+    function openPAModal(){
+      const m = document.getElementById('paModal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+      document.getElementById('msgPA').focus();
+    }
+    function closePAModal(){
+      const m = document.getElementById('paModal');
+      m.classList.add('hidden'); m.classList.remove('flex');
+    }
+    // close on ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { closePAModal(); closeComingSoon(); }
+    });
+
+    /* ========= Jobs List (server-driven) ========= */
+    const API_URL   = "/api/jobs/";   // change if needed
     const PAGE_SIZE = 5;
+
     let page = 1, keyword = "", locationStr = "";
 
-    /* ========== DOM ========== */
     const jobList    = document.getElementById('jobList');
     const pager      = document.getElementById('pager');
     const kwInput    = document.getElementById('kwInput');
@@ -316,31 +332,38 @@
     const dDesc      = document.getElementById('dDesc');
     const dApply     = document.getElementById('dApply');
 
-    /* ========== Helpers ========== */
-    function buildURL() {
+    function buildURL(){
       const url = new URL(API_URL, window.location.origin);
-      if (keyword)     url.searchParams.set("search", keyword);
+      if (keyword)     url.searchParams.set("search", keyword);     // DRF SearchFilter
       if (locationStr) url.searchParams.set("location", locationStr);
       url.searchParams.set("page", page);
       url.searchParams.set("page_size", PAGE_SIZE);
       return url.toString();
     }
+
     function skeletonList(n=3){
       jobList.innerHTML = Array.from({length:n}).map(()=>`
         <div class="bg-white rounded-lg p-5 shadow animate-pulse">
           <div class="h-4 w-1/2 bg-gray-200 rounded mb-2"></div>
           <div class="h-3 w-1/3 bg-gray-200 rounded mb-4"></div>
           <div class="h-3 w-5/6 bg-gray-200 rounded"></div>
-        </div>`).join("");
+        </div>
+      `).join("");
     }
-    function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
-    function itemTpl(j){
-      const title   = j.title || "Untitled Role";
-      const company = j.company || "—";
-      const loc     = j.location || "—";
-      const when    = j.posted_ago || "";
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    }
+
+    // Map API fields here if names differ
+    function jobItemTemplate(j){
+      const title   = j.title || j.role_title || "Untitled Role";
+      const company = j.company || j.company_name || "—";
+      const loc     = j.location || j.city || "—";
+      const when    = j.posted_ago || j.age || "";   // e.g., "1d ago"
       const snippet = j.snippet || j.description_short || "";
       const apply   = j.apply_url || "#";
+
       return `
         <article class="job-card bg-white shadow rounded-lg p-5 border-l-4 border-blue-800 cursor-pointer hover:shadow-md transition"
           data-title="${escapeHtml(title)}"
@@ -352,9 +375,11 @@
           <h3 class="text-base font-semibold text-blue-900">${title}</h3>
           <p class="text-gray-600 mt-1 text-sm">${loc}${when ? ' | '+when : ''}</p>
           <p class="text-sm mt-2 text-gray-700 line-clamp-2">${snippet}</p>
-        </article>`;
+        </article>
+      `;
     }
-    function bindClicks(){
+
+    function bindListClicks(){
       jobList.querySelectorAll('.job-card').forEach(card=>{
         card.addEventListener('click', ()=>{
           dTitle.textContent    = card.dataset.title;
@@ -372,70 +397,110 @@
         });
       });
     }
+
     function renderPager(totalCount){
-      const totalPages = Math.max(1, Math.ceil((totalCount||0)/PAGE_SIZE));
+      const totalPages = Math.max(1, Math.ceil((totalCount || 0) / PAGE_SIZE));
       const maxButtons = 5;
       const start = Math.max(1, page - Math.floor(maxButtons/2));
       const end   = Math.min(totalPages, start + maxButtons - 1);
+
       const btn = (label,target,disabled=false,active=false)=>`
-        <button data-page="${target}" ${disabled?'disabled':''}
-          class="px-3 py-1 rounded-md border text-sm ${active?'bg-blue-600 text-white border-blue-600':'hover:bg-gray-50'} ${disabled?'opacity-50 cursor-not-allowed':''}">
+        <button data-page="${target}" ${disabled ? "disabled" : ""}
+          class="px-3 py-1 rounded-md border text-sm
+                 ${active ? 'bg-blue-600 text-white border-blue-600' : 'hover:bg-gray-50'}
+                 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}">
           ${label}
         </button>`;
-      let html='';
-      html += btn('‹', Math.max(1,page-1), page===1);
-      for(let p=start;p<=end;p++) html += btn(p,p,false,p===page);
+      let html = '';
+      html += btn('‹', Math.max(1, page-1), page===1);
+      for (let p=start; p<=end; p++) html += btn(p, p, false, p===page);
       html += btn('›', page+1, page===totalPages);
       pager.innerHTML = html;
     }
 
-    /* ========== Fetch & Render ========== */
     async function loadJobs(){
       skeletonList();
       try{
         const res = await authFetch(buildURL());
         if (res.status === 401) { window.location.href = "/no_token"; return; }
         const data = await res.json();
+
         const items = Array.isArray(data) ? data : (data.results || []);
         const count = Array.isArray(data) ? items.length : (data.count ?? items.length);
 
-        if (!items.length) {
+        if (!items.length){
           jobList.innerHTML = `<div class="text-center text-gray-500">No jobs found.</div>`;
           renderPager(0);
           return;
         }
-        jobList.innerHTML = items.map(itemTpl).join("");
-        bindClicks();
+
+        jobList.innerHTML = items.map(jobItemTemplate).join("");
+        bindListClicks();
         renderPager(count);
-      } catch {
+      } catch(e){
         jobList.innerHTML = `<div class="text-red-600">Failed to load jobs.</div>`;
         pager.innerHTML = "";
       }
     }
 
-    /* ========== Events ========== */
-    filterBtn.addEventListener('click', ()=>{ keyword=kwInput.value.trim(); locationStr=locInput.value.trim(); page=1; loadJobs(); });
-    resetBtn .addEventListener('click', ()=>{ kwInput.value=""; locInput.value=""; keyword=""; locationStr=""; page=1; loadJobs(); });
-    [kwInput,locInput].forEach(i=>i.addEventListener('keydown', e => { if (e.key==='Enter') filterBtn.click(); }));
-    pager.addEventListener('click', e => { const b=e.target.closest('button[data-page]'); if(!b||b.disabled) return; page=Number(b.dataset.page); loadJobs(); });
+    // Personal Assist demo chat logic (front-end only)
+    (function(){
+      const chat = document.getElementById('chatPA');
+      const msg  = document.getElementById('msgPA');
+      const send = document.getElementById('sendPA');
 
-    document.addEventListener('DOMContentLoaded', loadJobs);
+      function addBubble(text, who="user"){
+        const wrap = document.createElement('div');
+        wrap.className = who === "user" ? "flex justify-end" : "flex";
+        const bubble = document.createElement('div');
+        bubble.className = (who === "user"
+          ? "bg-white text-black"
+          : "bg-slate-800/70 text-slate-100")
+          + " max-w-[80%] rounded-xl px-3 py-2 text-sm";
+        bubble.textContent = text;
+        wrap.appendChild(bubble);
+        chat.appendChild(wrap);
+        chat.scrollTop = chat.scrollHeight;
+      }
 
-    /* ========== Modals ========== */
-    function openPAModal(){ const m=document.getElementById('paModal'); m.classList.remove('hidden'); m.classList.add('flex'); }
-    function closePAModal(){ const m=document.getElementById('paModal'); m.classList.add('hidden'); m.classList.remove('flex'); }
-    function backdropClose(e){ if(e.target.id==='paModal') closePAModal(); }
+      async function handleSend(){
+        const text = msg.value.trim();
+        if (!text) return;
+        addBubble(text, "user");
+        msg.value = "";
+        addBubble("Thinking…");
+        // Replace this with your real API later:
+        chat.lastChild.firstChild.textContent = "You said: " + text;
+      }
 
-    function openComingSoon(name){
-      const m=document.getElementById('comingModal');
-      document.getElementById('comingTitle').textContent = `"${name}" is coming soon`;
-      m.classList.remove('hidden'); m.classList.add('flex');
-    }
-    function closeComingSoon(){
-      const m=document.getElementById('comingModal');
-      m.classList.add('hidden'); m.classList.remove('flex');
-    }
-    document.addEventListener('keydown', (e)=>{ if (e.key==='Escape') { closePAModal(); closeComingSoon(); }});
+      send.addEventListener('click', handleSend);
+      msg.addEventListener('keydown', (e)=>{
+        if (e.key === 'Enter' && !e.shiftKey) handleSend();
+      });
+    })();
+
+    // Events
+    document.addEventListener('DOMContentLoaded', ()=>{
+      loadJobs();
+      filterBtn.addEventListener('click', ()=>{
+        keyword     = kwInput.value.trim();
+        locationStr = locInput.value.trim();
+        page = 1; loadJobs();
+      });
+      resetBtn.addEventListener('click', ()=>{
+        kwInput.value=""; locInput.value="";
+        keyword=""; locationStr=""; page=1; loadJobs();
+      });
+      [kwInput,locInput].forEach(inp=>inp.addEventListener('keydown', e=>{
+        if (e.key === 'Enter') filterBtn.click();
+      }));
+      pager.addEventListener('click', (e)=>{
+        const b = e.target.closest('button[data-page]');
+        if (!b || b.disabled) return;
+        page = Number(b.dataset.page);
+        loadJobs();
+      });
+    });
   </script>
 </body>
 </html>

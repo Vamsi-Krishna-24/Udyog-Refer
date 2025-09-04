@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Chat (HTML + Tailwind)</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen grid place-items-center bg-white p-6">
+
+  <!-- CHAT CARD -->
+  <section class="w-[360px] rounded-2xl overflow-hidden shadow-xl bg-white border border-slate-200">
+    <!-- header -->
+    <div class="bg-gradient-to-b from-slate-900 to-black text-white px-5 py-4">
+      <h2 class="font-semibold text-lg flex items-center gap-2">
+        🤖 AI Assistant
+      </h2>
+    </div>
+
+    <!-- body -->
+    <div id="chat" class="bg-gradient-to-b from-slate-950 to-slate-900 text-slate-100 h-[420px] px-4 py-4 space-y-3 overflow-y-auto">
+      <!-- bot message -->
+      <div class="flex">
+        <div class="max-w-[80%] bg-slate-800/70 rounded-xl px-3 py-2 text-sm">
+          👋 Hello! I’m your AI assistant.
+        </div>
+      </div>
+    </div>
+
+    <!-- input bar -->
+    <div class="bg-black/95 p-3 flex items-center gap-2">
+      <input id="msg" type="text"
+             class="flex-1 bg-slate-800/70 text-slate-100 placeholder-slate-400 rounded-xl px-3 py-2 outline-none border border-slate-700 focus:border-slate-500"
+             placeholder="Type a message..." />
+      <button id="send"
+              class="shrink-0 bg-white text-black rounded-xl px-3 py-2 font-medium hover:opacity-90 active:scale-95 transition">
+        <!-- paper-plane icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <script>
+    ///// tiny front-end logic: append bubbles; echo a fake bot reply
+    const chat = document.getElementById('chat');
+    const msg  = document.getElementById('msg');
+    const send = document.getElementById('send');
+
+    function addBubble(text, who="user") {
+      const wrap = document.createElement('div');
+      wrap.className = who === "user" ? "flex justify-end" : "flex";
+      const bubble = document.createElement('div');
+      bubble.className = (who === "user"
+                         ? "bg-white text-black"
+                         : "bg-slate-800/70 text-slate-100")
+                         + " max-w-[80%] rounded-xl px-3 py-2 text-sm";
+      bubble.textContent = text;
+      wrap.appendChild(bubble);
+      chat.appendChild(wrap);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function handleSend() {
+      const text = msg.value.trim();
+      if (!text) return;
+      addBubble(text, "user");
+      msg.value = "";
+
+      // -----> fake reply; replace with real API call later
+      addBubble("Thinking…");
+
+      // ///// Example to wire later:
+      // const r = await fetch("/api/chat/", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ message: text })
+      // });
+      // const data = await r.json();
+      // Replace last bubble with server reply
+      chat.lastChild.firstChild.textContent = "You said: " + text;  ///// demo echo
+    }
+
+    send.addEventListener('click', handleSend);
+    msg.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) handleSend();
+    });
+  </script>
+</body>
+</html>
