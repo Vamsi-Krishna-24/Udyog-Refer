@@ -78,6 +78,7 @@ class Referer(models.Model):
 
 
 class Referral_post(models.Model):
+   
     referrer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     company_name= models.CharField(max_length=100)
     Role = models.CharField(max_length=100)
