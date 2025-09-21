@@ -52,7 +52,7 @@
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const response = await fetch("/api/token/", {
+    const response = await fetch("/api/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -61,28 +61,23 @@
     const data = await response.json();
 
     if (response.ok) {
-      localStorage.setItem("access_token", data.access);
-      localStorage.setItem("refresh_token", data.refresh);
+  localStorage.setItem("access_token", data.access);
+  localStorage.setItem("refresh_token", data.refresh);
 
-      ///// Decode the token to extract username/email from payload \\\\\
-      const decoded = jwt_decode(data.access);
-
-      localStorage.setItem("username", decoded.username || "");
-      localStorage.setItem("email", decoded.email || "");
-
-      window.location.href = "/active_referals";
+  // Directly use values from response, NOT from decoded token
+  localStorage.setItem("username", data.username || "");
+  localStorage.setItem("email", data.email || "");
+  localStorage.setItem("role", data.role || "");
+  localStorage.setItem("id", data.id?.toString() || "");                 
+    
+        setTimeout(() => {
+    window.location.href = data.redirect;
+  }, 200);
     } else {
       alert(data.detail || "Login failed");
     }
   });
 </script>
-
-
-
-
-
-
-
 
 
   </body>

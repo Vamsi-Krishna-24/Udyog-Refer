@@ -36,6 +36,7 @@ def login(request):
 
 
 class LoginAPIView(APIView):
+    serializer_class = MyTokenObtainPairSerializer
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
@@ -57,10 +58,16 @@ class LoginAPIView(APIView):
             next_path = '/launchpad'
 
         return Response({
-            "redirect": next_path,
-            "access": str(refresh.access_token),
-            "refresh": str(refresh),
-        }, status=200)
+    "redirect": next_path,
+    "access": str(refresh.access_token),
+    "refresh": str(refresh),
+    "role": user.role,
+    "email": user.email,
+    "username": user.username,
+    "id": user.id
+    
+}, status=200)
+
     
 class ReferralRequestAPIView(APIView):
     def post(self, request):

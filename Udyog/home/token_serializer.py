@@ -5,9 +5,17 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['email'] = getattr(user,"email",None)
+        token['email'] = user.email
         token['username'] = user.username
-        token['Password'] = user.password
-        token['role']=getattr(user,"role",None)
+        token['role'] = user.role
+        token['id'] = str(user.id)
 
         return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['email'] = self.user.email
+        data['username'] = self.user.username
+        data['role'] = self.user.role      
+        data['id'] = self.user.id  
+        return data

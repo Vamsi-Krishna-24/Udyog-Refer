@@ -1,335 +1,398 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8" />
-      <title>Referrer Dashboard | Udyog Refer</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Referrer Dashboard | Udyog Refer</title>
 
-      <!--SCRIPT 01, CDN for Tailwind-->
-      <script src="https://cdn.tailwindcss.com"></script>
-      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!--SCRIPT 01, CDN for Tailwind-->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-      <!--SCRIPT 02, CDN for MODAL-->
-      <script>
-         function toggleModal() {
-           document.getElementById("referModal").classList.toggle("hidden");
-           document.getElementById("overlay").classList.toggle("hidden");
-         }
-      </script>
+    <!--SCRIPT 02, CDN for MODAL-->
+    <script>
+      function toggleModal() {
+        document.getElementById("referModal").classList.toggle("hidden");
+        document.getElementById("overlay").classList.toggle("hidden");
+      }
+    </script>
 
-      <!--Style Box-->
-      <style>
-         @keyframes loadingLine { 0% { width: 0%; } 100% { width: 100%; } }
-         .loading-bar { animation: loadingLine 2s ease-in-out forwards; }
-         @keyframes draw { 
-         0% { stroke-dasharray: 48; stroke-dashoffset: 48; } 
-         100% { stroke-dasharray: 48; stroke-dashoffset: 0; } 
-         }
-         .tick, .cross { 
-         stroke-dasharray: 48; 
-         stroke-dashoffset: 48; 
-         animation: draw 1s ease forwards; 
-         }
-         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-         .pop-in { animation: popIn 0.6s ease forwards; }
-         @keyframes fadeOut { to { opacity: 0; } }
-         .fade-out { animation: fadeOut 1s ease forwards; }
-         @keyframes shake {
-         0%, 100% { transform: translateX(0); }
-         20% { transform: translateX(-6px); }
-         40% { transform: translateX(6px); }
-         60% { transform: translateX(-4px); }
-         80% { transform: translateX(4px); }
-         }
-         .shake { animation: shake 0.6s ease; }
-      </style>
-      <!--SCRIPT 03: Adding a script to trigger the refferal api-->
-      <script>
-         document.addEventListener('DOMContentLoaded', () => {   ///// ensure DOM ready
-         
-           const form  = document.getElementById('referForm');     // ---> form node
-           const token = localStorage.getItem('access_token');     // ---> JWT
-         
-           form.addEventListener('submit', async (e) => {
-             e.preventDefault();                                   // ---> stop page reload
-         
-             const payload = {                                     // ---> match serializer
-               company_name:     document.getElementById('company').value.trim(),
-               Role:             document.getElementById('role').value.trim(),
-               Refferal_Domains: document.getElementById('domains').value.trim(),
-             };
-         
-             console.log('POST /api/referrals/ payload ->', payload);  ///// debug
-         
-             const res = await fetch('/api/referrals/', {
-               method: 'POST',
-               headers: {
-                 'Content-Type': 'application/json',
-                 'Authorization': `Bearer ${token}`,               // ---> auth
-               },
-               body: JSON.stringify(payload),
-             });
-         
-             const text = await res.text();
-             console.log('STATUS', res.status, 'BODY', text);      ///// see result
-         
-             if (!res.ok) { alert('Failed: ' + text); return; }
-         
-             triggerSuccessAnimation();
-             // optional: clear or close modal
-             // form.reset();
-             // toggleModal();
-           });
-         
-         });
-      </script>
-   </head>
+    <!--Style Box-->
+    <style>
+      @keyframes loadingLine { 0% { width: 0%; } 100% { width: 100%; } }
+      .loading-bar { animation: loadingLine 2s ease-in-out forwards; }
+      @keyframes draw {
+        0% { stroke-dasharray: 48; stroke-dashoffset: 48; }
+        100% { stroke-dasharray: 48; stroke-dashoffset: 0; }
+      }
+      .tick, .cross {
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: draw 1s ease forwards;
+      }
+      @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+      .pop-in { animation: popIn 0.6s ease forwards; }
+      @keyframes fadeOut { to { opacity: 0; } }
+      .fade-out { animation: fadeOut 1s ease forwards; }
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-6px); }
+        40% { transform: translateX(6px); }
+        60% { transform: translateX(-4px); }
+        80% { transform: translateX(4px); }
+      }
+      .shake { animation: shake 0.6s ease; }
+    </style>
 
-   <!--BODY is STARTED-->
-   <body class="bg-gray-100 font-sans">
-      <!-- Overlay -->
-      <div id="overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"></div>
-      <!-- Modal -->
-      <div id="referModal" class="hidden fixed z-50 inset-0 flex items-center justify-center">
-         <div class="bg-white rounded-lg p-8 w-full max-w-md shadow-lg">
-            <h2 class="text-2xl font-bold mb-4 text-gray-800">Post a New Refer</h2>
-            <form id="referForm" class="space-y-4">
-               <input name="company" id="company" type="text" placeholder="Company Name" class="w-full p-2 border rounded" />
-               <input name="role" id="role" type="text" placeholder="Role" class="w-full p-2 border rounded" />
-               <input name="domains" id="domains" type="text" placeholder="Referral Domains" class="w-full p-2 border rounded" />
-               <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Post Referral</button>
-            </form>
-            <button onclick="toggleModal()" class="mt-4 text-sm text-gray-600 hover:underline">Cancel</button>
-         </div>
+ 
+  </head>
+
+  <!--BODY is STARTED-->
+  <body class="bg-gray-100 font-sans">
+    <!-- Overlay -->
+    <div id="overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Modal -->
+    <div id="referModal" class="hidden fixed z-50 inset-0 flex items-center justify-center">
+      <div class="bg-white rounded-lg p-8 w-full max-w-md shadow-lg">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Post a New Refer</h2>
+        <form id="referForm" class="space-y-4">
+          <input name="company" id="company" type="text" placeholder="Company Name" class="w-full p-2 border rounded" />
+          <input name="role" id="role" type="text" placeholder="Role" class="w-full p-2 border rounded" />
+          <input name="domains" id="domains" type="text" placeholder="Referral Domains" class="w-full p-2 border rounded" />
+          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Post Referral</button>
+        </form>
+        <button onclick="toggleModal()" class="mt-4 text-sm text-gray-600 hover:underline">Cancel</button>
       </div>
-      <!-- Page Layout -->
-      <div class="flex h-screen">
-         <!-- Sidebar -->
-         <div class="w-20 bg-gray-900 text-white flex flex-col items-center py-6 space-y-6">
-            <!-- Refere -->
-            <a href="#" class="group relative">
-               <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
-                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
-                  </svg>
-               </div>
-               <span class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">Refere</span>
-            </a>
-            <!-- My Earnings -->
-            <a href="#" class="group relative">
-               <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
-                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4c1.1 0 2.1-.45 2.83-1.17M16 4v2m0 12v2m-8-8H4m16 0h-4" />
-                  </svg>
-               </div>
-               <span class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">My Earnings</span>
-            </a>
-         </div>
-         <!-- Topbar -->
-         <div class="flex-1 flex flex-col">
-            <div class="flex justify-end items-center px-6 py-4 space-x-4">
-               <!-- Settings Icon -->
-               <a href="#" class="group relative">
-                  <svg class="w-6 h-6 text-gray-600 hover:text-gray-900 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 4v2m0 12v2m8-8h2M4 12H2m15.36 6.36l1.42 1.42M6.34 6.34L4.92 4.92m0 14.14l1.42-1.42M17.66 6.34l1.42-1.42" />
-                  </svg>
-                  <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100">Settings</span>
-               </a>
-               <!-- Logout Icon -->
-               <a href="{% url 'login' %}" class="group relative">
-                  <svg class="w-6 h-6 text-gray-600 hover:text-red-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round"
+    </div>
+
+    <!-- Page Layout -->
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-20 bg-gray-900 text-white flex flex-col items-center py-6">
+        <!-- Vertically centered wrapper (change #1) -->
+        <div class="flex-1 flex flex-col justify-center space-y-6">
+          <!-- Refere -->
+          <a href="#" class="group relative">
+            <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+              </svg>
+            </div>
+            <span class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">Refere</span>
+          </a>
+          <!-- My Earnings -->
+          <a href="#" class="group relative">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4c1.1 0 2.1-.45 2.83-1.17M16 4v2m0 12v2m-8-8H4m16 0h-4" />
+              </svg>
+            </div>
+            <span class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">My Earnings</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right side (content column) -->
+      <div class="flex-1 flex flex-col">
+        <!-- Top Bar (change #2) -->
+        <header class="sticky top-0 z-10 bg-gray-100 border-b">
+          <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <!-- Left: Title -->
+            <div>
+              <h1 class="text-2xl font-bold text-blue-900">Referral Post</h1>
+              <p class="text-gray-600 text-sm -mt-0.5">Manage and create your referral posts</p>
+            </div>
+
+            <!-- Right: Profile dropdown + Logout -->
+            <div class="flex items-center gap-3 relative">
+              <!-- Profile Button -->
+              <button onclick="toggleProfileModal()"
+                      class="p-2 rounded hover:bg-gray-200 focus:outline-none"
+                      aria-label="User Profile">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                     viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 text-gray-700">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+              </button>
+
+               <!-- Profile Modal -->
+              <div id="profileModal"
+                   class="hidden absolute right-0 top-full mt-2 w-56 z-50 bg-white border border-gray-200 rounded-lg shadow-lg">
+                <div class="px-4 py-3 border-b">
+                  <p id="displayName" class="font-semibold text-gray-800">User</p>
+                  <p id="displayEmail" class="text-sm text-gray-500">email@domain.com</p>
+                </div>
+                <ul class="py-2 text-sm text-gray-700">
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">View Profile</a></li>
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">See Plans</a></li>
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Help</a></li>
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Language</a></li>
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Privacy</a></li>
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Policy</a></li>
+                </ul>
+                <div class="border-t">
+                  <a href="{% url 'login' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign Out</a>
+                </div>
+              </div>
+
+              <!-- Logout Icon -->
+              <a href="{% url 'login' %}" class="p-2 rounded hover:bg-gray-200" aria-label="Logout">
+                <svg class="w-6 h-6 text-gray-700 hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
                         d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
-                  </svg>
-                  <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100">Logout</span>
-               </a>
+                </svg>
+              </a>
             </div>
-            <!-- Main Body -->
-            <div class="flex-1 flex flex-col items-center justify-center">
-               <button onclick="toggleModal()" class="flex items-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                  </svg>
-                  <span>Post a New Refer</span>
-               </button>
-            </div>
-            <!-- Notification Template-->
-            <!-- Dialog Notification -->
-            <div id="dialog" class="hidden fixed top-5 right-5 w-72 shadow-lg rounded-lg border border-gray-300 bg-white">
-               <div class="h-1 bg-blue-400 rounded-t-lg loading-bar"></div>
-               <div class="p-6 text-center">
-                  <p class="text-gray-800 font-medium mb-3">Referral Posting...</p>
-               </div>
-            </div>
-            <!-- Success State -->
-            <div id="successContainer" class="hidden flex flex-col items-center justify-center fixed inset-0 bg-white/70">
-               <svg class="w-28 h-28 text-green-500 pop-in" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
-                  <path class="tick" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-               </svg>
-               <p class="mt-4 text-lg font-medium text-gray-700 pop-in">Your referral has been successfully posted.</p>
-               <p class="text-gray-500 pop-in">Thank you for your time.</p>
-            </div>
-            <!-- Failure State -->
-            <div id="failureContainer" class="hidden flex flex-col items-center justify-center fixed inset-0 bg-white/70">
-               <svg id="failureIcon" class="w-28 h-28 text-red-500 pop-in" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
-                  <path class="cross" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-               </svg>
-               <p class="mt-4 text-lg font-medium text-red-600 pop-in">Oops, it failed.</p>
-               <p class="text-gray-500 pop-in">Please try again.</p>
-            </div>
-         </div>
+          </div>
+        </header>
+
+        <!-- Main Body (unchanged content, centered button) -->
+        <div class="flex-1 flex flex-col items-center justify-center">
+          <button onclick="toggleModal()" class="flex items-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Post a New Refer</span>
+          </button>
+        </div>
+
+        <!-- Notification Template-->
+        <!-- Dialog Notification -->
+        <div id="dialog" class="hidden fixed top-5 right-5 w-72 shadow-lg rounded-lg border border-gray-300 bg-white">
+          <div class="h-1 bg-blue-400 rounded-t-lg loading-bar"></div>
+          <div class="p-6 text-center">
+            <p class="text-gray-800 font-medium mb-3">Referral Posting...</p>
+          </div>
+        </div>
+        <!-- Success State -->
+        <div id="successContainer" class="hidden flex flex-col items-center justify-center fixed inset-0 bg-white/70">
+          <svg class="w-28 h-28 text-green-500 pop-in" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
+            <path class="tick" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+          <p class="mt-4 text-lg font-medium text-gray-700 pop-in">Your referral has been successfully posted.</p>
+          <p class="text-gray-500 pop-in">Thank you for your time.</p>
+        </div>
+        <!-- Failure State -->
+        <div id="failureContainer" class="hidden flex flex-col items-center justify-center fixed inset-0 bg-white/70">
+          <svg id="failureIcon" class="w-28 h-28 text-red-500 pop-in" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
+            <path class="cross" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+          <p class="mt-4 text-lg font-medium text-red-600 pop-in">Oops, it failed.</p>
+          <p class="text-gray-500 pop-in">Please try again.</p>
+        </div>
       </div>
-
-      <!--SCRIPT 04: JWT Script-->
-      <script>
-         const token = localStorage.getItem("access_token");
-         
-         if (!token) {
-           window.location.href = "/no_token"; 
-         } else {
-           fetch("/api/protected-ping/", {
-             method: "GET",
-             headers: {
-               Authorization: `Bearer ${token}`,
-             },
-           }).then((res) => {
-             if (!res.ok) {
-               window.location.href = "/no_token";
-             }
-           });
-         }
-      </script>
-
-      <!--SCRIPT 05: ADDING JS TO SEND POST-->
-      <script>
-         ///// token ---> JWT from localStorage
-         const token = localStorage.getItem("access_token");
-         
-         // -----> attach submit
-         document.getElementById("referForm").addEventListener("submit", async (e) => {
-           e.preventDefault();
-         
-           const payload = {
-             company_name: document.getElementById("company").value.trim(),  ///// match serializer
-             Role: document.getElementById("role").value.trim(),
-             Refferal_Domains: document.getElementById("domains").value.trim(),
-           };
-         
-           try {
-             const res = await fetch("/api/referrals/", {                 ///// IMPORTANT: trailing slash
-               method: "POST",
-               headers: {
-                 "Content-Type": "application/json",
-                 Authorization: `Bearer ${token}`,                        ///// JWT header
-               },
-               body: JSON.stringify(payload),
-             });
-         
-             if (!res.ok) {
-               // show server reason
-               const err = await res.json().catch(() => ({}));
-               triggerFailureAnimation();
-               return;
-             }
-         
-             // success
-             // toggleModal();   ///// if you have this function
-             triggerSuccessAnimation();
-             // optional: redirect or clear form
-             // window.location.href = "/referer_home"; 
-             // OR notify the other page via polling/websocket later
-           } catch (e2) {
-             triggerFailureAnimation();
-         
-           }
-         });
-      </script>
+    </div>
 
 
-      <!-- SCRIPT 06: Animation Triggering Mechansim -->
-      <script>
+       <!--SCRIPT 03: Adding a script to trigger the refferal api-->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {   ///// ensure DOM ready
 
-        function hideModal() {
-          document.getElementById('referModal')?.classList.add('hidden');
-          document.getElementById('overlay')?.classList.add('hidden');
-        }
+        const form  = document.getElementById('referForm');     // ---> form node
+        const token = localStorage.getItem('access_token');     // ---> JWT
 
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();                                   // ---> stop page reload
 
+          const payload = {                                     // ---> match serializer
+            company_name:     document.getElementById('company').value.trim(),
+            Role:             document.getElementById('role').value.trim(),
+            Refferal_Domains: document.getElementById('domains').value.trim(),
+              
+          };
 
-          // Function to reset all notification states
-          function resetNotificationState() {
-            const ids = ['dialog', 'successContainer', 'failureContainer'];
-            ids.forEach(id => {
-              const el = document.getElementById(id);
-              if (!el) return;
-              el.classList.add('hidden');           ///// hide it
-              el.classList.remove('fade-out');      ///// drop fade state
-              el.style.removeProperty('opacity');   ///// safety: clear any stuck opacity
-            });
-            const failIcon = document.getElementById('failureIcon');
-            if (failIcon) failIcon.classList.remove('shake');  ///// stop shake
+          console.log('POST /api/referrals/ payload ->', payload);  ///// debug
+
+          const res = await fetch('/api/referrals/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,               // ---> auth
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const text = await res.text();
+          console.log('STATUS', res.status, 'BODY', text);      ///// see result
+
+          if (!res.ok) { alert('Failed: ' + text); return; }
+
+          triggerSuccessAnimation();
+          // optional: clear or close modal
+          // form.reset();
+          // toggleModal();
+        });
+
+      });
+    </script>
+
+    <!--SCRIPT 04: JWT Script (unchanged) -->
+    <script>
+      const token = localStorage.getItem("access_token");
+
+      if (!token) {
+        window.location.href = "/no_token";
+      } else {
+        fetch("/api/protected-ping/", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then((res) => {
+          if (!res.ok) {
+            window.location.href = "/no_token";
+          }
+        });
+      }
+    </script>
+
+    <!--SCRIPT 05: ADDING JS TO SEND POST (unchanged) -->
+    <script>
+      ///// token ---> JWT from localStorage
+      const token2 = localStorage.getItem("access_token");
+
+      // -----> attach submit
+      document.getElementById("referForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const payload = {
+          company_name: document.getElementById("company").value.trim(),  ///// match serializer
+          Role: document.getElementById("role").value.trim(),
+          Refferal_Domains: document.getElementById("domains").value.trim(),
+          user: localStorage.getItem('id')
+        };
+
+        try {
+          const res = await fetch("/api/referrals/", {                 ///// IMPORTANT: trailing slash
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token2}`,                        ///// JWT header
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!res.ok) {
+            // show server reason
+            const err = await res.json().catch(() => ({}));
+            triggerFailureAnimation();
+            return;
           }
 
+          // success
+          // toggleModal();   ///// if you have this function
+          triggerSuccessAnimation();
+          // optional: redirect or clear form
+          // window.location.href = "/referer_home";
+          // OR notify the other page via polling/websocket later
+        } catch (e2) {
+          triggerFailureAnimation();
 
+        }
+      });
+    </script>
 
-        function triggerSuccessAnimation() {
-          hideModal();  ///// close the "Post a New Refer" modal cleanly
+    <!-- SCRIPT 06: Animation Triggering Mechanism (unchanged) -->
+    <script>
+      function hideModal() {
+        document.getElementById('referModal')?.classList.add('hidden');
+        document.getElementById('overlay')?.classList.add('hidden');
+      }
 
-          const dialog = document.getElementById('dialog');
-          dialog.classList.remove('hidden');   ///// show "posting..." bar
+      // Function to reset all notification states
+      function resetNotificationState() {
+        const ids = ['dialog', 'successContainer', 'failureContainer'];
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.classList.add('hidden');           ///// hide it
+          el.classList.remove('fade-out');      ///// drop fade state
+          el.style.removeProperty('opacity');   ///// safety: clear any stuck opacity
+        });
+        const failIcon = document.getElementById('failureIcon');
+        if (failIcon) failIcon.classList.remove('shake');  ///// stop shake
+      }
+
+      function triggerSuccessAnimation() {
+        hideModal();  ///// close the "Post a New Refer" modal cleanly
+
+        const dialog = document.getElementById('dialog');
+        dialog.classList.remove('hidden');   ///// show "posting..." bar
+
+        setTimeout(() => {
+          dialog.classList.add('hidden');    ///// end loading
+
+          const success = document.getElementById('successContainer');
+          success.classList.remove('hidden');
+
+          // confetti blast 🎉
+          confetti({ particleCount: 150, spread: 120, origin: { y: 0.6 } });
+
+          // start fade after a short delay
+          setTimeout(() => {
+            success.classList.add('fade-out');
+
+            // clean up after fade animation finishes
+            success.addEventListener('animationend', () => {
+              success.classList.add('hidden');     ///// hide completely
+              success.classList.remove('fade-out');
+            }, { once: true });
+
+          }, 2000); ///// how long before fade starts
+        }, 2200);   ///// time for the "posting..." dialog
+      }
+
+      function triggerFailureAnimation() {
+        resetNotificationState();
+        toggleModal();
+
+        // show dialog
+        const dialog = document.getElementById('dialog');
+        dialog.classList.remove('hidden');
+
+        setTimeout(() => {
+          dialog.classList.add('hidden'); // reset dialog
+          const failure = document.getElementById('failureContainer');
+          failure.classList.remove('hidden');
+
+          document.getElementById('failureIcon').classList.add('shake');
 
           setTimeout(() => {
-            dialog.classList.add('hidden');    ///// end loading
-
-            const success = document.getElementById('successContainer');
-            success.classList.remove('hidden');
-
-            // confetti blast 🎉
-            confetti({ particleCount: 150, spread: 120, origin: { y: 0.6 } });
-
-            // start fade after a short delay
+            failure.classList.add('fade-out');
+            // reset after fade
             setTimeout(() => {
-              success.classList.add('fade-out');
+              failure.classList.add('hidden');
+              failure.classList.remove('fade-out');
+              document.getElementById('failureIcon').classList.remove('shake');
+            }, 1000);
+          }, 4000);
+        }, 2200);
+      }
+    </script>
 
-              // clean up after fade animation finishes
-              success.addEventListener('animationend', () => {
-                success.classList.add('hidden');     ///// hide completely
-                success.classList.remove('fade-out');
-              }, { once: true });
-
-            }, 2000); ///// how long before fade starts
-          }, 2200);   ///// time for the "posting..." dialog
+    <!-- Script for Profile Modal -->
+    <script>
+      function toggleProfileModal() {
+        const modal = document.getElementById('profileModal');
+        modal.classList.toggle('hidden');
+      }
+      // click-outside to close
+      document.addEventListener('click', (e) => {
+        const modal = document.getElementById('profileModal');
+        const trigger = e.target.closest('button[onclick="toggleProfileModal()"]');
+        if (!trigger && modal && !modal.contains(e.target)) {
+          modal.classList.add('hidden');
         }
-
-         
-
-
-         function triggerFailureAnimation() {
-           resetNotificationState();
-           toggleModal();
-         
-           // show dialog
-           const dialog = document.getElementById('dialog');
-           dialog.classList.remove('hidden');
-         
-           setTimeout(() => {
-             dialog.classList.add('hidden'); // reset dialog
-             const failure = document.getElementById('failureContainer');
-             failure.classList.remove('hidden');
-         
-             document.getElementById('failureIcon').classList.add('shake');
-         
-             setTimeout(() => {
-               failure.classList.add('fade-out');
-               // reset after fade
-               setTimeout(() => {
-                 failure.classList.add('hidden');
-                 failure.classList.remove('fade-out');
-                 document.getElementById('failureIcon').classList.remove('shake');
-               }, 1000);
-             }, 4000);
-           }, 2200);
-         }
-      </script>
-   </body>
+      });
+      // inject user info from localStorage
+      (function injectUser(){
+        const nameEl = document.getElementById("displayName");
+        const mailEl = document.getElementById("displayEmail");
+        if (nameEl) nameEl.textContent = localStorage.getItem("username") || "User";
+        if (mailEl) mailEl.textContent = localStorage.getItem("email") || "user@example.com";
+      })();
+    </script>
+  </body>
 </html>

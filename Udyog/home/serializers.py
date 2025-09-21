@@ -4,6 +4,8 @@ from rest_framework import serializers
 from .models import User
 from django.utils import timezone
 from datetime import timedelta
+from django.utils.timesince import timesince
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,13 +49,22 @@ class RefererSerializer(serializers.ModelSerializer):
 ## Creating another serializer for posting REFERRAL in DB 
 
 class ReferralPostSerializer(serializers.ModelSerializer):
-     class Meta:
-          model = Referral_post
-          fields =['company_name','Role','Refferal_Domains']
-          extra_kwargs = {
-                'created_at': {'required': True},
-                'referrer': {'required': True},
-            }
+    referrer_name = serializers.CharField(source="user.username", read_only=True)
+    time_since = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Referral_post
+        fields = [
+            "id",
+            "company_name",
+            "Role",                
+            "Refferal_Domains",    
+            "referrer_name",
+            "time_since",
+        ]
+
+    def get_time_since(self, obj):
+        return timesince(obj.created_at) + " ago"
           
 class JobSerializer(serializers.ModelSerializer):
     title = serializers.CharField(source="position")                 # UI expects title
