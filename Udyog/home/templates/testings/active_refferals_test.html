@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Active Referrals</title>
     <script src="https://cdn.tailwindcss.com"></script>
+      <!-- Tiny CSS for the glowing Personal Assist button -->
+  <style>
+    @keyframes paPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(59,130,246,.45); }
+      70%  { box-shadow: 0 0 0 10px rgba(59,130,246,0); }
+      100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+    }
+    .pa-glow {
+      animation: paPulse 2s infinite;
+    }
+  </style>
   </head>
 
-  <body class="bg-gray-100 font-sans">
+    <body class="bg-gray-100 font-sans">
     <div class="flex min-h-screen">
       
       <!-- Sidebar (fixed icons) -->
@@ -16,11 +27,10 @@
           <!-- Active Referrals Icon -->
           <a href="{% url 'active_referals' %}" class="relative group">
             <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+</svg>
+
             </div>
           </a>
 
@@ -56,14 +66,58 @@
           <h1 class="text-2xl font-bold">Active Referrals</h1>
 
           <div class="flex items-center gap-6">
-            <!-- Settings Icon -->
-            <a href="#" class="group relative">
-              <svg class="w-6 h-6 text-gray-600 hover:text-gray-900 transition" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
+
+            <!-- Right: Personal Assist (glow) + Settings + Logout -->
+          <div class="justify-self-end flex items-center gap-3">
+
+            <!-- Personal Assist trigger -->
+            <button type="button" onclick="openPAModal()" aria-label="Open Personal Assist"
+                    class="relative p-2 rounded hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+              <span class="absolute inset-0 rounded-full pa-glow pointer-events-none"></span>
+              <svg class="relative w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M12 4v2m0 12v2m8-8h2M4 12H2m15.36 6.36l1.42 1.42M6.34 6.34L4.92 4.92m0 14.14l1.42-1.42M17.66 6.34l1.42-1.42" />
+                      d="M12 6v.01M16.24 7.76v.01M18 12v.01M16.24 16.24v.01M12 18v.01M7.76 16.24v.01M6 12v.01M7.76 7.76v.01" />
+                <circle cx="12" cy="12" r="3" />
               </svg>
-            </a>
+            </button>
+             <!-- User Profile Icon and Trigger button -->
+          <div class="relative">
+          <button onclick="toggleProfileModal()"
+                  class="p-2 rounded hover:bg-gray-200 focus:outline-none"
+                  aria-label="User Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                class="w-6 h-6 text-gray-700">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+          </button>
+
+          <!-- Profile Modal -->
+          <div id="profileModal"
+              class="hidden absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg">
+            <div class="px-4 py-3 border-b">
+              <p id="displayName" class="font-semibold text-gray-800">User</p>
+              <p id="displayEmail" class="text-sm text-gray-500">email@domain.com</p>
+
+            </div>
+            <ul class="py-2 text-sm text-gray-700">
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">View Profile</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">See Plans</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Help</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Language</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Privacy</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Policy</a></li>
+            </ul>
+            <div class="border-t">
+              <a href="{% url 'login' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign Out</a>
+            </div>
+          </div>
+          </div>
 
             <!-- Logout Icon -->
             <a href="{% url 'login' %}" class="group relative">
@@ -75,6 +129,48 @@
             </a>
           </div>
         </header>
+
+
+    <!-- Personal Assist Modal (your AI chat UI) -->
+  <div id="paModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="w-[360px] rounded-2xl overflow-hidden shadow-xl bg-white border border-slate-200 relative">
+      <!-- close -->
+      <button onclick="closePAModal()" class="absolute top-3 right-3 z-10 text-white/80 hover:text-white" aria-label="Close">✕</button>
+
+      <!-- header -->
+      <div class="bg-gradient-to-b from-slate-900 to-black text-white px-5 py-4">
+        <h2 class="font-semibold text-lg flex items-center gap-2">🤖 AI Assistant</h2>
+      </div>
+
+      <!-- body -->
+      <div id="chatPA" class="bg-gradient-to-b from-slate-950 to-slate-900 text-slate-100 h-[420px] px-4 py-4 space-y-3 overflow-y-auto">
+        <div class="flex">
+          <div class="max-w-[80%] bg-slate-800/70 rounded-xl px-3 py-2 text-sm">
+            👋 Hey! I’m your AI career buddy — tracking jobs, trends, and apps across Udyog, WhatsApp, Insta & more.
+I learn from your resume, LinkedIn & beyond to guide your growth.
+Find peers, build projects, join hackathons — level up together.
+And we're just getting started. Currently under development ⚙️.....
+
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- input bar -->
+      <div class="bg-black/95 p-3 flex items-center gap-2">
+        <input id="msgPA" type="text"
+               class="flex-1 bg-slate-800/70 text-slate-100 placeholder-slate-400 rounded-xl px-3 py-2 outline-none border border-slate-700 focus:border-slate-500"
+               placeholder="Type a message..." />
+        <button id="sendPA"
+                class="shrink-0 bg-white text-black rounded-xl px-3 py-2 font-medium hover:opacity-90 active:scale-95 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+</svg>
+
+        </button>
+      </div>
+    </div>
+  </div>
 
         <!-- Scrollable Content (referrals list with pagination) -->
         <main class="flex-1 overflow-y-auto px-6 py-6">
@@ -90,7 +186,7 @@
 
             <!-- Pagination -->
             <div class="mt-6 flex justify-center">
-              <nav class="inline-flex space-x-2">
+              <nav  id="paginationNav" class="inline-flex space-x-2">
                 <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">Prev</button>
                 <button class="px-3 py-1 rounded bg-blue-600 text-white">1</button>
                 <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">2</button>
@@ -101,7 +197,191 @@
 
           </div>
         </main>
+
+
+<!--To get the name and email id and to show uo un the profile button-->
+<script>
+  document.getElementById("displayName").textContent = localStorage.getItem("username");
+  document.getElementById("displayEmail").textContent = localStorage.getItem("email");
+</script>
+
+
+<!--Testing the JWT in a different way-->
+<!-- JWT guard + Live referrals (single script) -->
+<script>
+  const token = localStorage.getItem("access_token");
+  let allReferrals = [];   ///// store all items from API
+  let currentPage = 1;
+  const pageSize = 10;
+
+  (async function guard() {
+    if (!token) return (window.location.href = "/no_token");
+    const pong = await fetch("/api/protected-ping/", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!pong.ok) window.location.href = "/no_token";
+  })();
+
+  const grid = document.getElementById("referralsGrid");
+
+  function showLoading(count = 3) {
+    grid.innerHTML = Array.from({ length: count }).map(() => `
+      <div class="bg-white rounded-xl p-6 shadow border border-gray-200 animate-pulse">
+        <div class="h-5 w-40 bg-gray-200 rounded mb-2"></div>
+        <div class="h-4 w-20 bg-gray-200 rounded"></div>
       </div>
-    </div>
+    `).join("");
+  }
+
+  function card(r) {
+    const company = r.company_name || "—";
+    const role    = r.Role || "—";
+    const domains = r.Refferal_Domains || "—";
+
+    return `
+      <div class="bg-white rounded-xl p-6 shadow border border-gray-200">
+        <div class="flex justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-gray-800">${role}</h2>
+            <p class="text-sm text-gray-500">${company}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm text-gray-600">Active Referral</p>
+          </div>
+        </div>
+        <div class="mt-3 flex justify-between items-center">
+          <p class="text-sm text-gray-500 italic">Can refer to: ${domains}</p>
+          <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                  onclick="requestReferral('${r.id ?? ""}')">
+            Request Referral
+          </button>
+        </div>
+      </div>`;
+  }
+
+  function emptyState() {
+    grid.innerHTML = `
+      <div class="bg-white rounded-xl p-6 shadow border border-gray-200 text-center">
+        <div class="text-lg font-semibold text-gray-800">No active referrals yet</div>
+        <div class="text-sm text-gray-500 mt-1">Check back soon — new referrals appear here.</div>
+      </div>`;
+  }
+
+  function errorState(msg = "Failed to load referrals") {
+    grid.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4">${msg}</div>`;
+  }
+
+  ///// -----> render only current page
+  function renderPage() {
+    const start = (currentPage - 1) * pageSize;
+    const end   = start + pageSize;
+    const items = allReferrals.slice(start, end);
+
+    if (!items.length) return emptyState();
+    grid.innerHTML = items.map(card).join("");
+    renderPagination();
+  }
+
+  ///// -----> pagination controls
+  function renderPagination() {
+    const totalPages = Math.ceil(allReferrals.length / pageSize);
+    const nav = document.querySelector("#paginationNav");
+
+    if (totalPages <= 1) {
+      nav.innerHTML = "";
+      return;
+    }
+
+    let buttons = `
+      <button onclick="changePage(${Math.max(1, currentPage - 1)})"
+              class="px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}">
+        Prev
+      </button>
+    `;
+
+    for (let i = 1; i <= totalPages; i++) {
+      buttons += `
+        <button onclick="changePage(${i})"
+                class="px-3 py-1 rounded ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}">
+          ${i}
+        </button>`;
+    }
+
+    buttons += `
+      <button onclick="changePage(${Math.min(totalPages, currentPage + 1)})"
+              class="px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}">
+        Next
+      </button>
+    `;
+
+    nav.innerHTML = buttons;
+  }
+
+  ///// -----> page switch
+  function changePage(p) {
+    currentPage = p;
+    renderPage();
+  }
+
+  async function loadReferrals() {
+    showLoading();
+    try {
+      const res = await fetch("/api/referrals/", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) return errorState(`API ${res.status}`);
+
+      const payload = await res.json();
+      allReferrals = Array.isArray(payload) ? payload : (payload.results || []);
+
+      if (!allReferrals.length) return emptyState();
+      renderPage();
+
+    } catch (e) {
+      errorState("Network error");
+    }
+  }
+
+  function requestReferral(id) {
+    console.log("request referral", id);
+  }
+
+  loadReferrals();
+  setInterval(loadReferrals, 10000);
+</script>
+
+<!--Script for user Modal Toggle-->
+<script>
+  function toggleProfileModal() {
+    const modal = document.getElementById('profileModal');
+    modal.classList.toggle('hidden');
+  }
+
+  // Close if clicked outside
+  document.addEventListener('click', (e) => {
+    const modal = document.getElementById('profileModal');
+    if (!modal.contains(e.target) &&
+        !e.target.closest('button[onclick="toggleProfileModal()"]')) {
+      modal.classList.add('hidden');
+    }
+  });
+</script>
+
+<script>
+  function openPAModal() {
+    const m = document.getElementById('paModal');
+    m.classList.remove('hidden'); 
+    m.classList.add('flex');
+    document.getElementById('msgPA')?.focus();
+  }
+
+  function closePAModal() {
+    const m = document.getElementById('paModal');
+    m.classList.add('hidden'); 
+    m.classList.remove('flex');
+  }
+</script>
+
+
   </body>
 </html>

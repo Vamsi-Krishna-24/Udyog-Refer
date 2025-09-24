@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
+
   <head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Active Referrals</title>
@@ -18,7 +21,7 @@
   </style>
   </head>
 
-    <body class="bg-gray-100 font-sans">
+    <body class="bg-gray-100 font-[Inter]">
     <div class="flex min-h-screen">
       
       <!-- Sidebar (fixed icons) -->
@@ -198,6 +201,106 @@ And we're just getting started. Currently under development ⚙️.....
           </div>
         </main>
 
+<!-- 📝 White Minimal Drawer -->
+ <div id="drawerBackdrop" class="fixed inset-0 bg-black/30 backdrop-blur-[1px] z-40 hidden"></div>
+<div id="referralDrawer" role="dialog" aria-modal="true" aria-labelledby="drawerRole"
+     class="fixed top-0 right-0 h-screen w-full md:w-[55%] max-w-2xl
+            bg-white border-l border-gray-200 shadow-2xl z-50
+            transform translate-x-full transition-transform duration-300 ease-out
+            flex flex-col rounded-l-xl overflow-hidden">
+
+<div class="absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-blue-600 to-blue-400"></div>
+
+<style>
+  #referralDrawer::-webkit-scrollbar {
+    width: 8px;
+  }
+  #referralDrawer::-webkit-scrollbar-thumb {
+    background: #cbd5e1; /* Tailwind slate-300 */
+    border-radius: 4px;
+  }
+  #referralDrawer {
+    scroll-behavior: smooth;
+  }
+
+#referralDrawer .nicebar::-webkit-scrollbar { width: 8px; }
+#referralDrawer .nicebar::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
+
+</style>
+
+
+  <!-- Header -->
+  <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+    <div>
+      <h2 id="drawerRole" class="text-xl font-bold text-gray-900">Frontend Developer</h2>
+      <p id="drawerCompany" class="text-sm text-gray-500">at Company XYZ</p>
+    </div>
+    <button onclick="closeReferralDrawer()" class="text-gray-400 hover:text-red-500 text-2xl transition">×</button>
+  </div>
+
+  <!-- Content -->
+  <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-white">
+
+    <!-- Job Description -->
+    <div>
+      <h3 class="text-xs font-semibold text-gray-500 uppercase mb-2">Job Description</h3>
+      <p id="drawerDescription" class="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 border border-gray-200">
+        Build scalable systems with strong UX and maintainable code.
+      </p>
+    </div>
+
+    <!-- Experience Required -->
+    <div>
+      <h3 class="text-xs font-semibold text-gray-500 uppercase mb-2">Experience Required</h3>
+      <p id="drawerExperience" class="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 border border-gray-200">
+        2–4 years
+      </p>
+    </div>
+
+    <!-- Salary Range -->
+    <div>
+      <h3 class="text-xs font-semibold text-gray-500 uppercase mb-2">Salary Range</h3>
+      <p id="drawerSalary" class="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 border border-gray-200">
+        ₹12–18 LPA
+      </p>
+    </div>
+
+    <!-- Availability -->
+    <div>
+      <h3 class="text-xs font-semibold text-gray-500 uppercase mb-2">Availability</h3>
+      <p id="drawerAvailability" class="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 border border-gray-200">
+        Immediate / 15 days
+      </p>
+    </div>
+
+    <!-- Resume Upload -->
+    <div>
+      <label for="resumeUpload" class="block text-sm font-medium text-gray-700 mb-2">Attach Resume</label>
+      <input type="file" id="resumeUpload"
+        class="block w-full text-sm text-gray-700 bg-white border border-gray-300 
+        rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <!-- Message Box -->
+    <div>
+      <label for="referralMessage" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+      <textarea id="referralMessage" rows="4" placeholder="Write a short note..." 
+        class="w-full bg-gray-50 text-gray-900 placeholder-gray-400 
+        border border-gray-200 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="p-6 border-t border-gray-200 bg-white">
+    <button class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 
+        hover:from-blue-700 hover:to-blue-800 
+        text-white rounded-lg font-semibold text-sm 
+        shadow-md hover:shadow-lg transition active:scale-95">
+      🚀 Request Referral
+    </button>
+  </div>
+</div>
+
 
 <!--To get the name and email id and to show uo un the profile button-->
 <script>
@@ -233,31 +336,33 @@ And we're just getting started. Currently under development ⚙️.....
     `).join("");
   }
 
-  function card(r) {
-    const company = r.company_name || "—";
-    const role    = r.Role || "—";
-    const domains = r.Refferal_Domains || "—";
+function card(r, idx) {
+  const company = r.company_name || "—";
+  const role    = r.Role || "—";
+  const domains = r.Refferal_Domains || "—";
 
-    return `
-      <div class="bg-white rounded-xl p-6 shadow border border-gray-200">
-        <div class="flex justify-between">
-          <div>
-            <h2 class="text-xl font-bold text-gray-800">${role}</h2>
-            <p class="text-sm text-gray-500">${company}</p>
-          </div>
-          <div class="text-right">
-            <p class="text-sm text-gray-600">Active Referral</p>
-          </div>
+  return `
+    <div class="bg-white rounded-xl p-6 shadow border border-gray-200">
+      <div class="flex justify-between">
+        <div>
+          <h2 class="text-xl font-bold text-gray-800">${role}</h2>
+          <p class="text-sm text-gray-500">${company}</p>
         </div>
-        <div class="mt-3 flex justify-between items-center">
-          <p class="text-sm text-gray-500 italic">Can refer to: ${domains}</p>
-          <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-                  onclick="requestReferral('${r.id ?? ""}')">
-            Request Referral
-          </button>
+        <div class="text-right">
+          <p class="text-sm text-gray-600">Active Referral</p>
         </div>
-      </div>`;
-  }
+      </div>
+      <div class="mt-3 flex justify-between items-center">
+        <p class="text-sm text-gray-500 italic">Can refer to: ${domains}</p>
+        <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                onclick="openReferralDrawerByIndex(${idx})">
+          Request Referral
+        </button>
+      </div>
+    </div>`;
+}
+
+
 
   function emptyState() {
     grid.innerHTML = `
@@ -278,7 +383,7 @@ And we're just getting started. Currently under development ⚙️.....
     const items = allReferrals.slice(start, end);
 
     if (!items.length) return emptyState();
-    grid.innerHTML = items.map(card).join("");
+    grid.innerHTML = items.map((r, i) => card(r, (start + i))).join("");
     renderPagination();
   }
 
@@ -381,6 +486,77 @@ And we're just getting started. Currently under development ⚙️.....
     m.classList.remove('flex');
   }
 </script>
+
+<script>
+  function fmtRange(min, max, unit='') {
+  if (min == null && max == null) return "—";
+  if (min != null && max != null) return `${min}–${max}${unit}`;
+  if (min != null) return `${min}${unit}+`;
+  return `Up to ${max}${unit}`;
+}
+
+function openReferralDrawerByIndex(idx) {
+  const ref = allReferrals[idx] || {};
+  openReferralDrawer(ref);
+}
+
+function openReferralDrawer(ref) {
+  // ///// map data safely
+  const role   = ref.Role || ref.title || "—";
+  const comp   = ref.company_name || ref.company || "—";
+  const desc   = ref.description || ref.job_description || "No description provided.";
+
+  // experience can be a single value or a range
+  const exp = ref.experience_required || ref.experience || 
+              fmtRange(ref.min_experience, ref.max_experience, " yrs");
+
+  // salary can be combined from min/max + currency
+  const curr = ref.salary_currency || "₹";
+  const sal = ref.salary_range || ref.salary || 
+              (ref.salary_min != null || ref.salary_max != null
+                ? `${curr}${fmtRange(ref.salary_min, ref.salary_max, " LPA".replace("₹",""))}`
+                : "—");
+
+  const avail = ref.availability || ref.notice || "—";
+
+  // ///// fill UI
+  document.getElementById("drawerRole").textContent        = role;
+  document.getElementById("drawerCompany").textContent     = `at ${comp}`;
+  document.getElementById("drawerDescription").textContent = desc;
+  document.getElementById("drawerExperience").textContent  = exp;
+  document.getElementById("drawerSalary").textContent      = sal;
+  document.getElementById("drawerAvailability").textContent= avail;
+
+  // ///// open: show drawer + backdrop + lock body scroll
+  const d = document.getElementById("referralDrawer");
+  const b = document.getElementById("drawerBackdrop");
+  d.classList.remove("translate-x-full");
+  d.classList.add("translate-x-0");
+  b.classList.remove("hidden");
+  document.documentElement.classList.add("overflow-hidden");
+  document.body.classList.add("overflow-hidden");
+}
+
+function closeReferralDrawer() {
+  const d = document.getElementById("referralDrawer");
+  const b = document.getElementById("drawerBackdrop");
+  d.classList.add("translate-x-full");
+  d.classList.remove("translate-x-0");
+  b.classList.add("hidden");
+  document.documentElement.classList.remove("overflow-hidden");
+  document.body.classList.remove("overflow-hidden");
+}
+
+// ///// close on ESC
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeReferralDrawer();
+});
+
+// ///// close on backdrop click
+document.getElementById("drawerBackdrop")?.addEventListener("click", closeReferralDrawer);
+</script>
+
+
 
 
   </body>

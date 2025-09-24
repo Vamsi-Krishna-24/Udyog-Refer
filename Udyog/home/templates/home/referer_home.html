@@ -51,19 +51,53 @@
     <!-- Overlay -->
     <div id="overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"></div>
 
-    <!-- Modal -->
-    <div id="referModal" class="hidden fixed z-50 inset-0 flex items-center justify-center">
-      <div class="bg-white rounded-lg p-8 w-full max-w-md shadow-lg">
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Post a New Refer</h2>
-        <form id="referForm" class="space-y-4">
-          <input name="company" id="company" type="text" placeholder="Company Name" class="w-full p-2 border rounded" />
-          <input name="role" id="role" type="text" placeholder="Role" class="w-full p-2 border rounded" />
-          <input name="domains" id="domains" type="text" placeholder="Referral Domains" class="w-full p-2 border rounded" />
-          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Post Referral</button>
-        </form>
-        <button onclick="toggleModal()" class="mt-4 text-sm text-gray-600 hover:underline">Cancel</button>
-      </div>
+   <!-- Modal -->
+<div id="referModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl p-8 w-full max-w-lg shadow-2xl transition transform scale-100">
+
+    <!-- Progress Dots -->
+    <div class="flex justify-center mb-6 space-x-2">
+      <div id="dot1" class="h-3 w-3 rounded-full bg-blue-600"></div>
+      <div id="dot2" class="h-3 w-3 rounded-full bg-gray-300"></div>
     </div>
+
+    <!-- Step 1 -->
+    <div id="step1">
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">Basic Details</h2>
+      <div class="space-y-4">
+        <input id="company" type="text" placeholder="Company Name" class="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input id="role" type="text" placeholder="Role" class="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input id="domains" type="text" placeholder="Referral Domains" class="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button type="button" onclick="nextStep()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition">
+          Next →
+        </button>
+      </div>
+      <button onclick="toggleModal()" class="mt-4 block text-center w-full text-sm text-gray-500 hover:text-gray-700">Cancel</button>
+    </div>
+
+    <!-- Step 2 -->
+    <div id="step2" class="hidden">
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">Job Details</h2>
+      <form id="referForm" class="space-y-4">
+        <textarea id="job_description" rows="3" placeholder="Job Description" class="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <input id="experience" type="text" placeholder="Experience Required" class="p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input id="availability" type="text" placeholder="Availability" class="p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <input id="location" type="text" placeholder="Location" class="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input id="salary" type="text" placeholder="Salary Expectation" class="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input id="job_link" type="url" placeholder="Link to Job" class="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+        <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition">
+          ✅ Post Referral
+        </button>
+      </form>
+      <button onclick="prevStep()" class="mt-4 block text-center w-full text-sm text-gray-500 hover:text-gray-700">← Back</button>
+    </div>
+  </div>
+</div>
 
     <!-- Page Layout -->
     <div class="flex h-screen">
@@ -105,6 +139,16 @@
 
             <!-- Right: Profile dropdown + Logout -->
             <div class="flex items-center gap-3 relative">
+
+
+              <!-- Inside header, in the right-side div BEFORE profile button -->
+<button onclick="toggleModal()" class="flex items-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded">
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+  </svg>
+  <span>Post a New Refer</span>
+</button>
+
               <!-- Profile Button -->
               <button onclick="toggleProfileModal()"
                       class="p-2 rounded hover:bg-gray-200 focus:outline-none"
@@ -149,23 +193,18 @@
         </header>
 
         <!-- Main Body (unchanged content, centered button) -->
-        <div class="flex-1 flex flex-col items-center justify-center">
-          <button onclick="toggleModal()" class="flex items-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            <span>Post a New Refer</span>
-          </button>
-        </div>
+        
 
         <!-- Notification Template-->
         <!-- Dialog Notification -->
-        <div id="dialog" class="hidden fixed top-5 right-5 w-72 shadow-lg rounded-lg border border-gray-300 bg-white">
-          <div class="h-1 bg-blue-400 rounded-t-lg loading-bar"></div>
-          <div class="p-6 text-center">
-            <p class="text-gray-800 font-medium mb-3">Referral Posting...</p>
-          </div>
-        </div>
+        <div id="dialog" 
+     class="hidden fixed top-5 right-5 w-72 shadow-lg rounded-lg border border-gray-300 bg-white z-50">
+  <div class="h-1 bg-blue-400 rounded-t-lg loading-bar"></div>
+  <div class="p-6 text-center">
+    <p class="text-gray-800 font-medium mb-3">Referral Posting...</p>
+  </div>
+</div>
+
         <!-- Success State -->
         <div id="successContainer" class="hidden flex flex-col items-center justify-center fixed inset-0 bg-white/70">
           <svg class="w-28 h-28 text-green-500 pop-in" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
@@ -186,6 +225,23 @@
     </div>
 
 
+    <script>
+      function nextStep() {
+  document.getElementById('step1').classList.add('hidden');
+  document.getElementById('step2').classList.remove('hidden');
+  document.getElementById('dot1').classList.replace('bg-blue-600', 'bg-gray-300');
+  document.getElementById('dot2').classList.replace('bg-gray-300', 'bg-blue-600');
+}
+
+function prevStep() {
+  document.getElementById('step2').classList.add('hidden');
+  document.getElementById('step1').classList.remove('hidden');
+  document.getElementById('dot2').classList.replace('bg-blue-600', 'bg-gray-300');
+  document.getElementById('dot1').classList.replace('bg-gray-300', 'bg-blue-600');
+}
+
+    </script>
+
        <!--SCRIPT 03: Adding a script to trigger the refferal api-->
     <script>
       document.addEventListener('DOMContentLoaded', () => {   ///// ensure DOM ready
@@ -197,9 +253,17 @@
           e.preventDefault();                                   // ---> stop page reload
 
           const payload = {                                     // ---> match serializer
-            company_name:     document.getElementById('company').value.trim(),
-            Role:             document.getElementById('role').value.trim(),
-            Refferal_Domains: document.getElementById('domains').value.trim(),
+  company_name:     document.getElementById("company").value.trim(),
+  Role:             document.getElementById("role").value.trim(),
+  Refferal_Domains: document.getElementById("domains").value.trim(),
+  job_description:  document.getElementById("job_description").value.trim(),
+  experience:       document.getElementById("experience").value.trim(),
+  availability:     document.getElementById("availability").value.trim(),
+  location:         document.getElementById("location").value.trim(),
+  salary:           document.getElementById("salary").value.trim(),
+  job_link:         document.getElementById("job_link").value.trim(),
+  user: localStorage.getItem('id')
+};
               
           };
 
@@ -225,7 +289,6 @@
           // toggleModal();
         });
 
-      });
     </script>
 
     <!--SCRIPT 04: JWT Script (unchanged) -->
