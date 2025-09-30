@@ -21,8 +21,10 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 
 router = DefaultRouter()
-router.register(r"referrals", ReferralPostViewSet)
-router.register(r"jobs", JobViewSet, basename="jobs") 
+router.register(r"referrals", ReferralPostViewSet, basename="referrals")
+router.register(r'jobs', JobViewSet, basename='jobs') 
+
+
 
 urlpatterns = [
     # ----- HTML pages
@@ -49,7 +51,8 @@ urlpatterns = [
     path("api/protected-ping/", ProtectedPingView.as_view(), name="ping"),
     path("api/token/", MyTokenView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("api/referrals/", ReferralPostListCreate.as_view(), name="referrals_api"),
+
+    
     # ----- Mount DRF router
    path("api/", include(router.urls)),
 ]

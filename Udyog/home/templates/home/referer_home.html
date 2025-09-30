@@ -242,54 +242,54 @@ function prevStep() {
 
     </script>
 
-       <!--SCRIPT 03: Adding a script to trigger the refferal api-->
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {   ///// ensure DOM ready
+       <!--SCRIPT 03: Adding a script to trigger the referral api-->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {   ///// ensure DOM ready
 
-        const form  = document.getElementById('referForm');     // ---> form node
-        const token = localStorage.getItem('access_token');     // ---> JWT
+    const form  = document.getElementById('referForm');     // ---> form node
+    const token = localStorage.getItem('access_token');     // ---> JWT
 
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();                                   // ---> stop page reload
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();                                   // ---> stop page reload
 
-          const payload = {                                     // ---> match serializer
-  company_name:     document.getElementById("company").value.trim(),
-  Role:             document.getElementById("role").value.trim(),
-  Refferal_Domains: document.getElementById("domains").value.trim(),
-  job_description:  document.getElementById("job_description").value.trim(),
-  experience:       document.getElementById("experience").value.trim(),
-  availability:     document.getElementById("availability").value.trim(),
-  location:         document.getElementById("location").value.trim(),
-  salary:           document.getElementById("salary").value.trim(),
-  job_link:         document.getElementById("job_link").value.trim(),
-  user: localStorage.getItem('id')
-};
-              
-          };
+      const payload = {                                     // ---> match serializer exactly
+        company_name:        document.getElementById("company").value.trim(),
+        role:                document.getElementById("role").value.trim(),
+        referral_domains:    document.getElementById("domains").value.trim(),
+        job_description:     document.getElementById("job_description").value.trim(),
+        experience_required: document.getElementById("experience").value.trim(),
+        availability:        document.getElementById("availability").value.trim(),
+        location:            document.getElementById("location").value.trim(),
+        salary_expectation:  document.getElementById("salary").value.trim(),
+        link_to_apply:       document.getElementById("job_link").value.trim(),
+        user: localStorage.getItem('id')
+      };
 
-          console.log('POST /api/referrals/ payload ->', payload);  ///// debug
+      console.log('POST /api/referrals/ payload ->', payload);  ///// debug
 
-          const res = await fetch('/api/referrals/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,               // ---> auth
-            },
-            body: JSON.stringify(payload),
-          });
+      const res = await fetch('/api/referrals/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,               // ---> auth
+        },
+        body: JSON.stringify(payload),
+      });
 
-          const text = await res.text();
-          console.log('STATUS', res.status, 'BODY', text);      ///// see result
+      const text = await res.text();
+      console.log('STATUS', res.status, 'BODY', text);      ///// see result
 
-          if (!res.ok) { alert('Failed: ' + text); return; }
+      if (!res.ok) { alert('Failed: ' + text); return; }
 
-          triggerSuccessAnimation();
-          // optional: clear or close modal
-          // form.reset();
-          // toggleModal();
-        });
+      triggerSuccessAnimation();
+      // optional: clear or close modal
+      // form.reset();
+      // toggleModal();
+    });
 
-    </script>
+  });
+</script>
+
 
     <!--SCRIPT 04: JWT Script (unchanged) -->
     <script>
@@ -311,51 +311,6 @@ function prevStep() {
       }
     </script>
 
-    <!--SCRIPT 05: ADDING JS TO SEND POST (unchanged) -->
-    <script>
-      ///// token ---> JWT from localStorage
-      const token2 = localStorage.getItem("access_token");
-
-      // -----> attach submit
-      document.getElementById("referForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const payload = {
-          company_name: document.getElementById("company").value.trim(),  ///// match serializer
-          Role: document.getElementById("role").value.trim(),
-          Refferal_Domains: document.getElementById("domains").value.trim(),
-          user: localStorage.getItem('id')
-        };
-
-        try {
-          const res = await fetch("/api/referrals/", {                 ///// IMPORTANT: trailing slash
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token2}`,                        ///// JWT header
-            },
-            body: JSON.stringify(payload),
-          });
-
-          if (!res.ok) {
-            // show server reason
-            const err = await res.json().catch(() => ({}));
-            triggerFailureAnimation();
-            return;
-          }
-
-          // success
-          // toggleModal();   ///// if you have this function
-          triggerSuccessAnimation();
-          // optional: redirect or clear form
-          // window.location.href = "/referer_home";
-          // OR notify the other page via polling/websocket later
-        } catch (e2) {
-          triggerFailureAnimation();
-
-        }
-      });
-    </script>
 
     <!-- SCRIPT 06: Animation Triggering Mechanism (unchanged) -->
     <script>

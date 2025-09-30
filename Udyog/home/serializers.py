@@ -7,6 +7,7 @@ from datetime import timedelta
 from django.utils.timesince import timesince
 
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -53,18 +54,26 @@ class ReferralPostSerializer(serializers.ModelSerializer):
     time_since = serializers.SerializerMethodField()
 
     class Meta:
-        model = Referral_post
+        model = Referral_post   # ✅ match your model class name
         fields = [
             "id",
             "company_name",
-            "Role",                
-            "Refferal_Domains",    
-            "referrer_name",
-            "time_since",
+            "role",                  # fixed lowercase
+            "referral_domains",      # fixed typo
+            "job_description",
+            "experience_required",
+            "availability",
+            "location",
+            "salary_expectation",
+            "link_to_apply",
+            "created_at",
+            "referrer_name", 
+            "time_since",           
         ]
 
     def get_time_since(self, obj):
         return timesince(obj.created_at) + " ago"
+
           
 class JobSerializer(serializers.ModelSerializer):
     title = serializers.CharField(source="position")                 # UI expects title

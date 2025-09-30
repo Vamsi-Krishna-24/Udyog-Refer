@@ -78,12 +78,24 @@ class Referer(models.Model):
 
 
 class Referral_post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="referral_posts_user")
-    referrer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="referral_posts_referrer")
-    company_name= models.CharField(max_length=100)
-    Role = models.CharField(max_length=100)
-    Refferal_Domains = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)  
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="referral_posts"
+    )
+    company_name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)
+    referral_domains = models.CharField(max_length=100, blank=True, null=True, default="Not specified")
+    job_description = models.TextField()
+    experience_required = models.CharField(max_length=100)
+    availability = models.CharField(max_length=100, blank=True, null=True)  # optional
+    location = models.CharField(max_length=100)
+    salary_expectation = models.CharField(max_length=100, blank=True, null=True)
+    link_to_apply = models.URLField(max_length=200, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.company_name} - {self.role}"
 
 # -----> EDIT your Jobs model like this
 from django.db import models

@@ -217,7 +217,11 @@ class ReferralPostListCreate(APIView):               # ///// /api/referrals/ (GE
 class ReferralPostViewSet(viewsets.ModelViewSet):
     queryset = Referral_post.objects.order_by("-created_at")
     serializer_class = ReferralPostSerializer
-    permission_classes = [permissions.IsAuthenticated]   # or IsAuthenticated if you want JWT only
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)   # attaches logged-in user
+
 
 
 
