@@ -218,9 +218,29 @@ class ReferralPostViewSet(viewsets.ModelViewSet):
     queryset = Referral_post.objects.order_by("-created_at")
     serializer_class = ReferralPostSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['role', 'experience_required', 'location','company_name']
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)   # attaches logged-in user
+
+    def get_queryset(self):
+        qs = Referral_post.objects.order_by("-created_at")
+        role = self.request.query_params.get("role")
+        exp = self.request.query_params.get("experience")
+        loc = self.request.query_params.get("location")
+        comp = self.request.query_params.get("company")
+
+        if role:
+            qs = qs.filter(role__icontains=role)
+        if exp:
+            qs = qs.filter(experience_required__icontains=exp)
+        if loc:
+            qs = qs.filter(location__icontains=loc)
+        if comp:
+            qs = qs.filter(company_name__icontains=comp)
+        return qs
+
 
 
 

@@ -67,6 +67,8 @@ REST_FRAMEWORK = {
 
 
 
+
+
 ROOT_URLCONF = 'Udyog.urls'
 
 TEMPLATES = [
@@ -151,7 +153,13 @@ SIMPLE_JWT = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "Udyog/staticfiles"
+]
+STATIC_ROOT = BASE_DIR / "static"   # destination for collectstatic
+
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
