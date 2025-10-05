@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Udyog Refer Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Gooey text effect */
+    .gooey-container {
+      position: relative;
+      filter: url(#threshold) blur(0.6px);
+    }
+    .gooey-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 3rem;
+      font-weight: bold;
+      user-select: none;
+      color: #111827;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Splash Screen -->
+  <div id="splash" class="fixed inset-0 flex items-center justify-center bg-white z-50">
+    <div class="gooey-container">
+      <span id="text1" class="gooey-text">Get Referred.</span>
+      <span id="text2" class="gooey-text">Land Faster</span>
+      <svg class="absolute h-0 w-0">
+        <defs>
+          <filter id="threshold">
+            <feColorMatrix in="SourceGraphic" type="matrix"
+              values="1 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      0 0 0 255 -140"/>
+          </filter>
+        </defs>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-16 bg-[#111827] flex flex-col items-center py-6 space-y-6">
+      <button class="p-2 rounded-full hover:bg-gray-700 text-gray-300">🏠</button>
+      <button class="p-2 rounded-full hover:bg-gray-700 text-gray-300">📊</button>
+      <button class="p-2 rounded-full hover:bg-gray-700 text-gray-300">⚙️</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Active Referrals</h1>
+        <div class="flex items-center space-x-3">
+          <button class="p-2 rounded-full hover:bg-gray-200">🔔</button>
+          <button class="p-2 rounded-full hover:bg-gray-200">👤</button>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="space-y-4">
+        <div class="bg-white rounded-xl shadow-sm p-4 flex justify-between items-center">
+          <div>
+            <p class="text-sm text-gray-500">Posted by <span class="text-blue-600 font-medium">Test28</span></p>
+            <h2 class="text-lg font-bold">QA ENGINEER</h2>
+            <p class="text-sm text-gray-600">DT1</p>
+            <p class="text-sm text-gray-500">Can refer to: <span class="text-blue-600 font-medium">IT</span></p>
+          </div>
+          <div class="text-right">
+            <p class="text-green-600 text-sm">3 days, 18 hours ago</p>
+            <p class="text-gray-500 text-sm">Active Referral</p>
+            <button class="mt-2 px-4 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md shadow hover:opacity-90">
+              Request Referral
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm p-4 flex justify-between items-center">
+          <div>
+            <p class="text-sm text-gray-500">Posted by <span class="text-blue-600 font-medium">Test28</span></p>
+            <h2 class="text-lg font-bold">Software Engineer 3</h2>
+            <p class="text-sm text-gray-600">Alpha</p>
+            <p class="text-sm text-gray-500">Can refer to: 
+              <span class="text-blue-600 font-medium">Backend</span>, 
+              <span class="text-blue-600 font-medium">Cloud</span>, 
+              <span class="text-blue-600 font-medium">API</span>
+            </p>
+          </div>
+          <div class="text-right">
+            <p class="text-green-600 text-sm">3 days, 20 hours ago</p>
+            <p class="text-gray-500 text-sm">Active Referral</p>
+            <button class="mt-2 px-4 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md shadow hover:opacity-90">
+              Request Referral
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm p-4 flex justify-between items-center">
+          <div>
+            <p class="text-sm text-gray-500">Posted by <span class="text-blue-600 font-medium">Test28</span></p>
+            <h2 class="text-lg font-bold">Software Engineer</h2>
+            <p class="text-sm text-gray-600">Google</p>
+            <p class="text-sm text-gray-500">Can refer to: 
+              <span class="text-blue-600 font-medium">Backend</span>, 
+              <span class="text-blue-600 font-medium">Cloud</span>
+            </p>
+          </div>
+          <div class="text-right">
+            <p class="text-green-600 text-sm">3 days, 21 hours ago</p>
+            <p class="text-gray-500 text-sm">Active Referral</p>
+            <button class="mt-2 px-4 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md shadow hover:opacity-90">
+              Request Referral
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Gooey Text Animation Script -->
+  <script>
+    const texts = ["Get Referred.", "Land Faster"];
+    let textIndex = texts.length - 1;
+    let morphTime = 1.2;
+    let cooldownTime = 0.4;
+
+    let text1 = document.getElementById("text1");
+    let text2 = document.getElementById("text2");
+
+    let time = new Date();
+    let morph = 0;
+    let cooldown = cooldownTime;
+
+    function doMorph() {
+      morph -= cooldown;
+      cooldown = 0;
+      let fraction = morph / morphTime;
+      if (fraction > 1) {
+        cooldown = cooldownTime;
+        fraction = 1;
+      }
+      setMorph(fraction);
+    }
+
+    function setMorph(fraction) {
+      text2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+      text2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+      fraction = 1 - fraction;
+      text1.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+      text1.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+    }
+
+    function doCooldown() {
+      morph = 0;
+      text2.style.filter = "";
+      text2.style.opacity = "100%";
+      text1.style.filter = "";
+      text1.style.opacity = "0%";
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      let newTime = new Date();
+      let shouldIncrementIndex = cooldown > 0;
+      let dt = (newTime - time) / 1000;
+      time = newTime;
+      cooldown -= dt;
+      if (cooldown <= 0) {
+        if (shouldIncrementIndex) {
+          textIndex++;
+          text1.textContent = texts[textIndex % texts.length];
+          text2.textContent = texts[(textIndex + 1) % texts.length];
+        }
+        doMorph();
+      } else {
+        doCooldown();
+      }
+    }
+
+    animate();
+
+    // Auto-hide splash after 3s
+    setTimeout(() => {
+      document.getElementById("splash").style.opacity = 0;
+      document.getElementById("splash").style.transition = "opacity 1s ease";
+      setTimeout(() => {
+        document.getElementById("splash").remove();
+      }, 1000);
+    }, 3000);
+  </script>
+</body>
+</html>

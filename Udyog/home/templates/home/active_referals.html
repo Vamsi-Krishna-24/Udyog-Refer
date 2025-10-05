@@ -6,7 +6,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Active Referrals</title>
+    <title>URs</title>
     <script src="https://cdn.tailwindcss.com"></script>
       <!-- Tiny CSS for the glowing Personal Assist button -->
   <style>
@@ -44,13 +44,40 @@
       transition: all 0.6s ease-in-out;
     }
   </style>
+<style>
+  .gooey-container {
+    position: relative;
+    font-weight: 800;
+    font-size: clamp(2rem, 8vw, 6rem); /* responsive font size */
+    filter: url(#threshold) blur(0.8px);
+    line-height: 1;
+    letter-spacing: 0.05em;
+    color: #1e3a8a;
+    text-transform: uppercase;
+  }
+
+  .gooey-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    user-select: none;
+  }
+</style>
+
   </head>
 
     <body class="bg-gray-100 font-[Inter]">
     <div class="flex min-h-screen">
       
       <!-- Sidebar (fixed icons) -->
-      <aside class="w-20 bg-gray-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
+      <aside class="w-20 bg-gradient-to-b from-blue-800 via-blue-900 to-slate-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
+
+        <!-- UR Logo -->
+
+
         <div class="flex-1 flex flex-col justify-center space-y-6">
           <!-- Active Referrals Icon -->
           <a href="{% url 'active_referals' %}" class="relative group">
@@ -91,7 +118,7 @@
       <div class="flex-1 ml-20 flex flex-col">
         
         <!-- Top Bar -->
-        <header class="sticky top-0 z-10 bg-gray-100 flex justify-between items-center px-6 py-4 shadow">
+        <header class="sticky top-0 z-10 bg-white/20 backdrop-blur-sm border-b border-gray-200 flex justify-between items-center px-6 py-4 shadow">
           <h1 class="text-2xl font-bold">Active Referrals</h1>
 
           <div class="flex items-center gap-6">
@@ -201,10 +228,87 @@ And we're just getting started. Currently under development ⚙️.....
     </div>
   </div>
 
+
         <!-- Scrollable Content (referrals list with pagination) -->
         <main class="flex-1 overflow-y-auto px-6 py-6">
-          <div class="max-w-6xl mx-auto">
-            
+
+<!-- 🧩 Updates / Carousel Section -->
+<div id="updatesCarousel" class="w-full max-w-[92rem] mx-auto mt-6 mb-10">
+<!-- 🔄 Updates / Carousel Slider -->
+<!-- 🔄 Updates / Carousel Slider (Gooey + 3 slides) -->
+<!-- 🔄 Updates / Carousel Slider (Gooey + 4 slides) -->
+<div class="relative border border-gray-300/70 rounded-2xl h-60 bg-white/60 backdrop-blur-sm shadow-sm overflow-hidden flex items-center justify-center">
+  <!-- Slides wrapper -->
+  <div id="updateSlides" class="w-full h-full flex transition-transform duration-700 ease-in-out">
+    <!-- Slide 0: Gooey hero -->
+    <div class="flex-shrink-0 w-full h-full flex items-center justify-center">
+      <div class="gooey-container w-full h-full flex items-center justify-center">
+        <span id="text1" class="gooey-text">GET REFERRED.</span>
+        <span id="text2" class="gooey-text">LAND FASTER.</span>
+        <svg class="absolute h-0 w-0">
+          <defs>
+            <filter id="threshold">
+              <feColorMatrix in="SourceGraphic" type="matrix"
+                values="1 0 0 0 0
+                        0 1 0 0 0
+                        0 0 1 0 0
+                        0 0 0 255 -140"/>
+            </filter>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Slide 1: Active Referrals -->
+    <div class="flex-shrink-0 w-full h-full flex flex-col items-center justify-center text-center px-6">
+      <h2 class="text-4xl font-extrabold text-blue-900">Active Referrals</h2>
+      <p class="text-gray-600 mt-3 text-lg">Here all the referrals posted by referrers will be shown.</p>
+    </div>
+
+    <!-- Slide 2: Trending -->
+    <div class="flex-shrink-0 w-full h-full flex flex-col items-center justify-center text-center px-6">
+      <h2 class="text-4xl font-extrabold text-blue-900">Trending</h2>
+      <p class="text-gray-600 mt-3 text-lg">Catch the latest job updates and postings.</p>
+    </div>
+
+    <!-- Slide 3: Tracker -->
+    <div class="flex-shrink-0 w-full h-full flex flex-col items-center justify-center text-center px-6">
+      <h2 class="text-4xl font-extrabold text-blue-900">Tracker</h2>
+      <p class="text-gray-600 mt-3 text-lg">Your latest stats, referral status, and resume.</p>
+    </div>
+
+    <!-- Slide 4: Feedback -->
+    <div class="flex-shrink-0 w-full h-full flex flex-col items-center justify-center text-center px-6">
+      <h2 class="text-4xl font-extrabold text-blue-900">Feedback</h2>
+      <p class="text-gray-600 mt-3 text-lg">Loved the platform? What more features do you want? We’d love to hear your thoughts.</p>
+      <a href="/survey" class="mt-5 px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg hover:from-blue-700 hover:to-blue-800 active:scale-95 transition">
+  📝 Take Survey
+</a>
+    </div>
+  </div>
+
+  <!-- Arrows -->
+  <button id="prevSlide" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-700">&#10094;</button>
+  <button id="nextSlide" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-700">&#10095;</button>
+
+  <!-- Dots (5 slides) -->
+  <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+    <span class="dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer"></span>
+    <span class="dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer"></span>
+    <span class="dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer"></span>
+    <span class="dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer"></span>
+    <span class="dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer"></span>
+  </div>
+</div>
+
+<div class="border-b border-gray-200 mt-6"></div>
+
+
+
+
+
+
+          <div class="max-w-6xl mx-auto">            
             <!-- Dynamic referrals -->
             <div id="referralsGrid" class="grid gap-6">
              <!-- Card Start -->
@@ -607,6 +711,92 @@ document.addEventListener("keydown", (e) => {
 // ///// close on backdrop click
 document.getElementById("drawerBackdrop")?.addEventListener("click", closeReferralDrawer);
 </script>
+<script>
+  const texts = ["Get REFERRED.", "Land Faster"];
+  let textIndex = texts.length - 1;
+  let morphTime = 1.2;
+  let cooldownTime = 0.4;
+
+  const text1 = document.getElementById("text1");
+  const text2 = document.getElementById("text2");
+
+  let time = new Date();
+  let morph = 0;
+  let cooldown = cooldownTime;
+
+  function doMorph() {
+    morph -= cooldown;
+    cooldown = 0;
+    let fraction = morph / morphTime;
+    if (fraction > 1) {
+      cooldown = cooldownTime;
+      fraction = 1;
+    }
+    setMorph(fraction);
+  }
+
+  function setMorph(fraction) {
+    text2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+    text2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+    fraction = 1 - fraction;
+    text1.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+    text1.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+  }
+
+  function doCooldown() {
+    morph = 0;
+    text2.style.filter = "";
+    text2.style.opacity = "100%";
+    text1.style.filter = "";
+    text1.style.opacity = "0%";
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    let newTime = new Date();
+    let shouldIncrementIndex = cooldown > 0;
+    let dt = (newTime - time) / 1000;
+    time = newTime;
+    cooldown -= dt;
+
+    if (cooldown <= 0) {
+      if (shouldIncrementIndex) {
+        textIndex++;
+        text1.textContent = texts[textIndex % texts.length];
+        text2.textContent = texts[(textIndex + 1) % texts.length];
+      }
+      doMorph();
+    } else {
+      doCooldown();
+    }
+  }
+  animate();
+</script>
+
+<script>
+let currentSlide = 0;
+const slides = document.getElementById("updateSlides");
+const dots = document.querySelectorAll(".dot");
+const totalSlides = 5;
+
+function showSlide(index) {
+  currentSlide = (index + totalSlides) % totalSlides;
+  slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+  dots.forEach((dot, i) =>
+    dot.classList.toggle("bg-blue-600", i === currentSlide)
+  );
+}
+
+document.getElementById("prevSlide").onclick = () => showSlide(currentSlide - 1);
+document.getElementById("nextSlide").onclick = () => showSlide(currentSlide + 1);
+dots.forEach((dot, i) => (dot.onclick = () => showSlide(i)));
+
+setInterval(() => showSlide(currentSlide + 1), 4000);
+showSlide(0);
+</script>
+
+
+
 
 
 

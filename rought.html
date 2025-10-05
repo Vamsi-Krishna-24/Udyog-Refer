@@ -1,29 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Referral Cards</title>
+  <meta charset="UTF-8">
+  <title>Active Referrals</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-6">
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex flex-col">
 
-  <div class="max-w-5xl mx-auto grid gap-4">
-    
-    <!-- Card Start -->
-    <div class="bg-white rounded-xl shadow-md p-6 flex justify-between items-start">
-      <div>
-        <div class="text-sm text-gray-500 mb-1">
-          Posted by <span class="text-blue-600 font-medium">User Name</span>
+  <!-- Sidebar -->
+  <div class="flex">
+    <aside class="w-20 bg-gradient-to-b from-indigo-600 to-blue-600 text-white flex flex-col items-center py-6 space-y-8 shadow-lg">
+      <div class="text-2xl font-bold">UR</div>
+      <button class="hover:scale-110 transition"><i>⚙️</i></button>
+      <button class="hover:scale-110 transition"><i>📊</i></button>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 px-10 py-8">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6">Active Referrals</h1>
+
+      <!-- Cards Grid -->
+      <div class="grid gap-6">
+        <!-- Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition p-6 flex justify-between items-center">
+          <div>
+            <p class="text-sm text-gray-500">Posted by <span class="font-semibold text-indigo-600">Test28</span></p>
+            <h2 class="text-xl font-semibold text-gray-900">QA Engineer</h2>
+            <p class="text-sm text-gray-500">DT1 · Can refer to: <span class="text-blue-600">IT</span></p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm text-green-600 mb-2">3 days ago</p>
+            <button class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-medium hover:scale-105 transition">Request Referral</button>
+          </div>
         </div>
-        <h2 class="text-xl font-bold text-gray-900 leading-tight">Data Engineer 2</h2>
-        <p class="text-gray-700 text-sm mb-1">Google</p>
-        <p class="text-gray-600 text-sm">
-          Can refer to: <span class="font-medium">Data</span>
-        </p>
-      </div>
 
-      <div class="text-right flex flex-col justify-between items-end h-full">
-        <div class="text-xs text-red-500 font-medium mb-2">Posted 2 hours ago</div>
-        <span class="text-sm text-gray-600">Active Referral</span>
-        <button
+        <!-- Duplicate for testing -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition p-6 flex justify-between items-center">
+          <div>
+            <p class="text-sm text-gray-500">Posted by <span class="font-semibold text-indigo-600">Test28</span></p>
+            <h2 class="text-xl font-semibold text-gray-900">Software Engineer 3</h2>
+            <p class="text-sm text-gray-500">Alpha · Can refer to: <span class="text-blue-600">Backend, Cloud, API</span></p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm text-green-600 mb-2">3 days ago</p>
+            <button class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-medium hover:scale-105 transition">Request Referral</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>
