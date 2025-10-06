@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>UR | User Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <!-- Cover + Profile Section -->
+  <div class="relative bg-gradient-to-r from-blue-500 to-indigo-600 h-56">
+    <img class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover" src="https://i.pravatar.cc/150?img=12" alt="Profile Photo">
+  </div>
+
+  <div class="mt-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Basic Info -->
+    <div class="text-center">
+      <h1 class="text-3xl font-bold" id="username">John Doe</h1>
+      <p class="text-gray-500" id="email">john.doe@gmail.com</p>
+      <span class="inline-block bg-blue-100 text-blue-600 text-sm px-3 py-1 rounded-full mt-2" id="role">Referrer</span>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h3 class="font-semibold text-lg mb-2">Referrals Summary</h3>
+        <ul class="text-sm text-gray-600 space-y-1">
+          <li>Total Referrals Made: <span class="font-bold">15</span></li>
+          <li>Accepted Referrals: <span class="font-bold">6</span></li>
+          <li>Pending Referrals: <span class="font-bold">9</span></li>
+        </ul>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h3 class="font-semibold text-lg mb-2">Professional Summary</h3>
+        <p class="text-sm text-gray-600">
+          5+ years of experience in backend development, passionate about enabling talent reach the right opportunities through strategic referrals and mentorship.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h3 class="font-semibold text-lg mb-2">Personal Bio</h3>
+        <p class="text-sm text-gray-600">
+          Tech enthusiast. Referral warrior. Love hiking, coffee, and helping candidates land their dream roles.
+        </p>
+      </div>
+    </div>
+
+    <!-- Skills / Domains -->
+    <div class="bg-white mt-8 p-6 rounded-xl shadow">
+      <h3 class="font-semibold text-lg mb-4">Referral Domains</h3>
+      <div class="flex flex-wrap gap-2">
+        <span class="bg-gray-200 px-3 py-1 rounded-full text-sm">Data Science</span>
+        <span class="bg-gray-200 px-3 py-1 rounded-full text-sm">Backend</span>
+        <span class="bg-gray-200 px-3 py-1 rounded-full text-sm">Product Management</span>
+        <span class="bg-gray-200 px-3 py-1 rounded-full text-sm">ML Ops</span>
+      </div>
+    </div>
+
+    <!-- Contact + Edit -->
+    <div class="mt-8 flex justify-end gap-4">
+      <button class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Edit Profile</button>
+      <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">View My Referrals</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("username").textContent = localStorage.getItem("username") || "—";
+    document.getElementById("email").textContent = localStorage.getItem("email") || "—";
+    document.getElementById("role").textContent = localStorage.getItem("role") || "—";
+  </script>
+</body>
+</html>

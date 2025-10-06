@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import User, referal_req, Referer, Referral_post, Job
+from .models import User, referal_req, Referer, Referral_post, Job, SeekerRequest
 from rest_framework import serializers
-from .models import User
+from .models import User, SeekerRequest
 from django.utils import timezone
 from datetime import timedelta
 from django.utils.timesince import timesince
@@ -106,3 +106,11 @@ class JobSerializer(serializers.ModelSerializer):
         if delta < timedelta(hours=1):   return f"{delta.seconds//60}m ago"
         if delta < timedelta(days=1):    return f"{delta.seconds//3600}h ago"
         return f"{delta.days}d ago"
+    
+
+#serialiser for seeker request
+class SeekerRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SeekerRequest
+        fields = "__all__"
+        read_only_fields = ["requester", "referrer", "status", "created_at", "updated_at"]

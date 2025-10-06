@@ -121,4 +121,47 @@ class Job(models.Model):
 
 
 
+#Defining a model to store the Seeker Request 
+
+class SeekerRequest(models.Model):
+    referral_post=models.ForeignKey(
+        "Referral_post",
+        on_delete=models.CASCADE,
+        related_name="seeker_requests"
+    )
+
+    requester = models.ForeignKey(
+        "home.User",
+        on_delete=models.CASCADE,
+        related_name="sent_requests"
+    )
+
+    referrer=models.ForeignKey(
+        "home.User",
+        on_delete=models.CASCADE,
+        related_name="received_requests"
+    )
+
+    resume = models.FileField(upload_to= "resumes/", blank=True, null=True)
+
+    STATUS_CHOICES=[
+        ("PENDING", "Pending"),
+        ("ACCEPTED", "Accepted"),
+        ("REJECTED", "Rejected"),
+    ]
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="PENDING"
+    )
+
+    message = models.TextField(blank=True, null=True) 
+
+        # 🕒 Auto timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # 🧠 Optional: nice display in admin
+    def __str__(self):
+        return f"{self.requester} → {self.referrer} ({self.status})"
+
+
     

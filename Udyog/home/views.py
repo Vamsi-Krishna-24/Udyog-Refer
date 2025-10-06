@@ -4,8 +4,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from .models import User, referal_req, Referer, Referral_post
-from .serializers import UserSerializer, Referalrequestserializer, RefererSerializer, ReferralPostSerializer, JobSerializer
+from .models import User, referal_req, Referer, Referral_post, SeekerRequest, Referral_post
+from .serializers import UserSerializer, Referalrequestserializer, RefererSerializer, ReferralPostSerializer, JobSerializer,SeekerRequestSerializer
 from .permissions import IsReferrerOnCreate
 from django.shortcuts import redirect, get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -16,7 +16,7 @@ from django.conf import settings
 from rest_framework import viewsets
 from .models import Job
 from .serializers import JobSerializer
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, serializers
 
 
 
@@ -271,3 +271,33 @@ class JobViewSet(viewsets.ReadOnlyModelViewSet):
             qs = qs.filter(location__icontains=loc)
         return qs
 
+
+#API View for Seeker Request
+class SeekerRequestViewSet(viewsets.ModelViewSet):
+    queryset = SeekerRequest.objects.all().order_by("-created_at")
+    serializer_class = SeekerRequestSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        # get referral post id from request data
+        post_id = self.request.data.get("referral_post")
+        referral_post = Referral_post.objects.get(id=post_id)
+
+        # prevent self-referrals
+        if referral_post.user == self.request.user:
+            raise serializers.ValidationError("You cannot request your own referral post.")
+
+        # save with auto-linked users
+        serializer.save(
+            requester=self.request.user,
+            referrer=referral_post.user,
+            referral_post=referral_post
+        )
+
+    def get_queryset(self):
+        user = self.request.user
+        # show seeker their own sent requests
+        if self.request.query_params.get("view") == "mine":
+            return SeekerRequest.objects.filter(requester=user).order_by("-created_at")
+        # show referrer all incoming requests
+        return SeekerRequest.objects.filter(referrer=user).order_by("-created_at")

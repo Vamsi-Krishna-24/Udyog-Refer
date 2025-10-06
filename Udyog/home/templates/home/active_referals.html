@@ -475,7 +475,8 @@ And we're just getting started. Currently under development ⚙️.....
 
   <!-- Footer -->
   <div class="p-6 border-t border-gray-200 bg-white">
-    <button class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 
+    <button  onclick="sendReferralRequest()"
+    class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 
         hover:from-blue-700 hover:to-blue-800 
         text-white rounded-lg font-semibold text-sm 
         shadow-md hover:shadow-lg transition active:scale-95">
@@ -483,6 +484,7 @@ And we're just getting started. Currently under development ⚙️.....
     </button>
   </div>
 </div>
+
 
 
 <!--Script 01-->
@@ -497,7 +499,8 @@ And we're just getting started. Currently under development ⚙️.....
 <!-- JWT guard + Live referrals (single script) -->
 <script>
   const token = localStorage.getItem("access_token");
-  let allReferrals = [];   ///// store all items from API
+  let allReferrals = [];  
+  let currentReferralId = null; 
   let currentPage = 1;
   const pageSize = 10;
 
@@ -706,6 +709,7 @@ async function loadReferrals(query = "") {
 
 function openReferralDrawerByIndex(idx) {
   const ref = allReferrals[idx] || {};
+    currentReferralId = ref.id;  
   openReferralDrawer(ref);
 }
 
@@ -849,7 +853,52 @@ showSlide(0);
 </script>
 
 
+<script>
+  async function sendReferralRequest() {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    alert("Please login first!");
+    return;
+  }
 
+  const message = document.getElementById("referralMessage").value.trim();
+  const resumeFile = document.getElementById("resumeUpload").files[0];
+
+  if (!currentReferralId) {
+    alert("Referral ID missing — try reopening the drawer.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("referral_post", currentReferralId);
+  formData.append("message", message);
+  if (resumeFile) formData.append("resume", resumeFile);
+
+  try {
+    const res = await fetch("/api/seeker-requests/", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      console.error("Failed:", err);
+      alert("❌ Could not send referral request.");
+      return;
+    }
+
+    const data = await res.json();
+    console.log("✅ Request sent:", data);
+    alert("Referral request sent successfully!");
+    closeReferralDrawer();
+  } catch (e) {
+    console.error("Network error:", e);
+    alert("Network error. Try again later.");
+  }
+}
+
+</script>
 
 
 

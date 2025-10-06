@@ -11,10 +11,13 @@ from .views import (
     ReferralPostViewSet,
     MeAPIView,
     JobViewSet,
+    SeekerRequestViewSet
 )
 
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework import routers
+
 
 # ----- DRF Router (API under /api/)
 
@@ -23,6 +26,8 @@ from rest_framework_simplejwt.views import TokenRefreshView
 router = DefaultRouter()
 router.register(r"referrals", ReferralPostViewSet, basename="referrals")
 router.register(r'jobs', JobViewSet, basename='jobs') 
+router.register(r"seeker-requests", SeekerRequestViewSet, basename="seeker-requests")
+
 
 
 
@@ -55,4 +60,5 @@ urlpatterns = [
     
     # ----- Mount DRF router
    path("api/", include(router.urls)),
+
 ]
