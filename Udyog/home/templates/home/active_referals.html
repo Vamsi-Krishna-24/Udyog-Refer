@@ -485,6 +485,38 @@ And we're just getting started. Currently under development ⚙️.....
   </div>
 </div>
 
+<!--Script 0-->
+<script>
+  async function refreshTokenIfNeeded() {
+    const access = localStorage.getItem("access_token");
+    const refresh = localStorage.getItem("refresh_token");
+    if (!access || !refresh) return false;
+
+    // Decode and check expiry
+    const payload = JSON.parse(atob(access.split('.')[1]));
+    const now = Math.floor(Date.now() / 1000);
+    const isExpired = payload.exp < now;
+
+    if (!isExpired) return true;
+
+    // Try refresh
+    const res = await fetch("/api/token/refresh/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh })
+    });
+
+    if (!res.ok) {
+      localStorage.clear();
+      window.location.href = "/login";
+      return false;
+    }
+
+    const data = await res.json();
+    localStorage.setItem("access_token", data.access);
+    return true;
+  }
+</script>
 
 
 <!--Script 01-->

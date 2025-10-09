@@ -8,11 +8,13 @@ import home.routing  # -----> your WS routes
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Udyog.settings")
 
-django_asgi_app = get_asgi_application()
-
 application = ProtocolTypeRouter({
-    "http": django_asgi_app,                                   # -----> normal HTTP
-    "websocket": AuthMiddlewareStack(                          # -----> WS with session auth
-        URLRouter(home.routing.websocket_urlpatterns)          # -----> map ws URLs
+    "http": get_asgi_application(),
+    "websocket": AuthMiddlewareStack(
+        URLRouter(
+            home.routing.websocket_urlpatterns
+        )
     ),
 })
+
+

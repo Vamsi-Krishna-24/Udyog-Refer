@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Referrer Dashboard | Udyog Refer</title>
+
+    <!-- Tailwind + Confetti -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Open/close “Post a New Refer” modal -->
+    <script>
+      function toggleModal() {
+        document.getElementById("referModal").classList.toggle("hidden");
+        document.getElementById("overlay").classList.toggle("hidden");
+      }
+    </script>
+
+    <!-- Styles used by your notifications/animations -->
+    <style>
+      @keyframes loadingLine { 0% { width: 0% } 100% { width: 100% } }
+      .loading-bar { animation: loadingLine 2s ease-in-out forwards }
+      @keyframes draw { 0% { stroke-dasharray:48; stroke-dashoffset:48 } 100% { stroke-dasharray:48; stroke-dashoffset:0 } }
+      .tick,.cross{ stroke-dasharray:48; stroke-dashoffset:48; animation: draw 1s ease forwards }
+      @keyframes popIn { 0% { transform: scale(.5); opacity:0 } 100% { transform: scale(1); opacity:1 } }
+      .pop-in{ animation: popIn .6s ease forwards }
+      @keyframes fadeOut { to { opacity: 0 } }
+      .fade-out{ animation: fadeOut 1s ease forwards }
+      @keyframes shake{ 0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)} }
+      .shake{ animation:shake .6s ease }
+    </style>
+  </head>
+
+  <body class="bg-gray-100 font-sans min-h-screen">
+    <!-- Overlay (shared by modals) -->
+    <div id="overlay" class="hidden fixed inset-0 bg-black/50 z-40"></div>
+
+    <!-- 2-step “Post a New Refer” modal (kept intact) -->
+    <div id="referModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-8 w-full max-w-lg shadow-2xl">
+        <!-- dots -->
+        <div class="flex justify-center mb-6 space-x-2">
+          <div id="dot1" class="h-3 w-3 rounded-full bg-blue-600"></div>
+          <div id="dot2" class="h-3 w-3 rounded-full bg-gray-300"></div>
+        </div>
+
+        <!-- step 1 -->
+        <div id="step1">
+          <h2 class="text-2xl font-semibold mb-6 text-gray-800">Basic Details</h2>
+          <div class="space-y-4">
+            <input id="company" type="text" placeholder="Company Name" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500" />
+            <input id="role" type="text" placeholder="Role" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500" />
+            <input id="domains" type="text" placeholder="Referral Domains" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500" />
+            <button type="button" onclick="nextStep()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl">Next →</button>
+          </div>
+          <button onclick="toggleModal()" class="mt-4 block text-center w-full text-sm text-gray-500 hover:text-gray-700">Cancel</button>
+        </div>
+
+        <!-- step 2 -->
+        <div id="step2" class="hidden">
+          <h2 class="text-2xl font-semibold mb-6 text-gray-800">Job Details</h2>
+          <form id="referForm" class="space-y-4">
+            <textarea id="job_description" rows="3" placeholder="Job Description" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500"></textarea>
+            <div class="grid grid-cols-2 gap-4">
+              <input id="experience" type="text" placeholder="Experience Required" class="p-3 border rounded-xl focus:ring-2 focus:ring-blue-500" />
+              <input id="availability" type="text" placeholder="Availability" class="p-3 border rounded-xl focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <input id="location" type="text" placeholder="Location" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500" />
+            <input id="salary" type="text" placeholder="Salary Expectation" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500" />
+            <input id="job_link" type="url" placeholder="Link to Job" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500" />
+            <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl">✅ Post Referral</button>
+          </form>
+          <button onclick="prevStep()" class="mt-4 block text-center w-full text-sm text-gray-500 hover:text-gray-700">← Back</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <aside class="w-20 bg-gradient-to-b from-blue-800 via-blue-900 to-slate-900 text-white flex flex-col items-center py-6 fixed inset-y-0">
+        <div class="flex-1 flex flex-col justify-center space-y-6">
+          <a href="#" class="group relative">
+            <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/>
+              </svg>
+            </div>
+            <span class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800 rounded opacity-0 group-hover:opacity-100">Referrer</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Right column -->
+      <div class="flex-1 flex flex-col ml-20">
+        <!-- Header -->
+        <header class="sticky top-0 z-10 bg-gray-100 border-b">
+          <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div>
+              <h1 class="text-2xl font-bold text-blue-900">Referral Post</h1>
+              <p class="text-gray-600 text-sm -mt-0.5">Manage and create your referral posts</p>
+            </div>
+            <div class="flex items-center gap-3 relative">
+              <button onclick="toggleModal()" class="flex items-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                <span>Post a New Refer</span>
+              </button>
+
+              <!-- Profile Button -->
+              <button onclick="toggleProfileModal()" class="p-2 rounded hover:bg-gray-200" aria-label="User Profile">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-700">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                </svg>
+              </button>
+
+              <!-- Profile Modal -->
+              <div id="profileModal" class="hidden absolute right-0 top-full mt-2 w-56 z-50 bg-white border border-gray-200 rounded-lg shadow-lg">
+                <div class="px-4 py-3 border-b">
+                  <p id="displayName" class="font-semibold text-gray-800">User</p>
+                  <p id="displayEmail" class="text-sm text-gray-500">email@domain.com</p>
+                </div>
+                <ul class="py-2 text-sm text-gray-700">
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">View Profile</a></li>
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">See Plans</a></li>
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Help</a></li>
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Language</a></li>
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Privacy</a></li>
+                  <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Policy</a></li>
+                </ul>
+                <div class="border-t">
+                  <a href="{% url 'login' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign Out</a>
+                </div>
+              </div>
+
+              <!-- Logout -->
+              <a href="{% url 'login' %}" class="p-2 rounded hover:bg-gray-200" aria-label="Logout">
+                <svg class="w-6 h-6 text-gray-700 hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </header>
+
+        <!-- ===== Cards (Django dynamic) ===== -->
+        <main class="flex-1 max-w-6xl mx-auto w-full px-6 py-6 space-y-6">
+
+          {% comment %}
+          Expect: view passes `referral_posts` queryset.
+          Applicants via reverse FK: `seekerrequest_set` (change to your related_name if you set one).
+          {% endcomment %}
+
+          {% for post in referral_posts %}
+          <div class="bg-white rounded-lg border shadow-sm p-5">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="font-semibold text-gray-900">
+                  {{ post.role }} @ {{ post.company_name }}
+                </h2>
+                <p class="text-sm text-gray-500">
+                  Posted on {{ post.created_at|date:"M d, Y" }}
+                </p>
+              </div>
+              <div class="flex items-center space-x-4">
+                <span class="text-sm font-medium text-blue-600">
+                  {{ post.seekerrequest_set.count }} Requests
+                </span>
+                <button onclick="openMaxModal()" class="text-gray-500 hover:text-gray-700" title="Maximize">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M16 4h4v4M4 16v4h4m12 0h-4v-4"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Applicants preview (first 4) -->
+            <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1">
+              {% for req in post.seekerrequest_set.all|slice:":4" %}
+              <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
+                <div>
+                  <p class="text-sm font-medium text-gray-800">
+                    {{ req.requester.get_full_name|default:req.requester.username|default:req.requester|default:"Applicant" }}
+                  </p>
+                  <p class="text-xs text-gray-500">
+                    {{ req.years_experience|default:"—" }} yrs exp ·
+                    {{ req.primary_skills|default:req.skills|default:"—" }}
+                  </p>
+                </div>
+                <div class="flex space-x-2">
+                  <button onclick="openDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+                  <button onclick="openDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+                  <button onclick="openDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+                </div>
+              </div>
+              {% empty %}
+              <div class="p-4 border rounded-md bg-gray-50 text-sm text-gray-500">No requests yet.</div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+
+        </main>
+
+        <!-- Notification templates (kept) -->
+        <div id="dialog" class="hidden fixed top-5 right-5 w-72 shadow-lg rounded-lg border bg-white z-50">
+          <div class="h-1 bg-blue-400 rounded-t-lg loading-bar"></div>
+          <div class="p-6 text-center">
+            <p class="text-gray-800 font-medium mb-3">Referral Posting...</p>
+          </div>
+        </div>
+
+        <div id="successContainer" class="hidden flex flex-col items-center justify-center fixed inset-0 bg-white/70">
+          <svg class="w-28 h-28 text-green-500 pop-in" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
+            <path class="tick" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+          <p class="mt-4 text-lg font-medium text-gray-700 pop-in">Your referral has been successfully posted.</p>
+          <p class="text-gray-500 pop-in">Thank you for your time.</p>
+        </div>
+
+        <div id="failureContainer" class="hidden flex flex-col items-center justify-center fixed inset-0 bg-white/70">
+          <svg id="failureIcon" class="w-28 h-28 text-red-500 pop-in" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
+            <path class="cross" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+          <p class="mt-4 text-lg font-medium text-red-600 pop-in">Oops, it failed.</p>
+          <p class="text-gray-500 pop-in">Please try again.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stepper -->
+    <script>
+      function nextStep(){
+        document.getElementById('step1').classList.add('hidden');
+        document.getElementById('step2').classList.remove('hidden');
+        document.getElementById('dot1').classList.replace('bg-blue-600','bg-gray-300');
+        document.getElementById('dot2').classList.replace('bg-gray-300','bg-blue-600');
+      }
+      function prevStep(){
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step1').classList.remove('hidden');
+        document.getElementById('dot2').classList.replace('bg-blue-600','bg-gray-300');
+        document.getElementById('dot1').classList.replace('bg-gray-300','bg-blue-600');
+      }
+    </script>
+
+    <!-- Post referral: keep your original API call -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form  = document.getElementById('referForm');
+        const token = localStorage.getItem('access_token');
+
+        if (!form) return;
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const payload = {
+            company_name:        document.getElementById("company").value.trim(),
+            role:                document.getElementById("role").value.trim(),
+            referral_domains:    document.getElementById("domains").value.trim(),
+            job_description:     document.getElementById("job_description").value.trim(),
+            experience_required: document.getElementById("experience").value.trim(),
+            availability:        document.getElementById("availability").value.trim(),
+            location:            document.getElementById("location").value.trim(),
+            salary_expectation:  document.getElementById("salary").value.trim(),
+            link_to_apply:       document.getElementById("job_link").value.trim(),
+            user: localStorage.getItem('id')
+          };
+
+          try{
+            const res = await fetch('/api/referrals/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+              },
+              body: JSON.stringify(payload),
+            });
+            const text = await res.text();
+            if (!res.ok) throw new Error(text || 'Failed');
+            triggerSuccessAnimation();
+          }catch(err){
+            console.error(err);
+            triggerFailureAnimation();
+          }
+        });
+      });
+    </script>
+
+    <!-- JWT guard (kept) -->
+    <script>
+      (function(){
+        const token = localStorage.getItem("access_token");
+        if (!token) return; // keep page visible if not required
+        fetch("/api/protected-ping/", { headers: { Authorization: `Bearer ${token}` } })
+          .then(res => { if (!res.ok) /* optional redirect */ null; })
+          .catch(()=>{});
+      })();
+    </script>
+
+    <!-- Success/Failure animations (kept) -->
+    <script>
+      function hideModal(){
+        document.getElementById('referModal')?.classList.add('hidden');
+        document.getElementById('overlay')?.classList.add('hidden');
+      }
+      function resetNotificationState(){
+        ['dialog','successContainer','failureContainer'].forEach(id=>{
+          const el=document.getElementById(id); if(!el) return;
+          el.classList.add('hidden'); el.classList.remove('fade-out'); el.style.removeProperty('opacity');
+        });
+        document.getElementById('failureIcon')?.classList.remove('shake');
+      }
+      function triggerSuccessAnimation(){
+        hideModal();
+        const dialog=document.getElementById('dialog');
+        dialog.classList.remove('hidden');
+        setTimeout(()=>{
+          dialog.classList.add('hidden');
+          const success=document.getElementById('successContainer');
+          success.classList.remove('hidden');
+          confetti({ particleCount:150, spread:120, origin:{y:.6} });
+          setTimeout(()=>{
+            success.classList.add('fade-out');
+            success.addEventListener('animationend',()=>{
+              success.classList.add('hidden'); success.classList.remove('fade-out');
+            },{once:true});
+          },2000);
+        },2200);
+      }
+      function triggerFailureAnimation(){
+        resetNotificationState();
+        toggleModal();
+        const dialog=document.getElementById('dialog');
+        dialog.classList.remove('hidden');
+        setTimeout(()=>{
+          dialog.classList.add('hidden');
+          const f=document.getElementById('failureContainer');
+          f.classList.remove('hidden');
+          document.getElementById('failureIcon').classList.add('shake');
+          setTimeout(()=>{
+            f.classList.add('fade-out');
+            setTimeout(()=>{
+              f.classList.add('hidden'); f.classList.remove('fade-out');
+              document.getElementById('failureIcon').classList.remove('shake');
+            },1000);
+          },4000);
+        },2200);
+      }
+    </script>
+
+    <!-- Profile dropdown (kept) -->
+    <script>
+      function toggleProfileModal(){
+        document.getElementById('profileModal').classList.toggle('hidden');
+      }
+      document.addEventListener('click',(e)=>{
+        const modal=document.getElementById('profileModal');
+        const trigger=e.target.closest('button[onclick="toggleProfileModal()"]');
+        if(!trigger && modal && !modal.contains(e.target)){ modal.classList.add('hidden'); }
+      });
+      (function injectUser(){
+        const nameEl=document.getElementById("displayName");
+        const mailEl=document.getElementById("displayEmail");
+        if(nameEl) nameEl.textContent=localStorage.getItem("username")||"User";
+        if(mailEl) mailEl.textContent=localStorage.getItem("email")||"user@example.com";
+      })();
+    </script>
+
+    <!-- Card “maximize” modal + right drawer (from dashboard cards) -->
+    <div id="maxModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center">
+      <div class="bg-white w-11/12 max-w-6xl h-5/6 rounded-lg shadow-lg flex flex-col">
+        <div class="flex justify-between items-center px-6 py-4 border-b">
+          <h3 class="text-lg font-semibold">Referral Post Details</h3>
+          <button onclick="closeMaxModal()" class="text-gray-500 hover:text-gray-700">✖</button>
+        </div>
+        <div class="px-6 py-3 flex space-x-6 text-sm text-gray-600 border-b">
+          <p>Total: <span class="font-medium text-gray-900">—</span></p>
+          <p>Accepted: <span class="font-medium text-green-600">—</span></p>
+          <p>Pending: <span class="font-medium text-yellow-600">—</span></p>
+          <p>Rejected: <span class="font-medium text-red-600">—</span></p>
+        </div>
+        <div class="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+          <!-- fill via backend or later JS if needed -->
+        </div>
+        <div class="px-6 py-3 border-t flex justify-between items-center">
+          <button class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">Previous</button>
+          <p class="text-sm text-gray-600">Page 1 of 1</p>
+          <button class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="drawer" class="fixed top-0 right-0 w-3/5 max-w-3xl h-full bg-white shadow-xl transform translate-x-full transition-transform duration-300">
+      <div class="p-6 space-y-4">
+        <h3 class="text-lg font-semibold text-gray-800">Applicant Details</h3>
+        <p class="text-sm text-gray-600">Resume: <a href="#" class="text-blue-600">Download PDF</a></p>
+        <div class="flex space-x-3 pt-4">
+          <button class="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Accept</button>
+          <button class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Reject</button>
+        </div>
+        <button onclick="closeDrawer()" class="mt-6 w-full bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md">Close</button>
+      </div>
+    </div>
+
+    <script>
+      function openMaxModal(){ const m=document.getElementById('maxModal'); m.classList.remove('hidden'); m.classList.add('flex') }
+      function closeMaxModal(){ const m=document.getElementById('maxModal'); m.classList.add('hidden'); m.classList.remove('flex') }
+      function openDrawer(){ document.getElementById('drawer').classList.remove('translate-x-full') }
+      function closeDrawer(){ document.getElementById('drawer').classList.add('translate-x-full') }
+    </script>
+
+    <script>
+      const token = localStorage.getItem("access_token");
+const ws = new WebSocket(`ws://127.0.0.1:8000/ws/notify/?token=${token}`);
+
+ws.onopen = () => console.log("✅ WebSocket connected");
+ws.onmessage = (e) => {
+  const data = JSON.parse(e.data);
+  if (data.event === "seeker_request.created") {
+    alert(`🆕 New referral request: ${data.requester}`);
+    // optionally prepend to list
+  }
+};
+ws.onclose = () => console.log("❌ WebSocket closed");
+
+    </script>
+  </body>
+</html>
