@@ -282,6 +282,8 @@ from rest_framework import viewsets, permissions, serializers
 from .models import SeekerRequest, Referral_post
 from .serializers import SeekerRequestSerializer
 
+
+#API View for Seeker Request
 class SeekerRequestViewSet(viewsets.ModelViewSet):
     queryset = SeekerRequest.objects.all().order_by("-created_at")
     serializer_class = SeekerRequestSerializer
@@ -296,29 +298,11 @@ class SeekerRequestViewSet(viewsets.ModelViewSet):
         if referral_post.user == self.request.user:
             raise serializers.ValidationError("You cannot request your own referral post.")
 
-        # save to DB
+        # save with auto-linked users
         serializer.save(
             requester=self.request.user,
             referrer=referral_post.user,
             referral_post=referral_post
-        )
-
-        # ✅ broadcast happens INSIDE this method *after saving*
-        layer = get_channel_layer()
-        async_to_sync(layer.group_send)(
-            f"referrer_{referral_post.user.id}",  # the referrer’s private channel
-            {
-                "type": "seeker_request_created",
-                "data": {
-                    "event": "seeker_request.created",
-                    "referral_post": referral_post.id,
-                    "request_id": serializer.instance.id,
-                    "message": serializer.instance.message,
-                    "status": serializer.instance.status,
-                    "requester": self.request.user.username,
-                    "created_at": str(serializer.instance.created_at),
-                },
-            },
         )
 
     def get_queryset(self):

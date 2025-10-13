@@ -47,9 +47,17 @@ class RefererSerializer(serializers.ModelSerializer):
         
 
 
-## Creating another serializer for posting REFERRAL in DB 
 
+class SeekerRequestMiniSerializer(serializers.ModelSerializer):
+    requester_name = serializers.CharField(source="requester.username", read_only=True)
+    class Meta:
+        model = SeekerRequest
+        fields = ["id", "requester_name", "message", "status"]
+
+
+## Creating another serializer for posting REFERRAL in DB 
 class ReferralPostSerializer(serializers.ModelSerializer):
+    seeker_requests = SeekerRequestMiniSerializer(many=True, read_only=True)
     referrer_name = serializers.CharField(source="user.username", read_only=True)
     time_since = serializers.SerializerMethodField()
 
@@ -68,7 +76,8 @@ class ReferralPostSerializer(serializers.ModelSerializer):
             "link_to_apply",
             "created_at",
             "referrer_name", 
-            "time_since",           
+            "time_since",      
+            "seeker_requests",  # nested serializer 
         ]
 
     def get_time_since(self, obj):
@@ -112,5 +121,6 @@ class JobSerializer(serializers.ModelSerializer):
 class SeekerRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = SeekerRequest
+        resume = serializers.FileField(required=False)
         fields = "__all__"
         read_only_fields = ["requester", "referrer", "status", "created_at", "updated_at"]

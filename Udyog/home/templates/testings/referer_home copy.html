@@ -195,11 +195,124 @@
           </div>
         </header>
 
-       <!-- ===== Dynamic My Referrals ===== -->
-<main id="referrer-cards" class="flex-1 overflow-y-auto px-8 py-6">
-  <div id="referralContainer" class="w-full space-y-6"></div>
-</main>
+        <!-- ===== ADDED: My Referrals Cards (static) ===== -->
+        <main id="referrer-cards" class="flex-1 overflow-y-auto px-8 py-6">
+          <div class="w-full space-y-6">
 
+            <!-- Header row like your snippet -->
+            <div class="flex items-center justify-between">
+              <h2 class="text-xl font-semibold text-gray-800">My Referrals</h2>
+              
+            </div>
+
+            <!-- Job Card 1 -->
+            <div class="bg-white rounded-lg border shadow-sm p-5 relative">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-semibold text-gray-900">Software Engineer @ Google</h3>
+                  <p class="text-sm text-gray-500">Posted on Sep 20, 2025</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                  <button class="text-sm font-medium text-blue-600" onclick="openCardsModal()">32 Requests</button>
+                  <button onclick="openCardsModal('Software Engineer @ Google')" class="text-gray-500 hover:text-gray-700" title="Maximize">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+</svg>
+
+                  </button>
+                </div>
+              </div>
+
+              <!-- Applicants (scrollable preview) -->
+              <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1">
+                <!-- Applicant row -->
+                <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">John Doe</p>
+                    <p class="text-xs text-gray-500">3 yrs exp · Python, Django</p>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button onclick="openApplicantDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">Jane Smith</p>
+                    <p class="text-xs text-gray-500">2 yrs exp · Data Analysis</p>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button onclick="openApplicantDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">Rahul Verma</p>
+                    <p class="text-xs text-gray-500">4 yrs exp · SQL, Tableau</p>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button onclick="openApplicantDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">Aditi Sharma</p>
+                    <p class="text-xs text-gray-500">2 yrs exp · React, Node.js</p>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button onclick="openApplicantDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Job Card 2 -->
+            <div class="bg-white rounded-lg border shadow-sm p-5 relative">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-semibold text-gray-900">Data Analyst @ Amazon</h3>
+                  <p class="text-sm text-gray-500">Posted on Sep 12, 2025</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                  <button class="text-sm font-medium text-blue-600" onclick="openCardsModal()">14 Requests</button>
+                  <button onclick="openCardsModal('Data Analyst @ Amazon')"
+ class="text-gray-500 hover:text-gray-700" title="Maximize">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+</svg>
+
+                  </button>
+                </div>
+              </div>
+
+              <!-- Applicants (scrollable preview) -->
+              <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1">
+                <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">Karan Patel</p>
+                    <p class="text-xs text-gray-500">1 yr exp · Excel, SQL</p>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button onclick="openApplicantDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </main>
         <!-- ===== END: My Referrals Cards ===== -->
 
         <!-- Notification Template-->
@@ -551,77 +664,6 @@
     modal.classList.remove("flex");
   }
 </script>
-
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem("access_token");
-  const container = document.getElementById("referralContainer");
-
-  try {
-    const res = await fetch("/api/referrals/", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await res.json();
-
-    if (!Array.isArray(data)) return;
-
-    container.innerHTML = ""; // clear
-
-    // loop over each referral post
-    data.forEach(post => {
-      const applicants = post.seeker_requests || []; // backend should send list of seekers
-      const card = document.createElement("div");
-      card.className = "bg-white rounded-lg border shadow-sm p-5 relative";
-
-      // header + expand button
-      card.innerHTML = `
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="font-semibold text-gray-900">${post.role} @ ${post.company_name}</h3>
-            <p class="text-sm text-gray-500">Posted on ${new Date(post.created_at).toDateString()}</p>
-          </div>
-          <div class="flex items-center space-x-4">
-            <button class="text-sm font-medium text-blue-600" onclick="openCardsModal('${post.role} @ ${post.company_name}')">
-              ${applicants.length} Requests
-            </button>
-            <button class="text-gray-500 hover:text-gray-700" onclick="openCardsModal('${post.role} @ ${post.company_name}')">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M16 4h4v4M4 16v4h4m12 0h-4v-4"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1" id="seekers-${post.id}"></div>
-      `;
-
-      // append applicant previews
-      const listDiv = card.querySelector(`#seekers-${post.id}`);
-      applicants.forEach(a => {
-          const row = document.createElement("div");
-          row.className = "flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100";
-          row.innerHTML = `
-            <div>
-              <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
-              <p class="text-xs text-gray-500">${a.status}</p>
-            </div>
-            <div class="flex space-x-2">
-              <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-              <button class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-              <button class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-            </div>
-          `;
-          listDiv.appendChild(row);
-        });
-
-      container.appendChild(card);
-    });
-
-  } catch (err) {
-    console.error("Error fetching referrals:", err);
-  }
-});
-</script>
-
 
 
   </body>
