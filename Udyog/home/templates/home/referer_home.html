@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Referrer Dashboard | Udyog Refer</title>
+    
 
     <!--SCRIPT 01, CDN for Tailwind-->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -261,8 +262,15 @@
             </div>
             <div class="flex space-x-2">
               <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">View</button>
-              <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-              <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+             <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
+  class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">
+  Accept
+</button>
+<button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
+  class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">
+  Reject
+</button>
+
             </div>
           </div>
         </div>
@@ -475,68 +483,44 @@
 
     <!-- ===== ADDED: Helpers for Cards Modal + Drawer (no conflicts) ===== -->
     <script>
-      function openCardsModal(role) {
-  const modal = document.getElementById('cardsModal');
-  const title = document.getElementById('modalTitle');
-  const container = document.getElementById('modalApplicants');
+function openCardsModal(role) {
+  const modal = document.getElementById("cardsModal");
+  const title = document.getElementById("modalTitle");
+  const container = document.getElementById("modalApplicants");
 
-  // update title dynamically
-  title.textContent = `${role}`;
+  title.textContent = role;
+  container.innerHTML = "";
 
-  // clear old content
-  container.innerHTML = '';
+  // find the same post in the loaded data
+  const post = window.referralData?.find(
+    p => `${p.role} @ ${p.company_name}` === role
+  );
 
-  // sample seeker data (static for now)
-  const seekers = {
-    "Software Engineer @ Google": [
-      { name: "John Doe", exp: "3 yrs · Python, Django", msg: "Hi, I’m passionate about backend systems and Django apps." },
-      { name: "Jane Smith", exp: "2 yrs · Data Analysis", msg: "Excited to join Google and contribute to analytics!" },
-      { name: "Rahul Verma", exp: "4 yrs · SQL, Tableau", msg: "Would love a chance to work on Google Data Platform!" }
-    ],
-    "Data Analyst @ Amazon": [
-      { name: "Karan Patel", exp: "1 yr · Excel, SQL", msg: "Looking to grow in Amazon’s data team!" }
-    ]
-  };
+  if (!post || !post.seeker_requests?.length) {
+    container.innerHTML = `<p class="text-gray-500 text-center mt-6">No requests found.</p>`;
+  } else {
+    post.seeker_requests.forEach(a => {
+      const el = document.createElement("div");
+      el.className = "flex justify-between items-center p-3 border rounded-md bg-gray-50 hover:bg-gray-100";
+      el.innerHTML = `
+        <div>
+          <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
+          <p class="text-xs text-gray-500">${a.status}</p>
+        </div>
+        <div class="flex space-x-2">
+          <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')" class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">View</button>
+          <button class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+          <button class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+        </div>
+      `;
+      container.appendChild(el);
+    });
+  }
 
-  // get relevant seekers
-  const list = seekers[role] || [];
-
-  // populate the modal
-  list.forEach(app => {
-    const el = document.createElement('div');
-    el.className = "flex justify-between items-center p-3 border rounded-md bg-gray-50 hover:bg-gray-100";
-    el.innerHTML = `
-      <div>
-        <p class="text-sm font-medium text-gray-800">${app.name}</p>
-        <p class="text-xs text-gray-500">${app.exp}</p>
-      </div>
-      <div class="flex space-x-2">
-        <button onclick="openApplicantDrawer('${app.name}', '${app.msg.replace(/'/g, "\\'")}')" class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">View</button>
-        <button class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-        <button class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-      </div>
-    `;
-    container.appendChild(el);
-  });
-
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
 }
-
-      function closeCardsModal() {
-        const m = document.getElementById('cardsModal');
-        m.classList.add('hidden'); m.classList.remove('flex');
-      }
-      function openApplicantDrawer(name, msg) {
-  document.getElementById('applicantDrawer').classList.remove('translate-x-full');
-  const msgBox = document.getElementById('applicantMessage');
-  msgBox.textContent = msg || "No message provided by applicant.";
-}
-
-      function closeApplicantDrawer() {
-        document.getElementById('applicantDrawer').classList.add('translate-x-full');
-      }
-    </script>
+</script>
 
     <script>
   function openEarningsModal() {
@@ -562,6 +546,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
+    window.referralData = data;
 
     if (!Array.isArray(data)) return;
 
@@ -606,8 +591,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
             <div class="flex space-x-2">
               <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-              <button class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-              <button class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+              <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
+  class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">
+  Accept
+</button>
+<button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
+  class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">
+  Reject
+</button>
+
             </div>
           `;
           listDiv.appendChild(row);
@@ -621,6 +613,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 </script>
+<script>
+///// === Drawer Functions ===
+function openApplicantDrawer(name, msg) {
+  const drawer = document.getElementById("applicantDrawer");
+  const msgBox = document.getElementById("applicantMessage");
+
+  // update content
+  msgBox.textContent = msg || "No message provided by applicant.";
+  drawer.classList.remove("translate-x-full");  ///// slide in
+  drawer.classList.add("shadow-2xl");
+}
+
+function closeApplicantDrawer() {
+  const drawer = document.getElementById("applicantDrawer");
+  drawer.classList.add("translate-x-full");  ///// slide out
+}
+
+function closeCardsModal() {
+  const modal = document.getElementById("cardsModal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+</script>
+
 
 
 
