@@ -212,6 +212,10 @@
   <div id="referralContainer" class="w-full space-y-6"></div>
 </main>
 
+<!-- Pagination Navigation -->
+<div id="paginationNav" class="flex justify-center space-x-2 py-6"></div>
+
+
         <!-- ===== END: My Referrals Cards ===== -->
 
         <!-- Notification Template-->
@@ -273,11 +277,11 @@
             </div>
             <div class="flex space-x-2">
               <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">View</button>
-             <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
+             <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || \'\'}')"
   class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">
   Accept
 </button>
-<button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
+<button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || \'\'}')"
   class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">
   Reject
 </button>
@@ -331,6 +335,10 @@
             class="absolute top-3 right-4 text-gray-400 hover:text-gray-700 text-2xl leading-none">&times;</button>
   </div>
 </div>
+
+
+
+
 
 
 
@@ -551,48 +559,55 @@ function openCardsModal(role) {
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("access_token");
   const container = document.getElementById("referralContainer");
+  const pager = document.getElementById("paginationNav");
+  const PAGE_SIZE = 10;
+  let currentPage = 1;
 
   try {
     const res = await fetch("/api/referrals/", {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
-    window.referralData = data;
+    window.referralData = Array.isArray(data) ? data : [];
 
-    if (!Array.isArray(data)) return;
+    function renderPage(page = 1) {
+      const total = window.referralData.length;
+      const totalPages = Math.ceil(total / PAGE_SIZE);
+      const start = (page - 1) * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+      const items = window.referralData.slice(start, end);
 
-    container.innerHTML = ""; // clear
+      container.innerHTML = "";
 
-    // loop over each referral post
-    data.forEach(post => {
-      const applicants = post.seeker_requests || []; // backend should send list of seekers
-      const card = document.createElement("div");
-      card.className = "bg-white rounded-lg border shadow-sm p-5 relative";
+      items.forEach(post => {
+        const applicants = post.seeker_requests || [];
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-lg border border-gray-200 shadow-sm p-5 relative transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-blue-400 hover:scale-[1.02] backdrop-blur-sm bg-opacity-80";
 
-      // header + expand button
-      card.innerHTML = `
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="font-semibold text-gray-900">${post.role} @ ${post.company_name}</h3>
-            <p class="text-sm text-gray-500">Posted on ${new Date(post.created_at).toDateString()}</p>
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-semibold text-gray-900">${post.role} @ ${post.company_name}</h3>
+              <p class="text-sm text-gray-500">Posted on ${new Date(post.created_at).toDateString()}</p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <button class="text-sm font-medium text-blue-600" onclick="openCardsModal('${post.role} @ ${post.company_name}')">
+                ${applicants.length} Requests
+              </button>
+              <button class="text-gray-500 hover:text-gray-700" onclick="openCardsModal('${post.role} @ ${post.company_name}')">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                  <path fill-rule="evenodd" d="M15 3.75a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0V5.56l-3.97 3.97a.75.75 0 1 1-1.06-1.06l3.97-3.97h-2.69a.75.75 0 0 1-.75-.75Zm-12 0A.75.75 0 0 1 3.75 3h4.5a.75.75 0 0 1 0 1.5H5.56l3.97 3.97a.75.75 0 0 1-1.06 1.06L4.5 5.56v2.69a.75.75 0 0 1-1.5 0v-4.5Zm11.47 11.78a.75.75 0 1 1 1.06-1.06l3.97 3.97v-2.69a.75.75 0 0 1 1.5 0v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1 0-1.5h2.69l-3.97-3.97Zm-4.94-1.06a.75.75 0 0 1 0 1.06L5.56 19.5h2.69a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 1 1.5 0v2.69l3.97-3.97a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                </svg>
+
+              </button>
+            </div>
           </div>
-          <div class="flex items-center space-x-4">
-            <button class="text-sm font-medium text-blue-600" onclick="openCardsModal('${post.role} @ ${post.company_name}')">
-              ${applicants.length} Requests
-            </button>
-            <button class="text-gray-500 hover:text-gray-700" onclick="openCardsModal('${post.role} @ ${post.company_name}')">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M16 4h4v4M4 16v4h4m12 0h-4v-4"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1" id="seekers-${post.id}"></div>
-      `;
+          <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1" id="seekers-${post.id}"></div>
+        `;
 
-      // append applicant previews
-      const listDiv = card.querySelector(`#seekers-${post.id}`);
-      applicants.forEach(a => {
+        const listDiv = card.querySelector(`#seekers-${post.id}`);
+        applicants.forEach(a => {
           const row = document.createElement("div");
           row.className = "flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100";
           row.innerHTML = `
@@ -601,29 +616,59 @@ document.addEventListener("DOMContentLoaded", async () => {
               <p class="text-xs text-gray-500">${a.status}</p>
             </div>
             <div class="flex space-x-2">
-              <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
               <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
-  class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">
-  Accept
-</button>
-<button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
-  class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">
-  Reject
-</button>
-
+                      class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+              <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
+                      class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+              <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
+                      class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
             </div>
           `;
           listDiv.appendChild(row);
         });
 
-      container.appendChild(card);
-    });
+        container.appendChild(card);
+      });
+
+      renderPagination(totalPages, page);
+    }
+
+    function renderPagination(totalPages, page) {
+      pager.innerHTML = "";
+      if (totalPages <= 1) return;
+
+      const prevBtn = document.createElement("button");
+      prevBtn.textContent = "Prev";
+      prevBtn.className = `px-3 py-1 rounded ${page === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}`;
+      prevBtn.disabled = page === 1;
+      prevBtn.onclick = () => { if (page > 1) { currentPage--; renderPage(currentPage); } };
+      pager.appendChild(prevBtn);
+
+      for (let p = 1; p <= totalPages; p++) {
+        const btn = document.createElement("button");
+        btn.textContent = p;
+        btn.className = `px-3 py-1 rounded ${p === page ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
+        btn.onclick = () => { currentPage = p; renderPage(p); };
+        pager.appendChild(btn);
+      }
+
+      const nextBtn = document.createElement("button");
+      nextBtn.textContent = "Next";
+      nextBtn.className = `px-3 py-1 rounded ${page === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}`;
+      nextBtn.disabled = page === totalPages;
+      nextBtn.onclick = () => { if (page < totalPages) { currentPage++; renderPage(currentPage); } };
+      pager.appendChild(nextBtn);
+    }
+
+    renderPage(1);
 
   } catch (err) {
     console.error("Error fetching referrals:", err);
+    container.innerHTML = `<div class="text-red-600 p-4 border border-red-300 rounded-lg">Failed to load referrals.</div>`;
   }
 });
 </script>
+
 <script>
 ///// === Drawer Functions ===
 function openApplicantDrawer(name, msg) {
@@ -647,6 +692,194 @@ function closeCardsModal() {
   modal.classList.remove("flex");
 }
 </script>
+
+<script>
+  // ====== CONFIG ======
+  const API_URL = "/api/referrals/";        // DRF list endpoint
+  const PAGE_SIZE = 10;                     // must match settings.py PAGE_SIZE
+  let currentPage = 1;                      // keep track of current page
+  let lastPayload = null;                   // store latest paginated payload
+
+  // ====== HELPERS ======
+  const tokenPag = localStorage.getItem("access_token");
+  const container = document.getElementById("referralContainer");
+  const pager = document.getElementById("paginationNav");
+
+  function guardJWT() {
+    if (!token) { window.location.href = "/no_token"; return; }
+    // Optional: ping auth endpoint if you want, but not required for pagination to work
+  }
+
+  function showLoading(count = 3) {
+    container.innerHTML = Array.from({ length: count }).map(() => `
+      <div class="bg-white rounded-lg border shadow-sm p-5 animate-pulse">
+        <div class="h-5 w-40 bg-gray-200 rounded mb-2"></div>
+        <div class="h-4 w-28 bg-gray-200 rounded mb-2"></div>
+        <div class="h-4 w-56 bg-gray-200 rounded"></div>
+      </div>
+    `).join("");
+  }
+
+  function emptyState() {
+    container.innerHTML = `
+      <div class="bg-white rounded-lg border shadow-sm p-8 text-center">
+        <p class="text-lg font-semibold text-gray-800">No referral posts yet</p>
+        <p class="text-sm text-gray-500 mt-1">Once you create a post, it will appear here.</p>
+      </div>
+    `;
+    if (pager) pager.innerHTML = "";
+  }
+
+  function errorState(msg = "Failed to load referrals") {
+    container.innerHTML = `
+      <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4">${msg}</div>
+    `;
+    if (pager) pager.innerHTML = "";
+  }
+
+  // ====== CARD BUILDER (keeps your existing card layout) ======
+  function buildCard(post) {
+    // post.seeker_requests is expected from your backend
+    const applicants = post.seeker_requests || [];
+    const card = document.createElement("div");
+    card.className = "bg-white rounded-lg border border-gray-200 shadow-sm p-5 relative transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-blue-400 hover:scale-[1.02] backdrop-blur-sm bg-opacity-80";
+
+    // header + expand button
+    card.innerHTML = `
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="font-semibold text-gray-900">${post.role} @ ${post.company_name}</h3>
+          <p class="text-sm text-gray-500">Posted on ${post.created_at ? new Date(post.created_at).toDateString() : "—"}</p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button class="text-sm font-medium text-blue-600"
+                  onclick="openCardsModal('${post.role} @ ${post.company_name}')">
+            ${applicants.length} Requests
+          </button>
+          <button class="text-gray-500 hover:text-gray-700"
+                  onclick="openCardsModal('${post.role} @ ${post.company_name}')" title="Maximize">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                 fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M4 8V4h4M16 4h4v4M4 16v4h4m12 0h-4v-4"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Applicants preview -->
+      <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1" id="seekers-${post.id}"></div>
+    `;
+
+    // append applicant previews
+    const listDiv = card.querySelector(`#seekers-${post.id}`);
+    applicants.forEach(a => {
+      const row = document.createElement("div");
+      row.className = "flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100";
+      row.innerHTML = `
+        <div>
+          <p class="text-sm font-medium text-gray-800">${a.requester_name || "Applicant"}</p>
+          <p class="text-xs text-gray-500">${a.status || ""}</p>
+        </div>
+        <div class="flex space-x-2">
+          <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g, "\\'")}', '${(a.message || "").replace(/'/g, "\\'")}')"
+                  class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+          <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g, "\\'")}', '${(a.message || "").replace(/'/g, "\\'")}')"
+                  class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+          <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g, "\\'")}', '${(a.message || "").replace(/'/g, "\\'")}')"
+                  class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+        </div>
+      `;
+      listDiv.appendChild(row);
+    });
+
+    return card;
+  }
+
+  // ====== RENDER A PAGE (fills #referralContainer) ======
+  function renderCardsPage(items) {
+    if (!items || !items.length) { emptyState(); return; }
+    container.innerHTML = ""; // clear
+    items.forEach(post => container.appendChild(buildCard(post)));
+  }
+
+  // ====== PAGINATION UI ======
+  function renderPagination(payload) {
+    if (!pager) return;
+
+    // DRF pagination payload: { count, next, previous, results: [...] }
+    const total = payload?.count ?? 0;
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+    if (totalPages <= 1) { pager.innerHTML = ""; return; }
+
+    let html = `
+      <button onclick="changeRefPage(${Math.max(1, currentPage - 1)})"
+              class="px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}">
+        Prev
+      </button>`;
+
+    for (let p = 1; p <= totalPages; p++) {
+      html += `
+        <button onclick="changeRefPage(${p})"
+                class="px-3 py-1 rounded ${p === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}">
+          ${p}
+        </button>`;
+    }
+
+    html += `
+      <button onclick="changeRefPage(${Math.min(totalPages, currentPage + 1)})"
+              class="px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}">
+        Next
+      </button>`;
+
+    pager.innerHTML = html;
+  }
+
+  async function changeRefPage(p) {
+    if (p < 1) return;
+    currentPage = p;
+    await loadReferrals(p);
+  }
+
+  // ====== FETCH + RENDER (server-side pagination) ======
+  async function loadReferrals(page = 1) {
+    guardJWT();
+    showLoading();
+
+    try {
+      const url = new URL(API_URL, window.location.origin);
+      url.searchParams.set("page", page);
+
+      const res = await fetch(url.toString(), {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) { errorState("Auth failed or API error"); return; }
+
+      const payload = await res.json();
+      // Support both paginated and non-paginated responses:
+      const data = Array.isArray(payload) ? payload : (payload.results || []);
+      lastPayload = payload;
+
+      if (!data.length) { emptyState(); return; }
+
+      renderCardsPage(data);     // fill the container with cards
+      renderPagination(payload); // draw page buttons
+    } catch (e) {
+      console.error(e);
+      errorState("Network error");
+    }
+  }
+
+  // ====== INIT ======
+  document.addEventListener("DOMContentLoaded", () => {
+    loadReferrals(1); // initial page
+  });
+
+  // Expose for inline onclick (used in pagination buttons)
+  window.changeRefPage = changeRefPage;
+</script>
+
 
 
 
