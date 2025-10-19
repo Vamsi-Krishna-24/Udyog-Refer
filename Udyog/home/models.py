@@ -159,7 +159,9 @@ class SeekerRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # 🧠 Optional: nice display in admin
+    class Meta:
+        unique_together = ("referral_post", "requester")
+        
     def __str__(self):
         return f"{self.requester} → {self.referrer} ({self.status})"
 

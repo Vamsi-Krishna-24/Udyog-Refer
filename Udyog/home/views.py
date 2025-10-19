@@ -220,17 +220,21 @@ class ReferralPostListCreate(APIView):               # ///// /api/referrals/ (GE
 
 
 class ReferralPostViewSet(viewsets.ModelViewSet):
-    queryset = Referral_post.objects.order_by("-created_at")
     serializer_class = ReferralPostSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['role', 'experience_required', 'location','company_name']
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)   # attaches logged-in user
+    search_fields = ['role', 'experience_required', 'location', 'company_name']
 
     def get_queryset(self):
-        qs = Referral_post.objects.order_by("-created_at")
+        user = self.request.user
+
+        # 🧠 Step 1 — Base queryset
+        if user.role == "referrer":
+            qs = Referral_post.objects.filter(user=user).order_by("-created_at")
+        else:
+            qs = Referral_post.objects.all().order_by("-created_at")
+
+        # 🧠 Step 2 — Apply search filters (if provided)
         role = self.request.query_params.get("role")
         exp = self.request.query_params.get("experience")
         loc = self.request.query_params.get("location")
@@ -244,7 +248,12 @@ class ReferralPostViewSet(viewsets.ModelViewSet):
             qs = qs.filter(location__icontains=loc)
         if comp:
             qs = qs.filter(company_name__icontains=comp)
+
         return qs
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 
 
@@ -294,18 +303,26 @@ class SeekerRequestViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # get referral post id from request data
         post_id = self.request.data.get("referral_post")
+        seeker = self.request.user
         referral_post = Referral_post.objects.get(id=post_id)
 
         # prevent self-referrals
         if referral_post.user == self.request.user:
             raise serializers.ValidationError("You cannot request your own referral post.")
+        
+        existing = SeekerRequest.objects.filter(referral_post_id=post_id, requester=seeker).first()
+        if existing:
+            # If it exists, return the same record instead of creating another
+            raise serializers.ValidationError("You have already requested this referral.")
+
 
         # save with auto-linked users
         serializer.save(
-            requester=self.request.user,
-            referrer=referral_post.user,
-            referral_post=referral_post
+        requester=seeker,
+        referrer=referral_post.user,
+        referral_post=referral_post
         )
+
 
     def get_queryset(self):
         user = self.request.user
