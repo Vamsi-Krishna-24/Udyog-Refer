@@ -295,39 +295,85 @@ from .serializers import SeekerRequestSerializer
 
 
 #API View for Seeker Request
+from rest_framework import viewsets, permissions, status, serializers
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from .models import SeekerRequest, Referral_post
+from .serializers import SeekerRequestSerializer
+
+
 class SeekerRequestViewSet(viewsets.ModelViewSet):
     queryset = SeekerRequest.objects.all().order_by("-created_at")
     serializer_class = SeekerRequestSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    # -----------------------------
+    # CREATE (Seeker sending request)
+    # -----------------------------
     def perform_create(self, serializer):
-        # get referral post id from request data
         post_id = self.request.data.get("referral_post")
         seeker = self.request.user
-        referral_post = Referral_post.objects.get(id=post_id)
 
-        # prevent self-referrals
-        if referral_post.user == self.request.user:
+        try:
+            referral_post = Referral_post.objects.get(id=post_id)
+        except Referral_post.DoesNotExist:
+            raise serializers.ValidationError("Referral post not found.")
+
+        # 🚫 prevent self-referrals
+        if referral_post.user == seeker:
             raise serializers.ValidationError("You cannot request your own referral post.")
-        
+
+        # 🚫 prevent duplicate requests (idempotent)
         existing = SeekerRequest.objects.filter(referral_post_id=post_id, requester=seeker).first()
         if existing:
-            # If it exists, return the same record instead of creating another
             raise serializers.ValidationError("You have already requested this referral.")
 
-
-        # save with auto-linked users
+        # ✅ create new seeker request
         serializer.save(
-        requester=seeker,
-        referrer=referral_post.user,
-        referral_post=referral_post
+            requester=seeker,
+            referrer=referral_post.user,
+            referral_post=referral_post
         )
 
-
+    # -----------------------------
+    # GET (list/filter)
+    # -----------------------------
     def get_queryset(self):
         user = self.request.user
-        # show seeker their own sent requests
+
+        # 🟦 show seeker their own sent requests
         if self.request.query_params.get("view") == "mine":
             return SeekerRequest.objects.filter(requester=user).order_by("-created_at")
-        # show referrer all incoming requests
+
+        # 🟩 show referrer all incoming requests for their posts
         return SeekerRequest.objects.filter(referrer=user).order_by("-created_at")
+
+    # -----------------------------
+    # REJECT action (Referrer only)
+    # -----------------------------
+    @action(detail=True, methods=["post"], url_path="reject")
+    def reject(self, request, pk=None):
+        sr = self.get_object()
+
+        # ✅ allow only referrer to reject
+        if sr.referrer_id != request.user.id:
+            raise PermissionDenied("You are not allowed to reject this request.")
+
+        # 🧠 reason required
+        reason = (request.data.get("reason") or "").strip()
+        if not reason:
+            raise ValidationError({"reason": "Reason is required to reject the request."})
+
+        # 🔴 update status
+        sr.status = "REJECTED"
+        sr.reason = reason
+        sr.save(update_fields=["status", "reason", "updated_at"])
+
+        # (Optional) later we'll add WebSocket notification here
+
+        return Response(
+            {"id": sr.id, "status": sr.status, "reason": sr.reason},
+            status=status.HTTP_200_OK
+        )
+

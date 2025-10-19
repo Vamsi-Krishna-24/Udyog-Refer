@@ -154,6 +154,7 @@ class SeekerRequest(models.Model):
     )
 
     message = models.TextField(blank=True, null=True) 
+    reason  = models.TextField(blank=True, null=True)
 
         # 🕒 Auto timestamps
     created_at = models.DateTimeField(auto_now_add=True)
@@ -161,7 +162,7 @@ class SeekerRequest(models.Model):
 
     class Meta:
         unique_together = ("referral_post", "requester")
-        
+
     def __str__(self):
         return f"{self.requester} → {self.referrer} ({self.status})"
 

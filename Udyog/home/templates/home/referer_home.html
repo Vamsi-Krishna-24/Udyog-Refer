@@ -290,6 +290,158 @@
           </div>
         </div>
 
+        <!-- Reject Reason Modal -->
+<!-- Reject Reason Modal -->
+<div id="rejectModal"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-xl shadow-2xl p-6 w-[90%] max-w-md transform transition-all scale-100">
+    <h2 class="text-lg font-semibold text-gray-800 mb-2">Reject Application</h2>
+    <p class="text-sm text-gray-600 mb-4">
+      Please provide a short reason for rejecting this applicant.
+    </p>
+    <textarea id="rejectReason"
+              rows="3"
+              class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-red-400 focus:outline-none"
+              placeholder="Enter your reason here..."></textarea>
+    <div class="flex justify-end space-x-3 mt-5">
+      <button id="rejectCancel"
+              class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700">
+        Cancel
+      </button>
+      <button id="rejectConfirm"
+              class="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white">
+        Reject
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function setupRejectModal(){
+  const modal = document.getElementById("rejectModal");
+  const cancelBtn = document.getElementById("rejectCancel");
+  const confirmBtn = document.getElementById("rejectConfirm");
+  const reasonInput = document.getElementById("rejectReason");
+  let currentRejectId = null;
+
+  // Open modal (called from drawer Reject button)
+  window.openRejectModal = function(reqId) {
+    currentRejectId = reqId;
+    reasonInput.value = "";
+    modal.classList.remove("hidden");
+  };
+
+  // Close modal helper
+  function closeModal(){
+    modal.classList.add("hidden");
+    reasonInput.value = "";
+    currentRejectId = null;
+  }
+
+  cancelBtn.onclick = closeModal;
+
+  confirmBtn.onclick = async () => {
+    const reason = reasonInput.value.trim();
+    if (!reason) { alert("Please enter a reason."); return; }
+
+    try {
+      const token = localStorage.getItem("access_token");
+      const res = await fetch(`/api/seeker-requests/${currentRejectId}/reject/`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reason })
+      });
+      if (!res.ok) throw new Error("Reject failed");
+      const row = document.getElementById(`req-row-${currentRejectId}`);
+      if (row) {
+        const pill = row.querySelector(".status-pill");
+        if (pill) {
+          pill.textContent = "REJECTED";
+          pill.className = "status-pill text-xs text-red-700 bg-red-100 px-2 py-1 rounded-md";
+        }
+        row.querySelectorAll("button").forEach(b => { b.disabled = true; b.classList.add("opacity-60","cursor-not-allowed"); });
+      }
+      closeModal();
+      closeApplicantDrawer();
+    } catch (e) {
+      alert(e.message || "Reject failed");
+    }
+  };
+})();
+</script>
+
+
+<script>
+  let REJECT_CTX = { requestId: null, rowEl: null, countsEl: null }; // context holder
+
+  function openRejectModal(requestId, rowSelector, countsSelector) {
+    REJECT_CTX.requestId = requestId;
+    REJECT_CTX.rowEl = document.querySelector(rowSelector) || null;        // the applicant row div
+    REJECT_CTX.countsEl = document.querySelector(countsSelector) || null;  // the "Accepted / To review / Rejected" counters container (if you have it)
+    document.getElementById("rejectReason").value = "";
+    document.getElementById("rejectModal").classList.remove("hidden");
+  }
+
+  function closeRejectModal() {
+    document.getElementById("rejectModal").classList.add("hidden");
+    REJECT_CTX = { requestId: null, rowEl: null, countsEl: null };
+  }
+
+  async function submitReject() {
+    const reason = (document.getElementById("rejectReason").value || "").trim();
+    if (!reason) {
+      alert("Please provide a reason to reject.");
+      return;
+    }
+    const token = localStorage.getItem("access_token");
+    try {
+      const res = await fetch(`/api/seeker-requests/${REJECT_CTX.requestId}/reject/`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reason })
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(err?.detail || err?.reason || "Failed to reject. Try again.");
+        return;
+      }
+
+      // UI updates: mark this row as REJECTED
+      if (REJECT_CTX.rowEl) {
+        // set status text
+        const statusPill = REJECT_CTX.rowEl.querySelector(".status-pill");
+        if (statusPill) {
+          statusPill.textContent = "REJECTED";
+          statusPill.className = "status-pill text-xs text-red-700 bg-red-100 px-2 py-1 rounded-md";
+        }
+        // disable action buttons
+        REJECT_CTX.rowEl.querySelectorAll("button").forEach(b => {
+          b.disabled = true;
+          b.classList.add("opacity-60", "cursor-not-allowed");
+        });
+      }
+
+      // optional: update summary counters if you render them
+      // e.g., decrement "To be Reviewed" and increment "Rejected"
+      if (REJECT_CTX.countsEl) {
+        // implement your own count tweak here if you show counters
+      }
+
+      closeRejectModal();
+    } catch (e) {
+      alert("Network error while rejecting. Please retry.");
+    }
+  }
+</script>
+
+
         <!-- Pagination -->
         <div class="px-6 py-3 border-t flex justify-between items-center">
           <button class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">Previous</button>
@@ -307,9 +459,10 @@
         <p id="applicantMessage" class="text-sm text-gray-700 bg-gray-50 border rounded-md p-3"></p>
         <p class="text-sm text-gray-600">Resume: <a href="#" class="text-blue-600">Download PDF</a></p>
         <div class="flex space-x-3 pt-4">
-          <button class="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Accept</button>
-          <button class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Reject</button>
-        </div>
+  <button id="drawerAccept" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Accept</button>
+  <button id="drawerReject" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Reject</button>
+</div>
+
         <button onclick="closeApplicantDrawer()" class="mt-6 w-full bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md">Close</button>
       </div>
     </div>
@@ -522,16 +675,20 @@ function openCardsModal(role) {
       const el = document.createElement("div");
       el.className = "flex justify-between items-center p-3 border rounded-md bg-gray-50 hover:bg-gray-100";
       el.innerHTML = `
-        <div>
-          <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
-          <p class="text-xs text-gray-500">${a.status}</p>
-        </div>
-        <div class="flex space-x-2">
-          <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')" class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">View</button>
-          <button class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-          <button class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-        </div>
-      `;
+  <div>
+    <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
+    <p class="text-xs text-gray-500">${a.status}</p>
+  </div>
+  <div class="flex space-x-2">
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">View</button>
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+  </div>
+`;
+
       container.appendChild(el);
     });
   }
@@ -606,6 +763,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1" id="seekers-${post.id}"></div>
         `;
 
+
         const listDiv = card.querySelector(`#seekers-${post.id}`);
         applicants.forEach(a => {
           const row = document.createElement("div");
@@ -616,12 +774,13 @@ document.addEventListener("DOMContentLoaded", async () => {
               <p class="text-xs text-gray-500">${a.status}</p>
             </div>
             <div class="flex space-x-2">
-              <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
-                      class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-              <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
-                      class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-              <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || ""}')"
-                      class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+              <button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+        class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+<button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+        class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+<button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+        class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+
             </div>
           `;
           listDiv.appendChild(row);
@@ -671,15 +830,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 <script>
 ///// === Drawer Functions ===
-function openApplicantDrawer(name, msg) {
+let CURRENT_REQ_ID = null;
+
+function openApplicantDrawer(name, msg, reqId) {
+  CURRENT_REQ_ID = reqId || null;
+
   const drawer = document.getElementById("applicantDrawer");
   const msgBox = document.getElementById("applicantMessage");
 
-  // update content
   msgBox.textContent = msg || "No message provided by applicant.";
-  drawer.classList.remove("translate-x-full");  ///// slide in
+  drawer.classList.remove("translate-x-full");
   drawer.classList.add("shadow-2xl");
 }
+
 
 function closeApplicantDrawer() {
   const drawer = document.getElementById("applicantDrawer");
@@ -692,6 +855,57 @@ function closeCardsModal() {
   modal.classList.remove("flex");
 }
 </script>
+
+<script>
+(function wireDrawerActions(){
+  const token = localStorage.getItem("access_token");
+  const btnAccept = document.getElementById("drawerAccept");
+  const btnReject = document.getElementById("drawerReject");
+
+  async function callAction(url, body=null) {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: body ? JSON.stringify(body) : null
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({}));
+      throw new Error(err?.detail || err?.reason || "Action failed");
+    }
+    return res.json();
+  }
+
+  btnAccept.onclick = async () => {
+    if (!CURRENT_REQ_ID) { alert("No request selected."); return; }
+    try {
+      await callAction(`/api/seeker-requests/${CURRENT_REQ_ID}/accept/`);
+      // Update the row UI
+      const row = document.getElementById(`req-row-${CURRENT_REQ_ID}`);
+      if (row) {
+        const pill = row.querySelector(".status-pill");
+        if (pill) {
+          pill.textContent = "ACCEPTED";
+          pill.className = "status-pill text-xs text-green-700 bg-green-100 px-2 py-1 rounded-md";
+        }
+        row.querySelectorAll("button").forEach(b => { b.disabled = true; b.classList.add("opacity-60","cursor-not-allowed"); });
+      }
+      closeApplicantDrawer();
+    } catch (e) {
+      alert(e.message || "Accept failed");
+    }
+  };
+
+btnReject.onclick = () => {
+  if (!CURRENT_REQ_ID) return;
+  openRejectModal(CURRENT_REQ_ID);
+};
+
+})();
+</script>
+
 
 <script>
   // ====== CONFIG ======
@@ -775,21 +989,23 @@ function closeCardsModal() {
     const listDiv = card.querySelector(`#seekers-${post.id}`);
     applicants.forEach(a => {
       const row = document.createElement("div");
-      row.className = "flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100";
-      row.innerHTML = `
-        <div>
-          <p class="text-sm font-medium text-gray-800">${a.requester_name || "Applicant"}</p>
-          <p class="text-xs text-gray-500">${a.status || ""}</p>
-        </div>
-        <div class="flex space-x-2">
-          <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g, "\\'")}', '${(a.message || "").replace(/'/g, "\\'")}')"
-                  class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-          <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g, "\\'")}', '${(a.message || "").replace(/'/g, "\\'")}')"
-                  class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-          <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g, "\\'")}', '${(a.message || "").replace(/'/g, "\\'")}')"
-                  class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-        </div>
-      `;
+row.className = "flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100";
+row.id = `req-row-${a.id}`;   // <— so we can update this row after accept/reject
+
+row.innerHTML = `
+  <div>
+    <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
+    <p class="status-pill text-xs text-gray-500">${a.status}</p>
+  </div>
+  <div class="flex space-x-2">
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+  </div>
+`;
       listDiv.appendChild(row);
     });
 
