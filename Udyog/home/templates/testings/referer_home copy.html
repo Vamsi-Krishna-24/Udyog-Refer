@@ -1,8 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Referrer Dashboard | Udyog Refer</title>
+        <link rel="icon" type="image/png" href="{% static 'img/ur_logo.ico' %}">
+    
 
     <!--SCRIPT 01, CDN for Tailwind-->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -95,7 +99,15 @@
     <div class="flex h-screen">
       <!-- Sidebar (kept exactly as you had) -->
       <div class="w-20 bg-gray-900 text-white flex flex-col items-center py-6">
+        
+        
         <aside class="w-20 bg-gradient-to-b from-blue-800 via-blue-900 to-slate-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
+                  <!-- UR Logo -->
+<a href="/" class="mb-10">
+<img src="{% static 'img/ur_logo.ico' %}" alt="Udyog Refer Logo"
+     class="w-10 h-10 rounded-lg shadow-md hover:scale-105 transition-transform" />
+
+</a>
           <!-- Vertically centered wrapper -->
           <div class="flex-1 flex flex-col justify-center space-y-6">
             <!-- Refere -->
@@ -195,124 +207,15 @@
           </div>
         </header>
 
-        <!-- ===== ADDED: My Referrals Cards (static) ===== -->
-        <main id="referrer-cards" class="flex-1 overflow-y-auto px-8 py-6">
-          <div class="w-full space-y-6">
+       <!-- ===== Dynamic My Referrals ===== -->
+<main id="referrer-cards" class="flex-1 overflow-y-auto px-8 py-6">
+  <div id="referralContainer" class="w-full space-y-6"></div>
+</main>
 
-            <!-- Header row like your snippet -->
-            <div class="flex items-center justify-between">
-              <h2 class="text-xl font-semibold text-gray-800">My Referrals</h2>
-              
-            </div>
+<!-- Pagination Navigation -->
+<div id="paginationNav" class="flex justify-center space-x-2 py-6"></div>
 
-            <!-- Job Card 1 -->
-            <div class="bg-white rounded-lg border shadow-sm p-5 relative">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="font-semibold text-gray-900">Software Engineer @ Google</h3>
-                  <p class="text-sm text-gray-500">Posted on Sep 20, 2025</p>
-                </div>
-                <div class="flex items-center space-x-4">
-                  <button class="text-sm font-medium text-blue-600" onclick="openCardsModal()">32 Requests</button>
-                  <button onclick="openCardsModal('Software Engineer @ Google')" class="text-gray-500 hover:text-gray-700" title="Maximize">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-</svg>
 
-                  </button>
-                </div>
-              </div>
-
-              <!-- Applicants (scrollable preview) -->
-              <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1">
-                <!-- Applicant row -->
-                <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
-                  <div>
-                    <p class="text-sm font-medium text-gray-800">John Doe</p>
-                    <p class="text-xs text-gray-500">3 yrs exp · Python, Django</p>
-                  </div>
-                  <div class="flex space-x-2">
-                    <button onclick="openApplicantDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
-                  <div>
-                    <p class="text-sm font-medium text-gray-800">Jane Smith</p>
-                    <p class="text-xs text-gray-500">2 yrs exp · Data Analysis</p>
-                  </div>
-                  <div class="flex space-x-2">
-                    <button onclick="openApplicantDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
-                  <div>
-                    <p class="text-sm font-medium text-gray-800">Rahul Verma</p>
-                    <p class="text-xs text-gray-500">4 yrs exp · SQL, Tableau</p>
-                  </div>
-                  <div class="flex space-x-2">
-                    <button onclick="openApplicantDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
-                  <div>
-                    <p class="text-sm font-medium text-gray-800">Aditi Sharma</p>
-                    <p class="text-xs text-gray-500">2 yrs exp · React, Node.js</p>
-                  </div>
-                  <div class="flex space-x-2">
-                    <button onclick="openApplicantDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Job Card 2 -->
-            <div class="bg-white rounded-lg border shadow-sm p-5 relative">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="font-semibold text-gray-900">Data Analyst @ Amazon</h3>
-                  <p class="text-sm text-gray-500">Posted on Sep 12, 2025</p>
-                </div>
-                <div class="flex items-center space-x-4">
-                  <button class="text-sm font-medium text-blue-600" onclick="openCardsModal()">14 Requests</button>
-                  <button onclick="openCardsModal('Data Analyst @ Amazon')"
- class="text-gray-500 hover:text-gray-700" title="Maximize">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-</svg>
-
-                  </button>
-                </div>
-              </div>
-
-              <!-- Applicants (scrollable preview) -->
-              <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1">
-                <div class="flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100">
-                  <div>
-                    <p class="text-sm font-medium text-gray-800">Karan Patel</p>
-                    <p class="text-xs text-gray-500">1 yr exp · Excel, SQL</p>
-                  </div>
-                  <div class="flex space-x-2">
-                    <button onclick="openApplicantDrawer()" class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-                    <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </main>
         <!-- ===== END: My Referrals Cards ===== -->
 
         <!-- Notification Template-->
@@ -361,7 +264,7 @@
         <div class="px-6 py-3 flex space-x-6 text-sm text-gray-600 border-b">
           <p>Total Requests: <span class="font-medium text-gray-900">32</span></p>
           <p>Accepted: <span class="font-medium text-green-600">5</span></p>
-          <p>Pending: <span class="font-medium text-yellow-600">20</span></p>
+          <p>To be Reviewed: <span class="font-medium text-yellow-600">20</span></p>
           <p>Rejected: <span class="font-medium text-red-600">7</span></p>
         </div>
 
@@ -374,11 +277,170 @@
             </div>
             <div class="flex space-x-2">
               <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">View</button>
-              <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-              <button onclick="openApplicantDrawer()" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+             <button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || \'\'}')"
+  class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">
+  Accept
+</button>
+<button onclick="openApplicantDrawer('${a.requester_name}', '${a.message || \'\'}')"
+  class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">
+  Reject
+</button>
+
             </div>
           </div>
         </div>
+
+        <!-- Reject Reason Modal -->
+<!-- Reject Reason Modal -->
+<div id="rejectModal"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-xl shadow-2xl p-6 w-[90%] max-w-md transform transition-all scale-100">
+    <h2 class="text-lg font-semibold text-gray-800 mb-2">Reject Application</h2>
+    <p class="text-sm text-gray-600 mb-4">
+      Please provide a short reason for rejecting this applicant.
+    </p>
+    <textarea id="rejectReason"
+              rows="3"
+              class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-red-400 focus:outline-none"
+              placeholder="Enter your reason here..."></textarea>
+    <div class="flex justify-end space-x-3 mt-5">
+      <button id="rejectCancel"
+              class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700">
+        Cancel
+      </button>
+      <button id="rejectConfirm"
+              class="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white">
+        Reject
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function setupRejectModal(){
+  const modal = document.getElementById("rejectModal");
+  const cancelBtn = document.getElementById("rejectCancel");
+  const confirmBtn = document.getElementById("rejectConfirm");
+  const reasonInput = document.getElementById("rejectReason");
+  let currentRejectId = null;
+
+  // Open modal (called from drawer Reject button)
+  window.openRejectModal = function(reqId) {
+    currentRejectId = reqId;
+    reasonInput.value = "";
+    modal.classList.remove("hidden");
+  };
+
+  // Close modal helper
+  function closeModal(){
+    modal.classList.add("hidden");
+    reasonInput.value = "";
+    currentRejectId = null;
+  }
+
+  cancelBtn.onclick = closeModal;
+
+  confirmBtn.onclick = async () => {
+    const reason = reasonInput.value.trim();
+    if (!reason) { alert("Please enter a reason."); return; }
+
+    try {
+      const token = localStorage.getItem("access_token");
+      const res = await fetch(`/api/seeker-requests/${currentRejectId}/reject/`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reason })
+      });
+      if (!res.ok) throw new Error("Reject failed");
+      const row = document.getElementById(`req-row-${currentRejectId}`);
+      if (row) {
+        const pill = row.querySelector(".status-pill");
+        if (pill) {
+          pill.textContent = "REJECTED";
+          pill.className = "status-pill text-xs text-red-700 bg-red-100 px-2 py-1 rounded-md";
+        }
+        row.querySelectorAll("button").forEach(b => { b.disabled = true; b.classList.add("opacity-60","cursor-not-allowed"); });
+      }
+      closeModal();
+      closeApplicantDrawer();
+    } catch (e) {
+      alert(e.message || "Reject failed");
+    }
+  };
+})();
+</script>
+
+
+<script>
+  let REJECT_CTX = { requestId: null, rowEl: null, countsEl: null }; // context holder
+
+  function openRejectModal(requestId, rowSelector, countsSelector) {
+    REJECT_CTX.requestId = requestId;
+    REJECT_CTX.rowEl = document.querySelector(rowSelector) || null;        // the applicant row div
+    REJECT_CTX.countsEl = document.querySelector(countsSelector) || null;  // the "Accepted / To review / Rejected" counters container (if you have it)
+    document.getElementById("rejectReason").value = "";
+    document.getElementById("rejectModal").classList.remove("hidden");
+  }
+
+  function closeRejectModal() {
+    document.getElementById("rejectModal").classList.add("hidden");
+    REJECT_CTX = { requestId: null, rowEl: null, countsEl: null };
+  }
+
+  async function submitReject() {
+    const reason = (document.getElementById("rejectReason").value || "").trim();
+    if (!reason) {
+      alert("Please provide a reason to reject.");
+      return;
+    }
+    const token = localStorage.getItem("access_token");
+    try {
+      const res = await fetch(`/api/seeker-requests/${REJECT_CTX.requestId}/reject/`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reason })
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(err?.detail || err?.reason || "Failed to reject. Try again.");
+        return;
+      }
+
+      // UI updates: mark this row as REJECTED
+      if (REJECT_CTX.rowEl) {
+        // set status text
+        const statusPill = REJECT_CTX.rowEl.querySelector(".status-pill");
+        if (statusPill) {
+          statusPill.textContent = "REJECTED";
+          statusPill.className = "status-pill text-xs text-red-700 bg-red-100 px-2 py-1 rounded-md";
+        }
+        // disable action buttons
+        REJECT_CTX.rowEl.querySelectorAll("button").forEach(b => {
+          b.disabled = true;
+          b.classList.add("opacity-60", "cursor-not-allowed");
+        });
+      }
+
+      // optional: update summary counters if you render them
+      // e.g., decrement "To be Reviewed" and increment "Rejected"
+      if (REJECT_CTX.countsEl) {
+        // implement your own count tweak here if you show counters
+      }
+
+      closeRejectModal();
+    } catch (e) {
+      alert("Network error while rejecting. Please retry.");
+    }
+  }
+</script>
+
 
         <!-- Pagination -->
         <div class="px-6 py-3 border-t flex justify-between items-center">
@@ -397,9 +459,10 @@
         <p id="applicantMessage" class="text-sm text-gray-700 bg-gray-50 border rounded-md p-3"></p>
         <p class="text-sm text-gray-600">Resume: <a href="#" class="text-blue-600">Download PDF</a></p>
         <div class="flex space-x-3 pt-4">
-          <button class="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Accept</button>
-          <button class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Reject</button>
-        </div>
+  <button id="drawerAccept" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Accept</button>
+  <button id="drawerReject" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Reject</button>
+</div>
+
         <button onclick="closeApplicantDrawer()" class="mt-6 w-full bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md">Close</button>
       </div>
     </div>
@@ -425,6 +488,10 @@
             class="absolute top-3 right-4 text-gray-400 hover:text-gray-700 text-2xl leading-none">&times;</button>
   </div>
 </div>
+
+
+
+
 
 
 
@@ -588,68 +655,48 @@
 
     <!-- ===== ADDED: Helpers for Cards Modal + Drawer (no conflicts) ===== -->
     <script>
-      function openCardsModal(role) {
-  const modal = document.getElementById('cardsModal');
-  const title = document.getElementById('modalTitle');
-  const container = document.getElementById('modalApplicants');
+function openCardsModal(role) {
+  const modal = document.getElementById("cardsModal");
+  const title = document.getElementById("modalTitle");
+  const container = document.getElementById("modalApplicants");
 
-  // update title dynamically
-  title.textContent = `${role}`;
+  title.textContent = role;
+  container.innerHTML = "";
 
-  // clear old content
-  container.innerHTML = '';
+  // find the same post in the loaded data
+  const post = window.referralData?.find(
+    p => `${p.role} @ ${p.company_name}` === role
+  );
 
-  // sample seeker data (static for now)
-  const seekers = {
-    "Software Engineer @ Google": [
-      { name: "John Doe", exp: "3 yrs · Python, Django", msg: "Hi, I’m passionate about backend systems and Django apps." },
-      { name: "Jane Smith", exp: "2 yrs · Data Analysis", msg: "Excited to join Google and contribute to analytics!" },
-      { name: "Rahul Verma", exp: "4 yrs · SQL, Tableau", msg: "Would love a chance to work on Google Data Platform!" }
-    ],
-    "Data Analyst @ Amazon": [
-      { name: "Karan Patel", exp: "1 yr · Excel, SQL", msg: "Looking to grow in Amazon’s data team!" }
-    ]
-  };
+  if (!post || !post.seeker_requests?.length) {
+    container.innerHTML = `<p class="text-gray-500 text-center mt-6">No requests found.</p>`;
+  } else {
+    post.seeker_requests.forEach(a => {
+      const el = document.createElement("div");
+      el.className = "flex justify-between items-center p-3 border rounded-md bg-gray-50 hover:bg-gray-100";
+      el.innerHTML = `
+  <div>
+    <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
+    <p class="text-xs text-gray-500">${a.status}</p>
+  </div>
+  <div class="flex space-x-2">
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">View</button>
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+  </div>
+`;
 
-  // get relevant seekers
-  const list = seekers[role] || [];
+      container.appendChild(el);
+    });
+  }
 
-  // populate the modal
-  list.forEach(app => {
-    const el = document.createElement('div');
-    el.className = "flex justify-between items-center p-3 border rounded-md bg-gray-50 hover:bg-gray-100";
-    el.innerHTML = `
-      <div>
-        <p class="text-sm font-medium text-gray-800">${app.name}</p>
-        <p class="text-xs text-gray-500">${app.exp}</p>
-      </div>
-      <div class="flex space-x-2">
-        <button onclick="openApplicantDrawer('${app.name}', '${app.msg.replace(/'/g, "\\'")}')" class="px-3 py-1 text-sm border rounded-md hover:bg-gray-200">View</button>
-        <button class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-        <button class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-      </div>
-    `;
-    container.appendChild(el);
-  });
-
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
 }
-
-      function closeCardsModal() {
-        const m = document.getElementById('cardsModal');
-        m.classList.add('hidden'); m.classList.remove('flex');
-      }
-      function openApplicantDrawer(name, msg) {
-  document.getElementById('applicantDrawer').classList.remove('translate-x-full');
-  const msgBox = document.getElementById('applicantMessage');
-  msgBox.textContent = msg || "No message provided by applicant.";
-}
-
-      function closeApplicantDrawer() {
-        document.getElementById('applicantDrawer').classList.add('translate-x-full');
-      }
-    </script>
+</script>
 
     <script>
   function openEarningsModal() {
@@ -664,6 +711,393 @@
     modal.classList.remove("flex");
   }
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("access_token");
+  const container = document.getElementById("referralContainer");
+  const pager = document.getElementById("paginationNav");
+  const PAGE_SIZE = 10;
+  let currentPage = 1;
+
+  try {
+    const res = await fetch("/api/referrals/", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    window.referralData = Array.isArray(data) ? data : [];
+
+    function renderPage(page = 1) {
+      const total = window.referralData.length;
+      const totalPages = Math.ceil(total / PAGE_SIZE);
+      const start = (page - 1) * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+      const items = window.referralData.slice(start, end);
+
+      container.innerHTML = "";
+
+      items.forEach(post => {
+        const applicants = post.seeker_requests || [];
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-lg border border-gray-200 shadow-sm p-5 relative transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-blue-400 hover:scale-[1.02] backdrop-blur-sm bg-opacity-80";
+
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-semibold text-gray-900">${post.role} @ ${post.company_name}</h3>
+              <p class="text-sm text-gray-500">Posted on ${new Date(post.created_at).toDateString()}</p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <button class="text-sm font-medium text-blue-600" onclick="openCardsModal('${post.role} @ ${post.company_name}')">
+                ${applicants.length} Requests
+              </button>
+              <button class="text-gray-500 hover:text-gray-700" onclick="openCardsModal('${post.role} @ ${post.company_name}')">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                  <path fill-rule="evenodd" d="M15 3.75a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0V5.56l-3.97 3.97a.75.75 0 1 1-1.06-1.06l3.97-3.97h-2.69a.75.75 0 0 1-.75-.75Zm-12 0A.75.75 0 0 1 3.75 3h4.5a.75.75 0 0 1 0 1.5H5.56l3.97 3.97a.75.75 0 0 1-1.06 1.06L4.5 5.56v2.69a.75.75 0 0 1-1.5 0v-4.5Zm11.47 11.78a.75.75 0 1 1 1.06-1.06l3.97 3.97v-2.69a.75.75 0 0 1 1.5 0v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1 0-1.5h2.69l-3.97-3.97Zm-4.94-1.06a.75.75 0 0 1 0 1.06L5.56 19.5h2.69a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 1 1.5 0v2.69l3.97-3.97a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                </svg>
+
+              </button>
+            </div>
+          </div>
+          <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1" id="seekers-${post.id}"></div>
+        `;
+
+
+        const listDiv = card.querySelector(`#seekers-${post.id}`);
+        applicants.forEach(a => {
+          const row = document.createElement("div");
+          row.className = "flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100";
+          row.innerHTML = `
+            <div>
+              <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
+              <p class="text-xs text-gray-500">${a.status}</p>
+            </div>
+            <div class="flex space-x-2">
+              <button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+        class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+<button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+        class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+<button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+        class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+
+            </div>
+          `;
+          listDiv.appendChild(row);
+        });
+
+        container.appendChild(card);
+      });
+
+      renderPagination(totalPages, page);
+    }
+
+    function renderPagination(totalPages, page) {
+      pager.innerHTML = "";
+      if (totalPages <= 1) return;
+
+      const prevBtn = document.createElement("button");
+      prevBtn.textContent = "Prev";
+      prevBtn.className = `px-3 py-1 rounded ${page === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}`;
+      prevBtn.disabled = page === 1;
+      prevBtn.onclick = () => { if (page > 1) { currentPage--; renderPage(currentPage); } };
+      pager.appendChild(prevBtn);
+
+      for (let p = 1; p <= totalPages; p++) {
+        const btn = document.createElement("button");
+        btn.textContent = p;
+        btn.className = `px-3 py-1 rounded ${p === page ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
+        btn.onclick = () => { currentPage = p; renderPage(p); };
+        pager.appendChild(btn);
+      }
+
+      const nextBtn = document.createElement("button");
+      nextBtn.textContent = "Next";
+      nextBtn.className = `px-3 py-1 rounded ${page === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}`;
+      nextBtn.disabled = page === totalPages;
+      nextBtn.onclick = () => { if (page < totalPages) { currentPage++; renderPage(currentPage); } };
+      pager.appendChild(nextBtn);
+    }
+
+    renderPage(1);
+
+  } catch (err) {
+    console.error("Error fetching referrals:", err);
+    container.innerHTML = `<div class="text-red-600 p-4 border border-red-300 rounded-lg">Failed to load referrals.</div>`;
+  }
+});
+</script>
+
+<script>
+///// === Drawer Functions ===
+let CURRENT_REQ_ID = null;
+
+function openApplicantDrawer(name, msg, reqId) {
+  CURRENT_REQ_ID = reqId || null;
+
+  const drawer = document.getElementById("applicantDrawer");
+  const msgBox = document.getElementById("applicantMessage");
+
+  msgBox.textContent = msg || "No message provided by applicant.";
+  drawer.classList.remove("translate-x-full");
+  drawer.classList.add("shadow-2xl");
+}
+
+
+function closeApplicantDrawer() {
+  const drawer = document.getElementById("applicantDrawer");
+  drawer.classList.add("translate-x-full");  ///// slide out
+}
+
+function closeCardsModal() {
+  const modal = document.getElementById("cardsModal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+</script>
+
+<script>
+(function wireDrawerActions(){
+  const token = localStorage.getItem("access_token");
+  const btnAccept = document.getElementById("drawerAccept");
+  const btnReject = document.getElementById("drawerReject");
+
+  async function callAction(url, body=null) {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: body ? JSON.stringify(body) : null
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({}));
+      throw new Error(err?.detail || err?.reason || "Action failed");
+    }
+    return res.json();
+  }
+
+  btnAccept.onclick = async () => {
+    if (!CURRENT_REQ_ID) { alert("No request selected."); return; }
+    try {
+      await callAction(`/api/seeker-requests/${CURRENT_REQ_ID}/accept/`);
+      // Update the row UI
+      const row = document.getElementById(`req-row-${CURRENT_REQ_ID}`);
+      if (row) {
+        const pill = row.querySelector(".status-pill");
+        if (pill) {
+          pill.textContent = "ACCEPTED";
+          pill.className = "status-pill text-xs text-green-700 bg-green-100 px-2 py-1 rounded-md";
+        }
+        row.querySelectorAll("button").forEach(b => { b.disabled = true; b.classList.add("opacity-60","cursor-not-allowed"); });
+      }
+      closeApplicantDrawer();
+    } catch (e) {
+      alert(e.message || "Accept failed");
+    }
+  };
+
+btnReject.onclick = () => {
+  if (!CURRENT_REQ_ID) return;
+  openRejectModal(CURRENT_REQ_ID);
+};
+
+})();
+</script>
+
+
+<script>
+  // ====== CONFIG ======
+  const API_URL = "/api/referrals/";        // DRF list endpoint
+  const PAGE_SIZE = 10;                     // must match settings.py PAGE_SIZE
+  let currentPage = 1;                      // keep track of current page
+  let lastPayload = null;                   // store latest paginated payload
+
+  // ====== HELPERS ======
+  const tokenPag = localStorage.getItem("access_token");
+  const container = document.getElementById("referralContainer");
+  const pager = document.getElementById("paginationNav");
+
+  function guardJWT() {
+    if (!token) { window.location.href = "/no_token"; return; }
+    // Optional: ping auth endpoint if you want, but not required for pagination to work
+  }
+
+  function showLoading(count = 3) {
+    container.innerHTML = Array.from({ length: count }).map(() => `
+      <div class="bg-white rounded-lg border shadow-sm p-5 animate-pulse">
+        <div class="h-5 w-40 bg-gray-200 rounded mb-2"></div>
+        <div class="h-4 w-28 bg-gray-200 rounded mb-2"></div>
+        <div class="h-4 w-56 bg-gray-200 rounded"></div>
+      </div>
+    `).join("");
+  }
+
+  function emptyState() {
+    container.innerHTML = `
+      <div class="bg-white rounded-lg border shadow-sm p-8 text-center">
+        <p class="text-lg font-semibold text-gray-800">No referral posts yet</p>
+        <p class="text-sm text-gray-500 mt-1">Once you create a post, it will appear here.</p>
+      </div>
+    `;
+    if (pager) pager.innerHTML = "";
+  }
+
+  function errorState(msg = "Failed to load referrals") {
+    container.innerHTML = `
+      <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4">${msg}</div>
+    `;
+    if (pager) pager.innerHTML = "";
+  }
+
+  // ====== CARD BUILDER (keeps your existing card layout) ======
+  function buildCard(post) {
+    // post.seeker_requests is expected from your backend
+    const applicants = post.seeker_requests || [];
+    const card = document.createElement("div");
+    card.className = "bg-white rounded-lg border border-gray-200 shadow-sm p-5 relative transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-blue-400 hover:scale-[1.02] backdrop-blur-sm bg-opacity-80";
+
+    // header + expand button
+    card.innerHTML = `
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="font-semibold text-gray-900">${post.role} @ ${post.company_name}</h3>
+          <p class="text-sm text-gray-500">Posted on ${post.created_at ? new Date(post.created_at).toDateString() : "—"}</p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button class="text-sm font-medium text-blue-600"
+                  onclick="openCardsModal('${post.role} @ ${post.company_name}')">
+            ${applicants.length} Requests
+          </button>
+          <button class="text-gray-500 hover:text-gray-700"
+                  onclick="openCardsModal('${post.role} @ ${post.company_name}')" title="Maximize">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                 fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M4 8V4h4M16 4h4v4M4 16v4h4m12 0h-4v-4"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Applicants preview -->
+      <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1" id="seekers-${post.id}"></div>
+    `;
+
+    // append applicant previews
+    const listDiv = card.querySelector(`#seekers-${post.id}`);
+    applicants.forEach(a => {
+      const row = document.createElement("div");
+row.className = "flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100";
+row.id = `req-row-${a.id}`;   // <— so we can update this row after accept/reject
+
+row.innerHTML = `
+  <div>
+    <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
+    <p class="status-pill text-xs text-gray-500">${a.status}</p>
+  </div>
+  <div class="flex space-x-2">
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+    <button onclick="openApplicantDrawer('${(a.requester_name || "").replace(/'/g,"\\'")}', '${(a.message || "").replace(/'/g,"\\'")}', ${a.id})"
+            class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+  </div>
+`;
+      listDiv.appendChild(row);
+    });
+
+    return card;
+  }
+
+  // ====== RENDER A PAGE (fills #referralContainer) ======
+  function renderCardsPage(items) {
+    if (!items || !items.length) { emptyState(); return; }
+    container.innerHTML = ""; // clear
+    items.forEach(post => container.appendChild(buildCard(post)));
+  }
+
+  // ====== PAGINATION UI ======
+  function renderPagination(payload) {
+    if (!pager) return;
+
+    // DRF pagination payload: { count, next, previous, results: [...] }
+    const total = payload?.count ?? 0;
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+    if (totalPages <= 1) { pager.innerHTML = ""; return; }
+
+    let html = `
+      <button onclick="changeRefPage(${Math.max(1, currentPage - 1)})"
+              class="px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}">
+        Prev
+      </button>`;
+
+    for (let p = 1; p <= totalPages; p++) {
+      html += `
+        <button onclick="changeRefPage(${p})"
+                class="px-3 py-1 rounded ${p === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}">
+          ${p}
+        </button>`;
+    }
+
+    html += `
+      <button onclick="changeRefPage(${Math.min(totalPages, currentPage + 1)})"
+              class="px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}">
+        Next
+      </button>`;
+
+    pager.innerHTML = html;
+  }
+
+  async function changeRefPage(p) {
+    if (p < 1) return;
+    currentPage = p;
+    await loadReferrals(p);
+  }
+
+  // ====== FETCH + RENDER (server-side pagination) ======
+  async function loadReferrals(page = 1) {
+    guardJWT();
+    showLoading();
+
+    try {
+      const url = new URL(API_URL, window.location.origin);
+      url.searchParams.set("page", page);
+
+      const res = await fetch(url.toString(), {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) { errorState("Auth failed or API error"); return; }
+
+      const payload = await res.json();
+      // Support both paginated and non-paginated responses:
+      const data = Array.isArray(payload) ? payload : (payload.results || []);
+      lastPayload = payload;
+
+      if (!data.length) { emptyState(); return; }
+
+      renderCardsPage(data);     // fill the container with cards
+      renderPagination(payload); // draw page buttons
+    } catch (e) {
+      console.error(e);
+      errorState("Network error");
+    }
+  }
+
+  // ====== INIT ======
+  document.addEventListener("DOMContentLoaded", () => {
+    loadReferrals(1); // initial page
+  });
+
+  // Expose for inline onclick (used in pagination buttons)
+  window.changeRefPage = changeRefPage;
+</script>
+
+
+
 
 
   </body>

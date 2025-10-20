@@ -401,72 +401,6 @@
 </script>
 
 
-<script>
-  let REJECT_CTX = { requestId: null, rowEl: null, countsEl: null }; // context holder
-
-  function openRejectModal(requestId, rowSelector, countsSelector) {
-    REJECT_CTX.requestId = requestId;
-    REJECT_CTX.rowEl = document.querySelector(rowSelector) || null;        // the applicant row div
-    REJECT_CTX.countsEl = document.querySelector(countsSelector) || null;  // the "Accepted / To review / Rejected" counters container (if you have it)
-    document.getElementById("rejectReason").value = "";
-    document.getElementById("rejectModal").classList.remove("hidden");
-  }
-
-  function closeRejectModal() {
-    document.getElementById("rejectModal").classList.add("hidden");
-    REJECT_CTX = { requestId: null, rowEl: null, countsEl: null };
-  }
-
-  async function submitReject() {
-    const reason = (document.getElementById("rejectReason").value || "").trim();
-    if (!reason) {
-      alert("Please provide a reason to reject.");
-      return;
-    }
-    const token = localStorage.getItem("access_token");
-    try {
-      const res = await fetch(`/api/seeker-requests/${REJECT_CTX.requestId}/reject/`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ reason })
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        alert(err?.detail || err?.reason || "Failed to reject. Try again.");
-        return;
-      }
-
-      // UI updates: mark this row as REJECTED
-      if (REJECT_CTX.rowEl) {
-        // set status text
-        const statusPill = REJECT_CTX.rowEl.querySelector(".status-pill");
-        if (statusPill) {
-          statusPill.textContent = "REJECTED";
-          statusPill.className = "status-pill text-xs text-red-700 bg-red-100 px-2 py-1 rounded-md";
-        }
-        // disable action buttons
-        REJECT_CTX.rowEl.querySelectorAll("button").forEach(b => {
-          b.disabled = true;
-          b.classList.add("opacity-60", "cursor-not-allowed");
-        });
-      }
-
-      // optional: update summary counters if you render them
-      // e.g., decrement "To be Reviewed" and increment "Rejected"
-      if (REJECT_CTX.countsEl) {
-        // implement your own count tweak here if you show counters
-      }
-
-      closeRejectModal();
-    } catch (e) {
-      alert("Network error while rejecting. Please retry.");
-    }
-  }
-</script>
 
 
         <!-- Pagination -->
@@ -963,7 +897,7 @@ function openApplicantDrawer(name, msg, reqId, resumeLink = "#") {
   chatBox.innerHTML = renderBubble({
     side: 'left',
     name: CURRENT_APPLICANT_NAME,
-    text: msg || 'No message',
+    text: msg || 'No messages yet...',
     time: timeNow(),
   });
 

@@ -116,3 +116,49 @@
   </script>
 </body>
 </html>
+
+
+
+      function openApplicantDrawer(name, msg, reqId, resumeLink = "#") {
+  CURRENT_REQ_ID = reqId || null;
+  const drawer = document.getElementById("applicantDrawer");
+  const msgBox = document.getElementById("applicantMessage");
+  const resume = document.getElementById("resumeLink");
+  const chatMessages = document.getElementById("chatMessages");
+  const input = document.getElementById("chatInput");
+
+  // dynamic seeker message
+  msgBox.textContent = msg || "No message provided by applicant.";
+  resume.href = resumeLink;
+
+  // reset chat
+  chatMessages.innerHTML = `
+    <div class="flex justify-start">
+      <div class="bg-gray-200 text-gray-800 px-3 py-2 rounded-lg max-w-xs">${msg || "No message"}</div>
+    </div>
+  `;
+
+  // lock chat until accepted
+  input.value = "";
+  input.disabled = true;
+  input.classList.add("bg-gray-100", "text-gray-400");
+
+  drawer.classList.remove("translate-x-full");
+  drawer.classList.add("shadow-2xl");
+}
+
+document.getElementById("drawerAccept").onclick = () => {
+  const input = document.getElementById("chatInput");
+  input.disabled = false;
+  input.placeholder = "Type your message...";
+  input.classList.remove("bg-gray-100", "text-gray-400");
+
+  const chatMessages = document.getElementById("chatMessages");
+  chatMessages.innerHTML += `
+    <div class="flex justify-end">
+      <div class="bg-green-100 text-green-800 px-3 py-2 rounded-lg max-w-xs">
+        Referral accepted — you can now chat!
+      </div>
+    </div>
+  `;
+};
