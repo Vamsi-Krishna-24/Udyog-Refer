@@ -290,7 +290,7 @@
           </div>
         </div>
 
-        <!-- Reject Reason Modal -->
+        <!-- Reject and Accept Reason Modal -->
 <!-- Reject Reason Modal -->
 <div id="rejectModal"
      class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -315,6 +315,33 @@
     </div>
   </div>
 </div>
+
+<!-- Accept Reason Modal -->
+<!-- Accept Reason Modal -->
+<div id="acceptModal"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-xl shadow-2xl p-6 w-[90%] max-w-md transform transition-all scale-100">
+    <h2 class="text-lg font-semibold text-gray-800 mb-2">Accept Application</h2>
+    <p class="text-sm text-gray-600 mb-4">
+      Send a quick note to start the chat with the seeker.
+    </p>
+    <textarea id="acceptMessage"
+              rows="3"
+              class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-400 focus:outline-none"
+              placeholder="Write your first message..."></textarea>
+    <div class="flex justify-end space-x-3 mt-5">
+      <button id="acceptCancel"
+              class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700">
+        Cancel
+      </button>
+      <button id="acceptConfirm"
+              class="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white">
+        Accept
+      </button>
+    </div>
+  </div>
+</div>
+
 
 <script>
 (function setupRejectModal(){
@@ -452,16 +479,61 @@
     </div>
 
     <!-- ===== ADDED: Right-side Drawer for Applicant ===== -->
-    <div id="applicantDrawer" class="fixed top-0 right-0 w-3/5 max-w-2xl h-full bg-white shadow-xl transform translate-x-full transition-transform duration-300 z-50">
-      <div class="p-6 space-y-4">
-        <h3 class="text-lg font-semibold text-gray-800">Applicant Details</h3>
-        
-        <p id="applicantMessage" class="text-sm text-gray-700 bg-gray-50 border rounded-md p-3"></p>
-        <p class="text-sm text-gray-600">Resume: <a href="#" class="text-blue-600">Download PDF</a></p>
-        <div class="flex space-x-3 pt-4">
-  <button id="drawerAccept" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Accept</button>
-  <button id="drawerReject" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Reject</button>
+<!-- ===== Right-side Drawer (Applicant) ===== -->
+<div id="applicantDrawer"
+     class="fixed top-0 right-0 w-3/5 max-w-2xl h-full bg-white shadow-xl transform translate-x-full transition-transform duration-300 z-50 flex flex-col">
+
+  <!-- Applicant header -->
+  <div class="p-6 border-b space-y-3">
+    <h3 class="text-lg font-semibold text-gray-800">Applicant Details</h3>
+    <p id="applicantMessage" class="text-sm text-gray-700 bg-gray-50 border rounded-md p-3"></p>
+    <p class="text-sm text-gray-600">
+      Resume: <a id="resumeLink" href="#" class="text-blue-600 hover:underline">Download PDF</a>
+    </p>
+    <div class="flex gap-3 pt-2">
+      <button id="drawerAccept" class="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700">Accept</button>
+      <button id="drawerReject" class="flex-1 bg-red-600 text-white py-2 rounded-md hover:bg-red-700">Reject</button>
+    </div>
+  </div>
+
+  <!-- Messages box (LinkedIn-ish) -->
+  <div class="p-4">
+    <div class="border border-blue-400 shadow-xl rounded-xl overflow-hidden transition-all duration-300 scale-[1.01]">
+
+      <!-- Box header -->
+      <div class="flex items-center justify-between px-4 py-2 bg-gray-100">
+        <div class="flex items-center gap-2">
+          <span class="font-medium text-gray-800">Messages</span>
+          <span id="chatStatus"
+                class="text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-700">Locked</span>
+        </div>
+        <span id="chatPeerName" class="text-xs text-gray-500"></span>
+      </div>
+
+      <!-- Scrollable thread -->
+      <div id="chatMessages" class="h-[48vh] overflow-y-auto p-4 space-y-4 bg-gray-50"></div>
+
+      <!-- Composer -->
+      <div class="border-t bg-white p-3">
+        <div class="flex items-center gap-2">
+          <input id="chatInput" type="text"
+                 placeholder="Accept to start chatting"
+                 class="flex-1 border rounded-md p-2 text-sm bg-gray-100 text-gray-400"
+                 disabled>
+          <button id="chatSend"
+                  class="px-3 py-2 text-sm rounded-md bg-blue-600 text-white disabled:opacity-50"
+                  disabled>Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-4 pb-6">
+    <button onclick="closeApplicantDrawer()"
+            class="w-full bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md">Close</button>
+  </div>
 </div>
+
 
         <button onclick="closeApplicantDrawer()" class="mt-6 w-full bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md">Close</button>
       </div>
@@ -828,20 +900,156 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 </script>
 
-<script>
-///// === Drawer Functions ===
-let CURRENT_REQ_ID = null;
 
-function openApplicantDrawer(name, msg, reqId) {
+
+<script>
+// -----> helpers
+function initialsFromName(n='') {
+  return (n.trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('') || 'U').toUpperCase();
+}
+function timeNow() {
+  const d = new Date();
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+function renderBubble({ side, name, text, time, color='gray' }) {
+  // ///// side: 'left' (seeker) | 'right' (referrer)
+  const align = side === 'right' ? 'justify-end' : 'justify-start';
+  const bubble = side === 'right'
+    ? 'bg-blue-600 text-white'
+    : 'bg-gray-200 text-gray-900';
+  const metaColor = side === 'right' ? 'text-blue-100' : 'text-gray-500';
+
+  return `
+    <div class="flex ${align}">
+      <div class="max-w-[75%]">
+        <div class="flex items-center gap-2 mb-1">
+          <div class="w-6 h-6 rounded-full bg-${side==='right'?'blue':'gray'}-300 flex items-center justify-center text-[10px] font-semibold">${initialsFromName(name)}</div>
+          <span class="text-xs text-gray-500">${name} • ${time}</span>
+        </div>
+        <div class="px-3 py-2 rounded-lg ${bubble}">
+          ${text.replace(/</g,'&lt;')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// -----> state
+let CURRENT_REQ_ID = null;
+let CURRENT_APPLICANT_NAME = '';
+let CHAT_UNLOCKED = false;
+
+// -----> main open
+function openApplicantDrawer(name, msg, reqId, resumeLink = "#") {
   CURRENT_REQ_ID = reqId || null;
+  CURRENT_APPLICANT_NAME = name || 'Applicant';
+  CHAT_UNLOCKED = false;
 
   const drawer = document.getElementById("applicantDrawer");
   const msgBox = document.getElementById("applicantMessage");
+  const resume = document.getElementById("resumeLink");
+  const chatBox = document.getElementById("chatMessages");
+  const status = document.getElementById("chatStatus");
+  const peer = document.getElementById("chatPeerName");
+  const input = document.getElementById("chatInput");
+  const send = document.getElementById("chatSend");
 
+  // header summary (top note from seeker)
   msgBox.textContent = msg || "No message provided by applicant.";
+  resume.href = resumeLink;
+  peer.textContent = CURRENT_APPLICANT_NAME;
+
+  // reset thread
+  chatBox.innerHTML = renderBubble({
+    side: 'left',
+    name: CURRENT_APPLICANT_NAME,
+    text: msg || 'No message',
+    time: timeNow(),
+  });
+
+  // lock composer (copy aimed at referrer)
+  input.value = "";
+  input.placeholder = "Accept to start chatting";
+  input.disabled = true;
+  input.classList.add("bg-gray-100","text-gray-400");
+  send.disabled = true;
+
+  status.textContent = "Locked";
+  status.className = "text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-700";
+
   drawer.classList.remove("translate-x-full");
   drawer.classList.add("shadow-2xl");
 }
+</script>
+
+<script>
+// -----> put this inside your existing wireDrawerActions() accept success block
+function unlockChatUI() {
+  const input = document.getElementById("chatInput");
+  const send  = document.getElementById("chatSend");
+  const status = document.getElementById("chatStatus");
+  const chatBox = document.getElementById("chatMessages");
+
+  CHAT_UNLOCKED = true;
+  input.disabled = false;
+  input.placeholder = "Write a message…";
+  input.classList.remove("bg-gray-100","text-gray-400");
+  send.disabled = false;
+
+  status.textContent = "Live";
+  status.className = "text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700";
+
+  chatBox.insertAdjacentHTML('beforeend', renderBubble({
+    side: 'right',
+    name: (localStorage.getItem('username') || 'You'),
+    text: 'Accepted. You can now chat.',
+    time: timeNow(),
+  }));
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// -----> modify your existing accept success path
+// await callAction(`/api/seeker-requests/${CURRENT_REQ_ID}/accept/`);
+// ...your row pill updates...
+unlockChatUI();   // -----> KEEP DRAWER OPEN and unlock chat
+</script>
+<script>
+(function wireChatSend(){
+  const input = document.getElementById("chatInput");
+  const send  = document.getElementById("chatSend");
+  const chat  = document.getElementById("chatMessages");
+
+  function doSend(){
+    const text = (input.value || '').trim();
+    if (!CHAT_UNLOCKED || !text) return;
+    chat.insertAdjacentHTML('beforeend', renderBubble({
+      side: 'right',
+      name: (localStorage.getItem('username') || 'You'),
+      text,
+      time: timeNow(),
+    }));
+    input.value = '';
+    chat.scrollTop = chat.scrollHeight;
+    // -----> later: call backend to persist message
+  }
+
+  send?.addEventListener('click', doSend);
+  input?.addEventListener('keydown', (e)=>{ if(e.key==='Enter') doSend(); });
+})();
+</script>
+<script>
+// after successful reject:
+const chatBox = document.getElementById("chatMessages");
+chatBox.insertAdjacentHTML('beforeend', renderBubble({
+  side: 'right',
+  name: (localStorage.getItem('username') || 'You'),
+  text: 'Rejected. Reason noted.',
+  time: timeNow(),
+}));
+// keep composer locked (do nothing)
+</script>
+
+<script>
 
 
 function closeApplicantDrawer() {
@@ -878,25 +1086,11 @@ function closeCardsModal() {
     return res.json();
   }
 
-  btnAccept.onclick = async () => {
-    if (!CURRENT_REQ_ID) { alert("No request selected."); return; }
-    try {
-      await callAction(`/api/seeker-requests/${CURRENT_REQ_ID}/accept/`);
-      // Update the row UI
-      const row = document.getElementById(`req-row-${CURRENT_REQ_ID}`);
-      if (row) {
-        const pill = row.querySelector(".status-pill");
-        if (pill) {
-          pill.textContent = "ACCEPTED";
-          pill.className = "status-pill text-xs text-green-700 bg-green-100 px-2 py-1 rounded-md";
-        }
-        row.querySelectorAll("button").forEach(b => { b.disabled = true; b.classList.add("opacity-60","cursor-not-allowed"); });
-      }
-      closeApplicantDrawer();
-    } catch (e) {
-      alert(e.message || "Accept failed");
-    }
-  };
+ btnAccept.onclick = () => {
+  if (!CURRENT_REQ_ID) return;
+  openAcceptModal(CURRENT_REQ_ID);
+};
+
 
 btnReject.onclick = () => {
   if (!CURRENT_REQ_ID) return;
@@ -1096,6 +1290,81 @@ row.innerHTML = `
   window.changeRefPage = changeRefPage;
 </script>
 
+<!--Accept Modal-->
+
+<script>
+(function setupAcceptModal(){
+  const modal = document.getElementById("acceptModal");
+  const cancelBtn = document.getElementById("acceptCancel");
+  const confirmBtn = document.getElementById("acceptConfirm");
+  const msgInput = document.getElementById("acceptMessage");
+  let currentAcceptId = null;
+
+  // Open modal (from drawer accept button)
+  window.openAcceptModal = function(reqId) {
+    currentAcceptId = reqId;
+    msgInput.value = "";
+    modal.classList.remove("hidden");
+  };
+
+  function closeModal(){
+    modal.classList.add("hidden");
+    msgInput.value = "";
+    currentAcceptId = null;
+  }
+
+  cancelBtn.onclick = closeModal;
+
+  confirmBtn.onclick = async () => {
+    const message = msgInput.value.trim();
+    if (!message) { alert("Please enter a message."); return; }
+
+    try {
+      const token = localStorage.getItem("access_token");
+      const res = await fetch(`/api/seeker-requests/${currentAcceptId}/accept/`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message })
+      });
+
+      if (!res.ok) throw new Error("Accept failed");
+
+      // Update UI row
+      const row = document.getElementById(`req-row-${currentAcceptId}`);
+      if (row) {
+        const pill = row.querySelector(".status-pill");
+        if (pill) {
+          pill.textContent = "ACCEPTED";
+          pill.className = "status-pill text-xs text-green-700 bg-green-100 px-2 py-1 rounded-md";
+        }
+        row.querySelectorAll("button").forEach(b => {
+          b.disabled = true;
+          b.classList.add("opacity-60", "cursor-not-allowed");
+        });
+      }
+
+      // Show acceptance message in chat thread
+      const chatBox = document.getElementById("chatMessages");
+      chatBox.insertAdjacentHTML("beforeend", renderBubble({
+        side: "right",
+        name: (localStorage.getItem("username") || "You"),
+        text: message,
+        time: timeNow()
+      }));
+
+      // Unlock chat now
+      unlockChatUI();
+
+      closeModal();
+    } catch (e) {
+      alert(e.message || "Accept failed");
+    }
+  };
+})();
+</script>
 
 
 
