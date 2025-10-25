@@ -321,10 +321,13 @@ class SeekerRequestViewSet(viewsets.ModelViewSet):
             referral_post=referral_post
         )
 
-    @action(detail=True, methods=["post"], url_path="accept")
+    @action(detail=True, methods=["post"])
     def accept(self, request, pk=None):
         seeker_request = self.get_object()
-        reason = request.data.get("reason", "").strip()  # <-- capture referrer note
+        if seeker_request.status != "PENDING":
+            return Response({"detail": "Already finalized."},
+                            status=status.HTTP_400_BAD_REQUEST)
+        reason = request.data.get("reason", "").strip()
         seeker_request.status = "ACCEPTED"
         if reason:
             seeker_request.reason = reason
@@ -335,9 +338,13 @@ class SeekerRequestViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     def reject(self, request, pk=None):
         seeker_request = self.get_object()
-        reason = request.data.get("reason", "")
+        if seeker_request.status != "PENDING":
+            return Response({"detail": "Already finalized."},
+                            status=status.HTTP_400_BAD_REQUEST)
+        reason = request.data.get("reason", "").strip()
         seeker_request.status = "REJECTED"
         seeker_request.reason = reason
         seeker_request.save()
-        return Response({"status": "rejected", "reason": reason}, status=status.HTTP_200_OK)
+        return Response({"status": "rejected"})
+
 

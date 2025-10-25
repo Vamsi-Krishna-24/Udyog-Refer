@@ -1010,51 +1010,48 @@
                "bg-white rounded-lg border border-gray-200 shadow-sm p-5 transition-all duration-300 hover:shadow-2xl hover:border-blue-400 hover:scale-[1.02] backdrop-blur-sm bg-opacity-80";
          
              card.innerHTML = `
-               <div class="flex items-center justify-between">
-                 <div>
-                   <h3 class="font-semibold text-gray-900">${post.role} @ ${post.company_name}</h3>
-                   <p class="text-sm text-gray-500">Posted on ${post.created_at ? new Date(post.created_at).toDateString() : "—"}</p>
-                 </div>
-                 <div class="flex items-center space-x-4">
-                   <button class="text-sm font-medium text-blue-600"
-                           onclick="openCardsModal('${post.role} @ ${post.company_name}')">
-                     ${applicants.length} Requests
-                   </button>
-                   <button class="text-gray-500 hover:text-gray-700"
-                           onclick="openCardsModal('${post.role} @ ${post.company_name}')" title="Maximize">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
-                          fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                       <path stroke-linecap="round" stroke-linejoin="round"
-                             d="M4 8V4h4M16 4h4v4M4 16v4h4m12 0h-4v-4"/>
-                     </svg>
-                   </button>
-                 </div>
-               </div>
-               <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1" id="seekers-${post.id}"></div>
-             `;
+                   <div class="flex items-center justify-between">
+                     <div>
+                       <h3 class="font-semibold text-gray-900">${post.role} @ ${post.company_name}</h3>
+                       <p class="text-sm text-gray-500">Posted on ${new Date(post.created_at).toDateString()}</p>
+                     </div>
+                     <div class="flex items-center space-x-4">
+                       <button class="text-sm font-medium text-blue-600" onclick="openCardsModal('${post.role} @ ${post.company_name}')">
+                         ${applicants.length} Requests
+                       </button>
+                       <button class="text-gray-500 hover:text-gray-700" onclick="openCardsModal('${post.role} @ ${post.company_name}')">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                           <path fill-rule="evenodd" d="M15 3.75a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0V5.56l-3.97 3.97a.75.75 0 1 1-1.06-1.06l3.97-3.97h-2.69a.75.75 0 0 1-.75-.75Zm-12 0A.75.75 0 0 1 3.75 3h4.5a.75.75 0 0 1 0 1.5H5.56l3.97 3.97a.75.75 0 0 1-1.06 1.06L4.5 5.56v2.69a.75.75 0 0 1-1.5 0v-4.5Zm11.47 11.78a.75.75 0 1 1 1.06-1.06l3.97 3.97v-2.69a.75.75 0 0 1 1.5 0v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1 0-1.5h2.69l-3.97-3.97Zm-4.94-1.06a.75.75 0 0 1 0 1.06L5.56 19.5h2.69a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 1 1.5 0v2.69l3.97-3.97a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                         </svg>
          
-             const listDiv = card.querySelector(`#seekers-${post.id}`);
-             applicants.forEach(a => {
-               const row = document.createElement("div");
-               row.className = "flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100";
-               row.id = `req-row-${a.id}`;
-         
-               if (a.status !== "PENDING") {
-                 const colorClass =
-                   a.status === "ACCEPTED"
-                     ? "text-green-700 bg-green-100"
-                     : "text-red-700 bg-red-100";
-                 row.innerHTML = `
-                   <div>
-                     <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
-                     <p class="status-pill text-xs ${colorClass} px-2 py-1 rounded-md">${a.status}</p>
+                       </button>
+                     </div>
                    </div>
-                   <div class="flex space-x-2 opacity-60 cursor-not-allowed">
-                     <button disabled class="text-sm px-3 py-1 border rounded-md">View</button>
-                     <button disabled class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md">Accept</button>
-                     <button disabled class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md">Reject</button>
-                   </div>`;
-                 listDiv.appendChild(row);
+                   <div class="mt-4 max-h-44 overflow-y-auto space-y-3 pr-1" id="seekers-${post.id}"></div>
+                 `;
+         
+         
+                 const listDiv = card.querySelector(`#seekers-${post.id}`);
+                 applicants.forEach(a => {
+                   const row = document.createElement("div");
+                   row.className = "flex items-center justify-between p-3 rounded-md bg-gray-50 border hover:bg-gray-100";
+                   row.innerHTML = `
+                     <div>
+                       <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
+                       <p class="text-xs text-gray-500">${a.status}</p>
+                     </div>
+                     <div class="flex space-x-2">
+                       <button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+                 class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+         <button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+                 class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+         <button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+                 class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+         
+                     </div>
+                   `;
+                   listDiv.appendChild(row);
+                 });
                  return;
                }
          
