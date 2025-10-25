@@ -575,7 +575,7 @@
       </script>
       <!-- ===== ADDED: Helpers for Cards Modal + Drawer (no conflicts) ===== -->
       <script>
-function openCardsModal(role) {
+window.openCardsModal = function(role) {
   const modal = document.getElementById("cardsModal");
   const title = document.getElementById("modalTitle");
   const container = document.getElementById("modalApplicants");
@@ -614,24 +614,21 @@ function openCardsModal(role) {
           </div>
         `;
       } else {
-        // default PENDING view
+        // default PENDING view — escape quotes safely
+        const safeName = JSON.stringify(a.requester_name || "");
+        const safeMsg  = JSON.stringify(a.message || "");
+
         el.innerHTML = `
           <div>
             <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
             <p class="status-pill text-xs text-gray-500">${a.status}</p>
           </div>
           <div class="flex space-x-2">
-            <button onclick="openApplicantDrawer('${(a.requester_name || "")
-              .replace(/'/g, "\\'")}', '${(a.message || "")
-              .replace(/'/g, "\\'")}', ${a.id})"
+            <button onclick='openApplicantDrawer(${safeName}, ${safeMsg}, ${a.id})'
               class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-            <button onclick="openApplicantDrawer('${(a.requester_name || "")
-              .replace(/'/g, "\\'")}', '${(a.message || "")
-              .replace(/'/g, "\\'")}', ${a.id})"
+            <button onclick='openApplicantDrawer(${safeName}, ${safeMsg}, ${a.id})'
               class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-            <button onclick="openApplicantDrawer('${(a.requester_name || "")
-              .replace(/'/g, "\\'")}', '${(a.message || "")
-              .replace(/'/g, "\\'")}', ${a.id})"
+            <button onclick='openApplicantDrawer(${safeName}, ${safeMsg}, ${a.id})'
               class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
           </div>
         `;
@@ -643,9 +640,13 @@ function openCardsModal(role) {
 
   modal.classList.remove("hidden");
   modal.classList.add("flex");
-}
+};
+</script>
 
-      </script>
+
+
+
+
       <script>
          function openEarningsModal() {
            const modal = document.getElementById("earningsModal");
@@ -659,6 +660,9 @@ function openCardsModal(role) {
            modal.classList.remove("flex");
          }
       </script>
+
+      
+
      
 
      
@@ -958,24 +962,18 @@ function openCardsModal(role) {
         `;
       } else {
         row.innerHTML = `
-          <div>
-            <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
-            <p class="status-pill text-xs text-gray-500">${a.status}</p>
-          </div>
-          <div class="flex space-x-2">
-            <button onclick="openApplicantDrawer('${(a.requester_name || "")
-              .replace(/'/g, "\\'")}', '${(a.message || "")
-              .replace(/'/g, "\\'")}', ${a.id})"
-              class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-            <button onclick="openApplicantDrawer('${(a.requester_name || "")
-              .replace(/'/g, "\\'")}', '${(a.message || "")
-              .replace(/'/g, "\\'")}', ${a.id})"
-              class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-            <button onclick="openApplicantDrawer('${(a.requester_name || "")
-              .replace(/'/g, "\\'")}', '${(a.message || "")
-              .replace(/'/g, "\\'")}', ${a.id})"
-              class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-          </div>`;
+  <div>
+    <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
+    <p class="status-pill text-xs text-gray-500">${a.status}</p>
+  </div>
+  <div class="flex space-x-2">
+    <button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+            class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+    <button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+            class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+    <button onclick="openCardsModal('${post.role} @ ${post.company_name}')"
+            class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+  </div>`;
       }
 
       listDiv.appendChild(row);
