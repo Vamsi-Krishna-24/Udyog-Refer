@@ -28,7 +28,9 @@ SECRET_KEY = 'django-insecure-=m6kivik)0cz^d57)+6&s0+3ze7vbugmu*68ns$y0&ajqp!3^%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['udyog-refer.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['udyog-refer.onrender.com', 'localhost', '127.0.0.1',
+                 'udyog-refer-89385722038.asia-south1.run.app',
+                 '*']
 
 
 # Application definition
