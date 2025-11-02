@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ['udyog-refer.onrender.com', 'localhost', '127.0.0.1',
                  '*']
 
 
-# Application definition
+# Application definition 01
 
 INSTALLED_APPS = [
     'django.contrib.admin',
