@@ -33,7 +33,8 @@ router.register(r"seeker-requests", SeekerRequestViewSet, basename="seeker-reque
 
 urlpatterns = [
     # ----- HTML pages
-    path("", views.login, name="login"),
+    path("", views.landing, name="landing"),
+    path("login", views.login, name="login"),
     path("signup", views.signup, name="signup"),
     path("launchpad", views.launchpad, name="launchpad"),
     path("test", views.test, name="test"),

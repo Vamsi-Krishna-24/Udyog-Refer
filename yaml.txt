@@ -1,0 +1,33 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    [
+      'build',
+      '-t', 'gcr.io/udhyogrefer-abc123/udyog-refer-app:latest',
+      '-f', 'Udyog/Dockerfile', # Assuming this is the correct path based on our previous discussion
+      'Udyog/'                 # Assuming this is the correct build context
+    ]
+
+- name: 'gcr.io/cloud-builders/docker' # NEW STEP: Explicitly push the image
+  args:
+    [
+      'push',
+      'gcr.io/udhyogrefer-abc123/udyog-refer-app:latest'
+    ]
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+    [
+      'run', 'deploy', 'udyog-refer-service',
+      '--image', 'gcr.io/udhyogrefer-abc123/udyog-refer-app:latest',
+      '--region', 'asia-south1',
+      '--platform', 'managed',
+      '--allow-unauthenticated'
+    ]
+
+images:
+- 'gcr.io/udhyogrefer-abc123/udyog-refer-app:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

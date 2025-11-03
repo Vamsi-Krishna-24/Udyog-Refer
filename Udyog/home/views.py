@@ -35,6 +35,10 @@ class NameCreateAPIView(APIView):
 
 
 
+def landing(request):
+    return render(request, 'home/landing.html')
+
+
 # Create your views here.
 def login(request):
     return render(request, 'home/login.html')
