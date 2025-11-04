@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
@@ -20,6 +21,7 @@ from rest_framework import viewsets, filters, serializers
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from rest_framework.pagination import PageNumberPagination
+from home.models import SeekerRequest
 
 
 
@@ -351,4 +353,33 @@ class SeekerRequestViewSet(viewsets.ModelViewSet):
         seeker_request.save()
         return Response({"status": "rejected"})
 
+# Getting the Stats of the user for Tracker Page
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def tracker_stats(request):
+    user = request.user
+    # count how many applications this user sent
+    apps_sent = SeekerRequest.objects.filter(requester_id=user.id).count()
+    return Response({"applications_sent": apps_sent})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+
+def tracker_stats(request):
+    user = request.user
+
+    # total applications sent by this seeker
+    apps_sent = SeekerRequest.objects.filter(requester_id=user.id).count()
+
+    # total referrals with status ACCEPTED or REJECTED
+    status_updates = SeekerRequest.objects.filter(
+        requester_id=user.id,
+        status__in=["ACCEPTED", "REJECTED"]
+    ).count()
+
+    return Response({
+        "applications_sent": apps_sent,
+        "status_updates": status_updates
+    })
 
