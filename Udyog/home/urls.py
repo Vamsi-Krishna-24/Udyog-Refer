@@ -11,6 +11,7 @@ from .views import (
     ReferralPostViewSet,
     MeAPIView,
     JobViewSet,
+    tracker_stats,
     SeekerRequestViewSet
 )
 
@@ -57,6 +58,8 @@ urlpatterns = [
     path("api/protected-ping/", ProtectedPingView.as_view(), name="ping"),
     path("api/token/", MyTokenView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/tracker-stats/", tracker_stats, name="tracker_stats"),
+
 
     
     # ----- Mount DRF router

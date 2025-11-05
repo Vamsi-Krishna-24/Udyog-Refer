@@ -188,12 +188,14 @@
                      <div class="bg-white p-6 rounded-2xl shadow-md flex flex-col items-center">
                         <span class="text-4xl mb-2">📤</span> 
                         <p class="text-xl font-semibold text-gray-700 hover">Applications Sent</p>
-                        <p class="text-2xl font-bold text-indigo-600 mt-2">12</p>
+                        <p id="appsSent" class="text-2xl font-bold text-indigo-600 mt-2">--</p>
+
                      </div>
                      <div class="bg-white p-6 rounded-2xl shadow-md flex flex-col items-center">
                         <span class="text-4xl mb-2">✅</span> 
-                        <p class="text-xl font-semibold text-gray-700">Referrals Accepted</p>
-                        <p class="text-2xl font-bold text-green-500 mt-2">7</p>
+                        <p class="text-xl font-semibold text-gray-700">Referrals Updates</p>
+                        <p id="statusUpdates" class="text-2xl font-bold text-green-500 mt-2">--</p>
+
                      </div>
                      <div class="bg-white p-6 rounded-2xl shadow-md flex flex-col items-center">
                         <span class="text-4xl mb-2">📄</span> 
@@ -250,5 +252,33 @@
           document.getElementById("displayName").textContent = localStorage.getItem("username");
           document.getElementById("displayEmail").textContent = localStorage.getItem("email");
         </script>
+
+        <!--Script to get the number of Applications applied stats-->
+        <script>
+         authFetch("/api/tracker-stats/")
+         .then(res => res.json())
+         .then(data => {
+            document.getElementById("appsSent").textContent = data.applications_sent || 0;
+         })
+         .catch(() => {
+            document.getElementById("appsSent").textContent = "0";
+         });
+         </script>
+
+
+<script>
+authFetch("/api/tracker-stats/")
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("appsSent").textContent = data.applications_sent || 0;
+    document.getElementById("statusUpdates").textContent = data.status_updates || 0;
+  })
+  .catch(() => {
+    document.getElementById("appsSent").textContent = "0";
+    document.getElementById("statusUpdates").textContent = "0";
+  });
+</script>
+
+
    </body>
 </html>
