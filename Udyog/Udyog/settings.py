@@ -113,6 +113,10 @@ DATABASES = {
 AUTH_USER_MODEL = 'home.User'
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
 
 
 # Password validation

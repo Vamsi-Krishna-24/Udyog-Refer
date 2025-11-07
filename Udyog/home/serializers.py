@@ -57,17 +57,17 @@ class SeekerRequestMiniSerializer(serializers.ModelSerializer):
 
 ## Creating another serializer for posting REFERRAL in DB 
 class ReferralPostSerializer(serializers.ModelSerializer):
-    seeker_requests = SeekerRequestMiniSerializer(many=True, read_only=True)
+    seeker_requests = serializers.SerializerMethodField()
     referrer_name = serializers.CharField(source="user.username", read_only=True)
     time_since = serializers.SerializerMethodField()
 
     class Meta:
-        model = Referral_post   # ✅ match your model class name
+        model = Referral_post
         fields = [
             "id",
             "company_name",
-            "role",                  # fixed lowercase
-            "referral_domains",      # fixed typo
+            "role",
+            "referral_domains",
             "job_description",
             "experience_required",
             "availability",
@@ -75,13 +75,20 @@ class ReferralPostSerializer(serializers.ModelSerializer):
             "salary_expectation",
             "link_to_apply",
             "created_at",
-            "referrer_name", 
-            "time_since",      
-            "seeker_requests",  # nested serializer 
+            "referrer_name",
+            "time_since",
+            "seeker_requests",
         ]
+
+    def get_seeker_requests(self, obj):
+        context = self.context
+        requests = obj.seeker_requests.all()
+        return SeekerRequestSerializer(requests, many=True, context=context).data
 
     def get_time_since(self, obj):
         return timesince(obj.created_at) + " ago"
+
+    
 
           
 class JobSerializer(serializers.ModelSerializer):
@@ -119,8 +126,20 @@ class JobSerializer(serializers.ModelSerializer):
 
 #serialiser for seeker request
 class SeekerRequestSerializer(serializers.ModelSerializer):
+    requester_name = serializers.CharField(source="requester.username", read_only=True)
+    resume = serializers.FileField(required=False)
+    resume_url = serializers.SerializerMethodField()
+
     class Meta:
         model = SeekerRequest
-        resume = serializers.FileField(required=False)
         fields = "__all__"
         read_only_fields = ["requester", "referrer", "status", "created_at", "updated_at"]
+
+    def get_resume_url(self, obj):
+        request = self.context.get("request")
+        if obj.resume:
+            if request:
+                return request.build_absolute_uri(obj.resume.url)
+            return obj.resume.url
+        return None
+

@@ -617,21 +617,21 @@ window.openCardsModal = function(role) {
         // default PENDING view — escape quotes safely
         const safeName = JSON.stringify(a.requester_name || "");
         const safeMsg  = JSON.stringify(a.message || "");
+        const safeResume = JSON.stringify(a.resume_url || "#");
 
-        el.innerHTML = `
-          <div>
-            <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
-            <p class="status-pill text-xs text-gray-500">${a.status}</p>
-          </div>
-          <div class="flex space-x-2">
-            <button onclick='openApplicantDrawer(${safeName}, ${safeMsg}, ${a.id})'
-              class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
-            <button onclick='openApplicantDrawer(${safeName}, ${safeMsg}, ${a.id})'
-              class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
-            <button onclick='openApplicantDrawer(${safeName}, ${safeMsg}, ${a.id})'
-              class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
-          </div>
-        `;
+       el.innerHTML = `
+  <div>
+    <p class="text-sm font-medium text-gray-800">${a.requester_name}</p>
+    <p class="status-pill text-xs text-gray-500">${a.status}</p>
+  </div>
+  <div class="flex space-x-2">
+    <button onclick='openApplicantDrawer(${safeName}, ${safeMsg}, ${a.id}, ${safeResume})'
+      class="text-sm px-3 py-1 border rounded-md hover:bg-gray-200">View</button>
+    <button onclick='openApplicantDrawer(${safeName}, ${safeMsg}, ${a.id}, ${safeResume})'
+      class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200">Accept</button>
+    <button onclick='openApplicantDrawer(${safeName}, ${safeMsg}, ${a.id}, ${safeResume})'
+      class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200">Reject</button>
+  </div>`;
       }
 
       container.appendChild(el);
@@ -704,7 +704,9 @@ window.openCardsModal = function(role) {
          let CHAT_UNLOCKED = false;
          
          // -----> main open
-         function openApplicantDrawer(name, msg, reqId, resumeLink = "#") {
+         function openApplicantDrawer(name, msg, reqId, resumeLink = "") {
+       
+
            CURRENT_REQ_ID = reqId || null;
            CURRENT_APPLICANT_NAME = name || 'Applicant';
            CHAT_UNLOCKED = false;
@@ -722,6 +724,16 @@ window.openCardsModal = function(role) {
            msgBox.textContent = msg || "No message provided by applicant.";
            resume.href = resumeLink;
            peer.textContent = CURRENT_APPLICANT_NAME;
+
+           resume.onclick = (e) => {
+          e.preventDefault();
+          if (!resumeLink || resumeLink === "#") {
+            alert("No resume uploaded by this applicant.");
+            return;
+          }
+          window.open(resumeLink, "_blank");
+        };
+
          
            // reset thread
            chatBox.innerHTML = renderBubble({

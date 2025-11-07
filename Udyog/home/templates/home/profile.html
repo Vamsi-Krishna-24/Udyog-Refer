@@ -1,0 +1,405 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile | Udyog Refer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-[Inter]">
+  <div class="flex min-h-screen">
+
+    <!-- ===== SIDEBAR ===== -->
+   <aside class="w-20 bg-gradient-to-b from-blue-800 via-blue-900 to-slate-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
+
+        <!-- UR Logo -->
+<a href="/" class="mb-10">
+<img src="{% static 'img/ur_logo.ico' %}" alt="Udyog Refer Logo"
+     class="w-10 h-10 rounded-lg shadow-md hover:scale-105 transition-transform" />
+
+</a>
+
+
+
+        <div class="flex-1 flex flex-col justify-center space-y-6">
+          <!-- Active Referrals Icon -->
+          <a href="{% url 'active_referals' %}" class="relative group">
+            <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+</svg>
+
+            </div>
+          </a>
+
+          <!-- What's Hot Now Icon -->
+          <a href="{% url 'trending' %}" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+          </a>
+
+          <!-- My Tracker Icon -->
+          <a href="{% url 'tracker' %}" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+</svg>
+
+            </div>
+          </a>
+        </div>
+      </aside>
+
+
+
+    <!-- ===== MAIN SECTION ===== -->
+    <div class="flex-1 ml-20 flex flex-col">
+     <header class="sticky top-0 z-10 bg-white/20 backdrop-blur-sm border-b border-gray-200 flex justify-between items-center px-6 py-4 shadow">
+          <h1 class="text-2xl font-bold">My Profile</h1>
+
+          <div class="flex items-center gap-6">
+
+            <!-- Right: Personal Assist (glow) + Settings + Logout -->
+          <div class="justify-self-end flex items-center gap-3">
+
+
+
+
+            <!-- Personal Assist trigger -->
+            <button type="button" onclick="openPAModal()" aria-label="Open Personal Assist"
+                    class="relative p-2 rounded hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+              <span class="absolute inset-0 rounded-full pa-glow pointer-events-none"></span>
+              <svg class="relative w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 6v.01M16.24 7.76v.01M18 12v.01M16.24 16.24v.01M12 18v.01M7.76 16.24v.01M6 12v.01M7.76 7.76v.01" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+             <!-- User Profile Icon and Trigger button -->
+          <div class="relative">
+          <button onclick="toggleProfileModal()"
+                  class="p-2 rounded hover:bg-gray-200 focus:outline-none"
+                  aria-label="User Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                class="w-6 h-6 text-gray-700">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+          </button>
+
+          <!-- Profile Modal -->
+          <div id="profileModal"
+              class="hidden absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg">
+            <div class="px-4 py-3 border-b">
+              <p id="displayName" class="font-semibold text-gray-800">User</p>
+              <p id="displayEmail" class="text-sm text-gray-500">email@domain.com</p>
+
+            </div>
+            <ul class="py-2 text-sm text-gray-700">
+              <li><a href="{% url 'profile' %}" class="block px-4 py-2 hover:bg-gray-100">View Profile</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">See Plans</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Help</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Language</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Privacy</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Policy</a></li>
+            </ul>
+            <div class="border-t">
+              <a href="{% url 'login' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign Out</a>
+            </div>
+          </div>
+          </div>
+
+            <!-- Logout Icon -->
+            <a href="{% url 'login' %}" class="group relative">
+              <svg class="w-6 h-6 text-gray-600 hover:text-red-600 transition" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+              </svg>
+            </a>
+          </div>
+        </header>
+
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <main class="flex-1 px-10 py-10 space-y-10">
+
+        <!-- PROFILE GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <!-- LEFT CARD -->
+          <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center">
+            <div class="relative">
+              <img id="profilePic" src="https://i.pravatar.cc/150" alt="Profile" class="w-32 h-32 rounded-full shadow-md mb-4 object-cover">
+              <button onclick="document.getElementById('uploadPic').click()" class="absolute bottom-3 right-3 bg-blue-600 p-2 rounded-full text-white shadow-md hover:bg-blue-700"><i class="fa-solid fa-camera"></i></button>
+              <input id="uploadPic" type="file" accept="image/*" class="hidden" onchange="previewProfilePic(event)">
+            </div>
+
+            <h2 id="displayName" class="text-xl font-semibold text-gray-800 mt-2">Vamsi Krishna Surisetti</h2>
+            <p id="displayTitle" class="text-gray-500 text-sm">Data Analyst and Data Scientist</p>
+            <p id="displayQuote" class="text-gray-600 text-sm mt-4 italic">“Applying data-driven insights for impactful decisions.”</p>
+
+            
+
+            <div class="mt-6 flex gap-3 text-gray-600">
+              <a href="#" id="linkedinLink" class="hover:text-blue-600"><i class="fa-brands fa-linkedin text-xl"></i></a>
+              <a href="#" id="githubLink" class="hover:text-gray-800"><i class="fa-brands fa-github text-xl"></i></a>
+              <a href="#" id="otherLink" class="hover:text-pink-600"><i class="fa-brands fa-instagram text-xl"></i></a>
+            </div>
+
+            <button id="editToggle" onclick="toggleEditMode()" 
+  class="mt-6 w-full py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm transition">
+  Edit Profile
+</button>
+
+<!-- Add this Save Changes button below main container (hidden initially) -->
+<div id="saveContainer" class="hidden fixed bottom-6 right-10 z-40">
+  <button onclick="saveProfileData()" 
+    class="px-6 py-3 bg-blue-600 text-white text-sm rounded-lg shadow-lg hover:bg-blue-700">
+    💾 Save Changes
+  </button>
+</div>
+
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="col-span-2 space-y-8">
+
+            <!-- ABOUT -->
+            <section class="bg-white rounded-2xl shadow-md p-6">
+              <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">About</h3>
+              <p id="displayAbout" class="text-gray-700 text-sm leading-relaxed">
+                I’m a data enthusiast passionate about Python, SQL, and problem-solving. Skilled in machine learning, data visualization, and analytics tools like Tableau & Power BI.
+              </p>
+              <button onclick="openEditAboutModal()" class="mt-3 text-blue-600 text-sm hover:underline">✎ Edit About</button>
+            </section>
+
+            <!-- EXPERIENCE -->
+            <section class="bg-white rounded-2xl shadow-md p-6">
+              <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Professional Experience</h3>
+              <div id="experienceContainer" class="space-y-4">
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h4 class="font-medium text-gray-900">Data Analyst — TCS</h4>
+                  <p class="text-sm text-gray-500">2022 – Present</p>
+                  <p class="text-gray-600 text-sm mt-1">Predictive models for analytics.</p>
+                </div>
+              </div>
+              <button onclick="openAddExperienceModal()" class="mt-3 text-blue-600 text-sm hover:underline">+ Add New Experience</button>
+            </section>
+
+            <!-- PROJECTS -->
+            <section class="bg-white rounded-2xl shadow-md p-6">
+              <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Personal Projects</h3>
+              <div id="projectsContainer" class="grid md:grid-cols-2 gap-4">
+                <div class="p-4 border border-gray-200 rounded-lg">
+                  <h4 class="font-medium text-gray-900">Udyog Refer Platform</h4>
+                  <p class="text-sm text-gray-600 mt-1">Referral-based job network.</p>
+                  <a href="#" class="text-sm text-blue-600 hover:underline mt-2 inline-block">View Project →</a>
+                </div>
+              </div>
+              <button onclick="openAddProjectModal()" class="mt-3 text-blue-600 text-sm hover:underline">+ Add New Project</button>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ====== EDIT PROFILE MODAL ====== -->
+  <div id="editProfileModal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6">
+      <h2 class="text-lg font-semibold mb-4">Edit Profile</h2>
+      <div class="space-y-4">
+        <input id="nameInput" type="text" placeholder="Name" class="w-full border p-2 rounded" />
+        <input id="titleInput" type="text" placeholder="Title" class="w-full border p-2 rounded" />
+        <input id="quoteInput" type="text" placeholder="Quote" class="w-full border p-2 rounded" />
+        <input id="linkedinInput" type="url" placeholder="LinkedIn URL" class="w-full border p-2 rounded" />
+        <input id="githubInput" type="url" placeholder="GitHub URL" class="w-full border p-2 rounded" />
+      </div>
+      <div class="flex justify-end gap-3 mt-6">
+        <button onclick="closeModal('editProfileModal')" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
+        <button onclick="saveProfile()" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== EDIT ABOUT MODAL ====== -->
+  <div id="editAboutModal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6">
+      <h2 class="text-lg font-semibold mb-4">Edit About</h2>
+      <textarea id="aboutInput" rows="5" class="w-full border p-2 rounded"></textarea>
+      <div class="flex justify-end gap-3 mt-6">
+        <button onclick="closeModal('editAboutModal')" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
+        <button onclick="saveAbout()" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== ADD EXPERIENCE MODAL ====== -->
+  <div id="addExperienceModal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6">
+      <h2 class="text-lg font-semibold mb-4">Add Experience</h2>
+      <div class="space-y-3">
+        <input id="expTitle" type="text" placeholder="Role — Company" class="w-full border p-2 rounded" />
+        <input id="expDuration" type="text" placeholder="Duration (e.g. 2021 – 2023)" class="w-full border p-2 rounded" />
+        <textarea id="expDesc" rows="3" placeholder="Short Description" class="w-full border p-2 rounded"></textarea>
+      </div>
+      <div class="flex justify-end gap-3 mt-6">
+        <button onclick="closeModal('addExperienceModal')" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
+        <button onclick="addExperience()" class="px-4 py-2 bg-blue-600 text-white rounded">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== ADD PROJECT MODAL ====== -->
+  <div id="addProjectModal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6">
+      <h2 class="text-lg font-semibold mb-4">Add Project</h2>
+      <div class="space-y-3">
+        <input id="projName" type="text" placeholder="Project Name" class="w-full border p-2 rounded" />
+        <textarea id="projDesc" rows="3" placeholder="Short Description" class="w-full border p-2 rounded"></textarea>
+        <input id="projLink" type="url" placeholder="Project Link" class="w-full border p-2 rounded" />
+      </div>
+      <div class="flex justify-end gap-3 mt-6">
+        <button onclick="closeModal('addProjectModal')" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
+        <button onclick="addProject()" class="px-4 py-2 bg-blue-600 text-white rounded">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://kit.fontawesome.com/a2e0e6ad8f.js" crossorigin="anonymous"></script>
+  <script>
+    function previewProfilePic(e) {
+      const file = e.target.files[0];
+      if (file) document.getElementById('profilePic').src = URL.createObjectURL(file);
+    }
+    function openEditProfileModal() { document.getElementById('editProfileModal').classList.remove('hidden'); }
+    function openEditAboutModal() { document.getElementById('editAboutModal').classList.remove('hidden'); }
+    function openAddExperienceModal() { document.getElementById('addExperienceModal').classList.remove('hidden'); }
+    function openAddProjectModal() { document.getElementById('addProjectModal').classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function saveProfile() {
+      document.getElementById('displayName').innerText = document.getElementById('nameInput').value;
+      document.getElementById('displayTitle').innerText = document.getElementById('titleInput').value;
+      document.getElementById('displayQuote').innerText = `“${document.getElementById('quoteInput').value}”`;
+      document.getElementById('linkedinLink').href = document.getElementById('linkedinInput').value;
+      document.getElementById('githubLink').href = document.getElementById('githubInput').value;
+      closeModal('editProfileModal');
+    }
+    function saveAbout() {
+      document.getElementById('displayAbout').innerText = document.getElementById('aboutInput').value;
+      closeModal('editAboutModal');
+    }
+    function addExperience() {
+      const title = document.getElementById('expTitle').value;
+      const duration = document.getElementById('expDuration').value;
+      const desc = document.getElementById('expDesc').value;
+      const div = document.createElement('div');
+      div.className = "border border-gray-200 rounded-lg p-4 hover:border-blue-400 transition";
+      div.innerHTML = `<h4 class='font-medium text-gray-900'>${title}</h4><p class='text-sm text-gray-500'>${duration}</p><p class='text-gray-600 text-sm mt-1'>${desc}</p>`;
+      document.getElementById('experienceContainer').appendChild(div);
+      closeModal('addExperienceModal');
+    }
+    function addProject() {
+      const name = document.getElementById('projName').value;
+      const desc = document.getElementById('projDesc').value;
+      const link = document.getElementById('projLink').value;
+      const div = document.createElement('div');
+      div.className = "p-4 border border-gray-200 rounded-lg hover:border-blue-400 transition";
+      div.innerHTML = `<h4 class='font-medium text-gray-900'>${name}</h4><p class='text-sm text-gray-600 mt-1'>${desc}</p><a href='${link}' target='_blank' class='text-sm text-blue-600 hover:underline mt-2 inline-block'>View Project →</a>`;
+      document.getElementById('projectsContainer').appendChild(div);
+      closeModal('addProjectModal');
+    }
+  </script>
+
+  <script>
+let editMode = false;
+
+// enable / disable edit mode
+function toggleEditMode() {
+  editMode = !editMode;
+
+  const editableFields = [
+    { id: 'displayName', placeholder: 'Enter your name' },
+    { id: 'displayTitle', placeholder: 'Enter your title' },
+    { id: 'displayQuote', placeholder: 'Enter your quote' },
+    { id: 'displayAbout', placeholder: 'Write your about section' }
+  ];
+
+  if (editMode) {
+    document.getElementById('editToggle').innerText = "Cancel Edit";
+    document.getElementById('saveContainer').classList.remove('hidden');
+
+    editableFields.forEach(f => {
+      const el = document.getElementById(f.id);
+      const val = el.innerText.trim().replace(/^“|”$/g, ''); // remove fancy quotes
+      el.dataset.original = val; // store old value
+      el.innerHTML = `
+        <input type="text"
+          value="${val}"
+          placeholder="${f.placeholder}"
+          class="w-full border border-gray-300 px-2 py-1 rounded text-sm focus:ring-1 focus:ring-blue-500 bg-white"
+        />
+      `;
+    });
+  } else {
+    cancelEditChanges();
+  }
+}
+
+// cancel editing and restore old text
+function cancelEditChanges() {
+  const editableFields = ['displayName','displayTitle','displayQuote','displayAbout'];
+  editableFields.forEach(id => {
+    const el = document.getElementById(id);
+    const original = el.dataset.original || "";
+    el.textContent = original;
+  });
+  document.getElementById('editToggle').innerText = "Edit Profile";
+  document.getElementById('saveContainer').classList.add('hidden');
+  editMode = false;
+}
+
+// save edits and keep new text visible
+function saveProfileData() {
+  const fields = ['displayName','displayTitle','displayQuote','displayAbout'];
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    const inputVal = el.querySelector('input')?.value?.trim() || el.innerText;
+    el.textContent = inputVal;
+    el.dataset.original = inputVal;
+  });
+
+  // mini save success animation
+  const btn = document.querySelector('#saveContainer button');
+  btn.innerHTML = "✅ Saved!";
+  btn.classList.add('bg-green-600','hover:bg-green-700');
+  
+  setTimeout(() => {
+    btn.innerHTML = "💾 Save Changes";
+    btn.classList.remove('bg-green-600','hover:bg-green-700');
+    document.getElementById('saveContainer').classList.add('hidden');
+    document.getElementById('editToggle').innerText = "Edit Profile";
+    editMode = false;
+  }, 1200);
+}
+</script>
+
+</body>
+</html>

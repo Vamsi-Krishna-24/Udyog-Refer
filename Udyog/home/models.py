@@ -142,7 +142,7 @@ class SeekerRequest(models.Model):
         related_name="received_requests"
     )
 
-    resume = models.FileField(upload_to= "resumes/", blank=True, null=True)
+    resume = models.FileField(upload_to= "media/", blank=True, null=True)
 
     STATUS_CHOICES=[
         ("PENDING", "Pending"),

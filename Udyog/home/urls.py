@@ -12,12 +12,15 @@ from .views import (
     MeAPIView,
     JobViewSet,
     tracker_stats,
+    profile,
     SeekerRequestViewSet
 )
 
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework import routers
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 # ----- DRF Router (API under /api/)
@@ -38,6 +41,7 @@ urlpatterns = [
     path("login", views.login, name="login"),
     path("signup", views.signup, name="signup"),
     path("launchpad", views.launchpad, name="launchpad"),
+    path("profile", views.profile, name="profile"),
     path("test", views.test, name="test"),
     path("refer", views.referer, name="referer"),
     path("referal_req", views.referal_req, name="referal_req"),
@@ -66,3 +70,6 @@ urlpatterns = [
    path("api/", include(router.urls)),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
