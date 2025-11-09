@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>403 | Access Restricted</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Varela+Round&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes flux {
+      0%,100% {
+        text-shadow: 0 0 5px #00FFC6, 0 0 15px #00FFC6, 0 0 50px #00FFC6, 0 0 50px #00FFC6;
+        color: #4BFFEF;
+      }
+      50% {
+        text-shadow: 0 0 3px #00B58D, 0 0 25px #00B58D, 0 0 25px #00B58D;
+        color: #63D3AE;
+      }
+    }
+    @keyframes eye {
+      0%,5% { opacity: 0; transform: translateX(0); }
+      15%,35% { opacity: 1; transform: translateX(15px); }
+      40%,60% { transform: translateX(-15px); }
+      65%,100% { transform: translateX(0); }
+    }
+    @keyframes leaf {
+      0%,75%,100% { transform: scaleX(1); }
+      5%,70% { transform: scaleX(0.2); }
+    }
+  </style>
+</head>
+
+<body class="bg-[#1C2127] min-h-screen flex flex-col justify-center items-center font-[Poppins] relative overflow-hidden">
+
+  <!-- Messages -->
+  <div class="absolute left-10 top-[230px]">
+    <h1 class="text-white text-3xl font-semibold">You are not authorized.</h1>
+    <p class="text-white text-lg font-light w-[360px] mt-2">
+      You tried to access a page you did not have prior authorization for.
+    </p>
+  </div>
+
+  <!-- Door animation -->
+  <div class="relative right-8 mt-16">
+    <div class="text-[90px] font-[Varela_Round] text-[#5BE0B3] tracking-[3px] animate-[flux_2s_linear_infinite] text-center mb-6">403</div>
+
+    <div class="h-[495px] w-[295px] rounded-t-[90px] bg-[#8594A5] flex justify-center items-center">
+      <div class="h-[450px] w-[250px] rounded-t-[70px] bg-[#A0AEC0] relative flex flex-col items-center">
+
+        <!-- Window -->
+        <div class="h-[40px] w-[130px] bg-[#1C2127] rounded-sm mt-20 relative overflow-hidden">
+          <div class="absolute top-[15px] left-[25px] h-[5px] w-[15px] rounded-full bg-white animate-[eye_7s_ease-in-out_infinite]"></div>
+          <div class="absolute top-[15px] left-[65px] h-[5px] w-[15px] rounded-full bg-white animate-[eye_7s_ease-in-out_infinite]"></div>
+          <div class="absolute inset-0 bg-[#8594A5] origin-right animate-[leaf_7s_infinite]"></div>
+        </div>
+
+        <!-- Handle -->
+        <div class="absolute bottom-[80px] left-[30px] h-[8px] w-[50px] bg-[#EBF3FC] rounded-md"></div>
+
+        <!-- Rectangle -->
+        <div class="absolute bottom-[110px] left-[20px] h-[70px] w-[25px] bg-[#CBD8E6] rounded-md"></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -165,6 +165,8 @@ def referal_req(request):
 def active_referals(request):
     return render(request, 'home/active_referals.html')
 
+
+
 class ProtectedPingView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -179,6 +181,9 @@ def tracker(request):
     return render(request, 'home/tracker.html')
 
 
+def my_tracker(request):
+    return render(request, 'home/my_tracker.html')
+
 def referer_home(request):
     return render(request, 'home/referer_home.html')
 
@@ -187,6 +192,10 @@ def referer_home(request):
 ##There is no Token/ User trying to login without password
 def no_token(request):
     return render(request, 'home/no_token.html')
+
+def access_denied(request):
+    return render(request, "access_denied.html")
+
 
 #extra added for authorising
 

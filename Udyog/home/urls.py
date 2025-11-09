@@ -13,6 +13,8 @@ from .views import (
     JobViewSet,
     tracker_stats,
     profile,
+    access_denied,
+    my_tracker,
     SeekerRequestViewSet
 )
 
@@ -21,6 +23,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework import routers
 from django.conf import settings
 from django.conf.urls.static import static
+from .views import my_tracker
 
 
 # ----- DRF Router (API under /api/)
@@ -36,21 +39,36 @@ router.register(r"seeker-requests", SeekerRequestViewSet, basename="seeker-reque
 
 
 urlpatterns = [
-    # ----- HTML pages
+    # ----- Initial pages
     path("", views.landing, name="landing"),
     path("login", views.login, name="login"),
     path("signup", views.signup, name="signup"),
     path("launchpad", views.launchpad, name="launchpad"),
+
+    #common pages
     path("profile", views.profile, name="profile"),
+    path("no_token", views.no_token, name="no_token"),
+    path("access_denied", views.access_denied, name="access_denied"),
+
+
+    #test pages
     path("test", views.test, name="test"),
     path("refer", views.referer, name="referer"),
     path("referal_req", views.referal_req, name="referal_req"),
+    path("api/me/", MeAPIView.as_view(), name="me"),
+
+
+    #Seeker Pages
     path("active_referals", views.active_referals, name="active_referals"),
     path("trending", views.trending, name="trending"),
     path("tracker", views.tracker, name="tracker"),
+
+
+    #referer pages
     path("referer_home", views.referer_home, name="referer_home"),
-    path("no_token", views.no_token, name="no_token"),
-    path("api/me/", MeAPIView.as_view(), name="me"),
+    path("my_tracker", views.my_tracker, name="my_tracker"),
+    
+    
 
     # ----- Auth / small APIs
     path("api/login/", LoginAPIView.as_view(), name="login_api"),

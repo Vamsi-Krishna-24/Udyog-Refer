@@ -1,0 +1,296 @@
+{%load static %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="icon" type="image/png" href="{% static 'img/ur_logo.ico' %}">
+      <title>My Tracker</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <style>
+         @keyframes paPulse {
+         0%   { box-shadow: 0 0 0 0 rgba(59,130,246,.45); }
+         70%  { box-shadow: 0 0 0 10px rgba(59,130,246,0); }
+         100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+         }
+         .pa-glow {
+         animation: paPulse 2s infinite;
+         }
+      </style>
+
+      
+      <!-- JWT guard -->
+
+       <script src="{% static 'js/roleGuard.js' %}"></script>
+      <script>
+         const token = localStorage.getItem("access_token");
+         (async () => {
+           if (!token) return (window.location.href = "/no_token");
+           try {
+             const res = await fetch("/api/protected-ping/", {
+               headers: { Authorization: `Bearer ${token}` }
+             });
+             if (!res.ok) window.location.href = "/no_token";
+           } catch {
+             window.location.href = "/no_token";
+           }
+         })();
+         function authFetch(url, options = {}) {
+           const headers = { ...(options.headers || {}) };
+           if (token) headers.Authorization = `Bearer ${token}`;
+           return fetch(url, { ...options, headers });
+         }
+      </script>
+      <!--Script for user Modal Toggle-->
+      <script>
+         function toggleProfileModal() {
+           const modal = document.getElementById('profileModal');
+           modal.classList.toggle('hidden');
+         }
+         
+         // Close if clicked outside
+         document.addEventListener('click', (e) => {
+           const modal = document.getElementById('profileModal');
+           if (!modal.contains(e.target) &&
+               !e.target.closest('button[onclick="toggleProfileModal()"]')) {
+             modal.classList.add('hidden');
+           }
+         });
+      </script>
+      <script>
+         function openPAModal() {
+           const m = document.getElementById('paModal');
+           m.classList.remove('hidden'); 
+           m.classList.add('flex');
+           document.getElementById('msgPA')?.focus();
+         }
+         
+         function closePAModal() {
+           const m = document.getElementById('paModal');
+           m.classList.add('hidden'); 
+           m.classList.remove('flex');
+         }
+      </script>
+   </head>
+   <body class="bg-gray-100 font-sans">
+      <div class="flex min-h-screen">
+         <!-- Sidebar -->
+          <aside class="w-20 bg-gradient-to-b from-blue-800 via-blue-900 to-slate-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
+               <!-- UR Logo -->
+               <a href="/" class="mb-10">
+               <img src="{% static 'img/ur_logo.ico' %}" alt="Udyog Refer Logo"
+                  class="w-10 h-10 rounded-lg shadow-md hover:scale-105 transition-transform" />
+               </a>
+               <!-- Vertically centered wrapper -->
+               <div class="flex-1 flex flex-col justify-center space-y-6">
+                  <!-- Refere -->
+                  <a href="{% url 'referer_home' %}" class="group relative">
+                     <div class="p-3 rounded-full bg-gray-800 ring-2 ">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+                        </svg>
+                     </div>
+                     <span class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800
+                      text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">Post Refers</span>
+                  </a>
+                  <!-- My Earnings -->
+                  <a href="#" onclick="openEarningsModal()" class="group relative">
+                     <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15 8.25H9m6 3H9m3 6-3-3h1.5a3 3 0 1 0 0-6M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+</svg>
+
+                     </div>
+                     <span class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1
+                        bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">
+                     My Earnings
+                     </span>
+                  </a>
+                  <!--Tracker-->
+                  <a href="{% url 'my_tracker' %}" class="group relative">
+                     <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+</svg>
+                     </div>
+                     <span class="absolute top-12 left-1/2 -translate-x-1/2 text-xs px-2 py-1 bg-gray-800
+                      text-white rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">Post Refers</span>
+                  </a>
+
+               </div>
+            </aside>
+         </div>
+         </aside>
+
+
+
+         <!-- Main Content -->
+         <div class="flex-1 ml-20 flex flex-col">
+            <!-- Top Bar -->
+            <header class="sticky top-0 z-10 bg-gray-100 border-b">
+               <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                  <!-- Title -->
+                  <div>
+                     <h1 class="text-2xl font-bold text-blue-900">My Tracker</h1>
+                     <p class="text-gray-600 text-sm -mt-0.5">Keep track of your referral requests</p>
+                  </div>
+                  <!-- Right Icons -->
+                  <div class="flex items-center gap-3">
+                     <!-- Personal Assist trigger -->
+                     <button type="button" onclick="openPAModal()" aria-label="Open Personal Assist"
+                        class="relative p-2 rounded hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                        <span class="absolute inset-0 rounded-full pa-glow pointer-events-none"></span>
+                        <svg class="relative w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none"
+                           stroke="currentColor" stroke-width="2">
+                           <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M12 6v.01M16.24 7.76v.01M18 12v.01M16.24 16.24v.01M12 18v.01M7.76 16.24v.01M6 12v.01M7.76 7.76v.01" />
+                           <circle cx="12" cy="12" r="3" />
+                        </svg>
+                     </button>
+                     <!-- User Profile Icon and Trigger button -->
+                     <div class="relative">
+                        <button onclick="toggleProfileModal()"
+                           class="p-2 rounded hover:bg-gray-200 focus:outline-none"
+                           aria-label="User Profile">
+                           <svg xmlns="http://www.w3.org/2000/svg" 
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              class="w-6 h-6 text-gray-700">
+                              <path stroke-linecap="round" stroke-linejoin="round"
+                                 d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                           </svg>
+                        </button>
+                        <!-- Profile Modal -->
+                        <div id="profileModal"
+                           class="hidden absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg">
+                           <div class="px-4 py-3 border-b">
+                              <p id="displayName" class="font-semibold text-gray-800">User</p>
+                              <p id="displayEmail" class="text-sm text-gray-500">email@domain.com</p>
+
+                           </div>
+                           <ul class="py-2 text-sm text-gray-700">
+                              <li><a href="{% url 'referal_req' %}" class="block px-4 py-2 hover:bg-gray-100">View Profile</a></li>
+                              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">See Plans</a></li>
+                              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Help</a></li>
+                              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Language</a></li>
+                              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Privacy</a></li>
+                              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Policy</a></li>
+                           </ul>
+                           <div class="border-t">
+                              <a href="{% url 'login' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign Out</a>
+                           </div>
+                        </div>
+                     </div>
+                     <!-- Logout -->
+                     <a href="{% url 'login' %}" class="p-2 rounded hover:bg-gray-200" aria-label="Logout">
+                        <svg class="w-6 h-6 text-gray-700 hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1"/>
+                        </svg>
+                     </a>
+                  </div>
+               </div>
+            </header>
+
+
+            
+            <!-- Tracker Page Content -->
+            <main class="flex-1 p-6 overflow-y-auto">
+               <div class="text-gray-700">
+                  <!-- Your tracker content goes here -->
+                  <!-- Main Content --> 
+                  <!-- Tracker Stats --> 
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10 hover:cursor-pointer">
+                     <div class="bg-white p-6 rounded-2xl shadow-md flex flex-col items-center">
+                        <span class="text-4xl mb-2">📤</span> 
+                        <p class="text-xl font-semibold text-gray-700 hover">Applications Sent</p>
+                        <p id="appsSent" class="text-2xl font-bold text-indigo-600 mt-2">--</p>
+
+                     </div>
+                     <div class="bg-white p-6 rounded-2xl shadow-md flex flex-col items-center">
+                        <span class="text-4xl mb-2">✅</span> 
+                        <p class="text-xl font-semibold text-gray-700">Referrals Updates</p>
+                        <p id="statusUpdates" class="text-2xl font-bold text-green-500 mt-2">--</p>
+
+                     </div>
+                     
+                  </div>
+                  </div>
+         </div>
+      </div>
+      </div>
+      <!-- Personal Assist Modal (your AI chat UI) -->
+      <div id="paModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+      <div class="w-[360px] rounded-2xl overflow-hidden shadow-xl bg-white border border-slate-200 relative">
+      <!-- close -->
+      <button onclick="closePAModal()" class="absolute top-3 right-3 z-10 text-white/80 hover:text-white" aria-label="Close">✕</button>
+      <!-- header -->
+      <div class="bg-gradient-to-b from-slate-900 to-black text-white px-5 py-4">
+      <h2 class="font-semibold text-lg flex items-center gap-2">🤖 AI Assistant</h2>
+      </div>
+      <!-- body -->
+      <div id="chatPA" class="bg-gradient-to-b from-slate-950 to-slate-900 text-slate-100 h-[420px] px-4 py-4 space-y-3 overflow-y-auto">
+      <div class="flex">
+      <div class="max-w-[80%] bg-slate-800/70 rounded-xl px-3 py-2 text-sm">
+      👋 Hey! I’m your AI career buddy — tracking jobs, trends, and apps across Udyog, WhatsApp, Insta & more.
+      I learn from your resume, LinkedIn & beyond to guide your growth.
+      Find peers, build projects, join hackathons — level up together.
+      And we're just getting started. Currently under development ⚙️.....
+      </div>
+      </div>
+      </div>
+      <!-- input bar -->
+      <div class="bg-black/95 p-3 flex items-center gap-2">
+      <input id="msgPA" type="text"
+         class="flex-1 bg-slate-800/70 text-slate-100 placeholder-slate-400 rounded-xl px-3 py-2 outline-none border border-slate-700 focus:border-slate-500"
+         placeholder="Type a message..." />
+      <button id="sendPA"
+         class="shrink-0 bg-white text-black rounded-xl px-3 py-2 font-medium hover:opacity-90 active:scale-95 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+      </svg>
+      </button>
+      </div>
+      </div>
+      </div>
+      </main>
+      </div>
+      </div>
+
+      <!--To get the name and email id and to show uo un the profile button-->
+        <script>
+          document.getElementById("displayName").textContent = localStorage.getItem("username");
+          document.getElementById("displayEmail").textContent = localStorage.getItem("email");
+        </script>
+
+        <!--Script to get the number of Applications applied stats-->
+        <script>
+         authFetch("/api/tracker-stats/")
+         .then(res => res.json())
+         .then(data => {
+            document.getElementById("appsSent").textContent = data.applications_sent || 0;
+         })
+         .catch(() => {
+            document.getElementById("appsSent").textContent = "0";
+         });
+         </script>
+
+
+<script>
+authFetch("/api/tracker-stats/")
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("appsSent").textContent = data.applications_sent || 0;
+    document.getElementById("statusUpdates").textContent = data.status_updates || 0;
+  })
+  .catch(() => {
+    document.getElementById("appsSent").textContent = "0";
+    document.getElementById("statusUpdates").textContent = "0";
+  });
+</script>
+
+
+   </body>
+</html>
