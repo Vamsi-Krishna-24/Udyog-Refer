@@ -1,28 +1,24 @@
-// roleGuard.js
-
 document.addEventListener("DOMContentLoaded", () => {
-  const role = localStorage.getItem("role"); // 'referrer' or 'referee'
+  const role = localStorage.getItem("role");
   const path = window.location.pathname;
 
-  // --- Define page access mapping ---
+  console.log(`✅ roleGuard loaded | Role: ${role} | Path: ${path}`);
+
   const referrerPages = ["/referer_home", "/my_tracker"];
   const refereePages = ["/active_referals", "/trending", "/tracker"];
 
-  // --- Access logic ---
-  if (role === "referrer") {
-    // if referrer tries referee pages
-    if (refereePages.some(page => path.startsWith(page))) {
-      window.location.href = "/access_denied";
-    }
-  } 
-  else if (role === "referee") {
-    // if referee tries referrer pages
-    if (referrerPages.some(page => path.startsWith(page))) {
-      window.location.href = "/access_denied";
-    }
-  } 
-  else {
-    // no role (not logged in or corrupted localStorage)
+  if (!role) {
+    console.warn("⚠️ No role found → redirecting to login");
     window.location.href = "/login";
+    return;
+  }
+
+  if (role === "referrer" && refereePages.some(page => path.startsWith(page))) {
+    console.warn(`🚫 Referrer tried to access Referee page (${path}) → redirecting`);
+    window.location.href = "/access_denied";
+  } 
+  else if (role === "referee" && referrerPages.some(page => path.startsWith(page))) {
+    console.warn(`🚫 Referee tried to access Referrer page (${path}) → redirecting`);
+    window.location.href = "/access_denied";
   }
 });

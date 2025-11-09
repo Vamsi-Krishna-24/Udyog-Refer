@@ -194,7 +194,7 @@ def no_token(request):
     return render(request, 'home/no_token.html')
 
 def access_denied(request):
-    return render(request, "access_denied.html")
+    return render(request, "home/access_denied.html")
 
 
 #extra added for authorising
