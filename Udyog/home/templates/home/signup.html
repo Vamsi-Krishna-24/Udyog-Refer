@@ -7,6 +7,21 @@
   <link rel="icon" type="image/png" href="{% static 'img/ur_logo.ico' %}">
 
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+function loginWithGoogle() {
+  const params = new URLSearchParams({
+    client_id: "89385722038-m21hg6qe37os45ij3kg42k4u0ikt7fm3.apps.googleusercontent.com",   ///// replace with actual one
+    redirect_uri: "http://localhost:8000/api/google/callback/",
+    response_type: "code",
+    scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid",
+    access_type: "offline",
+    prompt: "select_account"
+  });
+  window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+}
+</script>
+
 <script>
 async function signup(){
   const data = {
@@ -65,6 +80,19 @@ async function signup(){
 
       <p id="response" class="text-sm text-center text-red-400"></p>  <!-- feedback box -->
     </div>
+
+    <div class="flex items-center justify-center text-gray-400 text-sm gap-3">
+        <span class="w-20 h-px bg-gray-500"></span> OR <span class="w-20 h-px bg-gray-500"></span>
+      </div>
+
+      <!-- Social Buttons -->
+      <button onclick="loginWithGoogle()"
+      class="w-full py-3 bg-[#1e293b] hover:bg-[#334155] text-gray-200 border border-gray-700 rounded-lg transition flex items-center justify-center gap-2">
+        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google"> Continue with Google
+      </button>
+      <button class="w-full py-3 bg-[#1e293b] hover:bg-[#334155] text-gray-200 border border-gray-700 rounded-lg transition flex items-center justify-center gap-2">
+        <img src="https://www.svgrepo.com/show/448234/linkedin.svg" class="w-5 h-5" alt="LinkedIn"> Continue with LinkedIn
+      </button>
 
     <!-- Switch to login -->
     <p class="text-center text-sm text-gray-400">

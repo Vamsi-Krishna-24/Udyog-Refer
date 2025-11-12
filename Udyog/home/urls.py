@@ -13,9 +13,12 @@ from .views import (
     JobViewSet,
     tracker_stats,
     profile,
+    my_profile,
     access_denied,
     my_tracker,
-    SeekerRequestViewSet
+    SeekerRequestViewSet,
+    ProfileViewSet,
+    referer_tracker_stats
 )
 
 from rest_framework.routers import DefaultRouter
@@ -38,6 +41,8 @@ router.register(r"seeker-requests", SeekerRequestViewSet, basename="seeker-reque
 
 
 
+
+
 urlpatterns = [
     # ----- Initial pages
     path("", views.landing, name="landing"),
@@ -46,9 +51,10 @@ urlpatterns = [
     path("launchpad", views.launchpad, name="launchpad"),
 
     #common pages
-    path("profile", views.profile, name="profile"),
     path("no_token", views.no_token, name="no_token"),
     path("access_denied", views.access_denied, name="access_denied"),
+    path("api/google/callback/", views.google_callback, name="google_callback"),
+
 
 
     #test pages
@@ -62,11 +68,13 @@ urlpatterns = [
     path("active_referals", views.active_referals, name="active_referals"),
     path("trending", views.trending, name="trending"),
     path("tracker", views.tracker, name="tracker"),
+    path("profile", views.profile, name="profile"),
 
 
     #referer pages
     path("referer_home", views.referer_home, name="referer_home"),
     path("my_tracker", views.my_tracker, name="my_tracker"),
+    path("my_profile", views.my_profile, name="my_profile"),
     
     
 
@@ -75,13 +83,16 @@ urlpatterns = [
     path("api/signup/", SignupAPIView.as_view(), name="signup_api"),
     path("api/set-role/", SetRoleView.as_view(), name="set_role"),
     path("api/name/", NameCreateAPIView.as_view(), name="name"),
+    path('api/profile/', ProfileViewSet.as_view({'get': 'list', 'put': 'update', 'patch': 'partial_update'})),
     path("api/referral-request/", ReferralRequestAPIView.as_view(), name="referral_api"),
     path("api/referer/", RefererAPIView.as_view(), name="referer_api"),
     path("api/protected-ping/", ProtectedPingView.as_view(), name="ping"),
     path("api/token/", MyTokenView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/tracker-stats/", tracker_stats, name="tracker_stats"),
+    path("api/referer-tracker-stats/", referer_tracker_stats, name="referer_tracker_stats"),
 
+    
 
     
     # ----- Mount DRF router

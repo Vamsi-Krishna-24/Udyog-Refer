@@ -5,6 +5,8 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.conf import settings
+from django.contrib.auth import get_user_model
+
 
 
 class UserManager(BaseUserManager):
@@ -165,6 +167,75 @@ class SeekerRequest(models.Model):
 
     def __str__(self):
         return f"{self.requester} → {self.referrer} ({self.status})"
+    
+
+
+
+
+#Model for Profile
+
+User = get_user_model()
+
+User = get_user_model()
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    name = models.CharField(max_length=100, blank=True)  # auto from User on create
+    title = models.CharField(max_length=100, blank=True)
+    quote = models.CharField(max_length=255, blank=True)
+    about = models.TextField(blank=True)
+    profile_pic = models.ImageField(upload_to="profile_pics/", blank=True, null=True)
+
+    linkedin = models.URLField()  # mandatory
+    github = models.URLField(blank=True)
+    other_link = models.URLField(blank=True)
+
+    skills = models.JSONField(default=list, blank=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
+    def save(self, *args, **kwargs):
+        # Auto-fill name from user if empty
+        if not self.name and hasattr(self.user, "name"):
+            self.name = self.user.name
+        elif not self.name:
+            self.name = self.user.username
+        super().save(*args, **kwargs)
+
+
+class Experience(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="experiences")
+    role_name = models.CharField(max_length=100)
+    company = models.CharField(max_length=100)
+    duration = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.role_name} @ {self.company}"
+
+
+class Project(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="projects")
+    name = models.CharField(max_length=100)
+    link = models.URLField(blank=True)
+    brief = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Education(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="educations")
+    school = models.CharField(max_length=150)
+    field_of_study = models.CharField(max_length=150)
+    achievements = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.school} ({self.field_of_study})"
+
 
 
     

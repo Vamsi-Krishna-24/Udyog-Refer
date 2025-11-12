@@ -152,7 +152,7 @@ USE_TZ = True
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),   
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),   
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),    
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -172,5 +172,10 @@ STATIC_ROOT = BASE_DIR / 'Udyog' / 'staticfiles'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+GOOGLE_CLIENT_ID = "89385722038-m21hg6qe37os45ij3kg42k4u0ikt7fm3.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET = "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"
+
 
 

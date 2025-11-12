@@ -5,6 +5,7 @@ from .models import User, SeekerRequest
 from django.utils import timezone
 from datetime import timedelta
 from django.utils.timesince import timesince
+from .models import Profile, Experience, Project, Education
 
 
 
@@ -143,3 +144,80 @@ class SeekerRequestSerializer(serializers.ModelSerializer):
             return obj.resume.url
         return None
 
+
+
+
+#Serialiaser for User Profile 
+
+
+class ExperienceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Experience
+        fields = ['id', 'role_name', 'company', 'duration', 'description']
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['id', 'name', 'link', 'brief']
+
+
+class EducationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Education
+        fields = ['id', 'school', 'field_of_study', 'achievements']
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    experiences = ExperienceSerializer(many=True, required=False)
+    projects = ProjectSerializer(many=True, required=False)
+    educations = EducationSerializer(many=True, required=False)
+
+    class Meta:
+        model = Profile
+        fields = [
+            'id', 'user', 'name', 'title', 'quote', 'about',
+            'profile_pic', 'linkedin', 'github', 'other_link',
+            'skills', 'experiences', 'projects', 'educations', 'updated_at'
+        ]
+        read_only_fields = ['user']
+
+    def create(self, validated_data):
+        experiences_data = validated_data.pop('experiences', [])
+        projects_data = validated_data.pop('projects', [])
+        educations_data = validated_data.pop('educations', [])
+
+        profile = Profile.objects.create(**validated_data)
+
+        for exp in experiences_data:
+            Experience.objects.create(profile=profile, **exp)
+        for proj in projects_data:
+            Project.objects.create(profile=profile, **proj)
+        for edu in educations_data:
+            Education.objects.create(profile=profile, **edu)
+
+        return profile
+
+    def update(self, instance, validated_data):
+        experiences_data = validated_data.pop('experiences', [])
+        projects_data = validated_data.pop('projects', [])
+        educations_data = validated_data.pop('educations', [])
+
+        # Update base profile
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Replace experiences / projects / educations
+        instance.experiences.all().delete()
+        instance.projects.all().delete()
+        instance.educations.all().delete()
+
+        for exp in experiences_data:
+            Experience.objects.create(profile=instance, **exp)
+        for proj in projects_data:
+            Project.objects.create(profile=instance, **proj)
+        for edu in educations_data:
+            Education.objects.create(profile=instance, **edu)
+
+        return instance

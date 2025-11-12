@@ -9,3 +9,4 @@ djangorestframework-simplejwt
 channels 
 daphne
 redis
+Pillow

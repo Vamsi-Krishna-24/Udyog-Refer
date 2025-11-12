@@ -1,0 +1,533 @@
+<script>
+/* ===========================
+   JWT + Profile Logic (Full)
+   =========================== */
+
+const STORE_KEY = 'ur_profile_v2';
+const API_URL = '/api/profile/';
+const REFRESH_URL = '/api/token/refresh/';
+
+/* ---- Token Helpers ---- */
+function getAccessToken() {
+  return (
+    localStorage.getItem('access_token') ||
+    localStorage.getItem('access') ||
+    localStorage.getItem('token')
+  );
+}
+function getRefreshToken() {
+  return (
+    localStorage.getItem('refresh_token') ||
+    localStorage.getItem('refresh')
+  );
+}
+
+async function ensureAccessToken() {
+  let token = getAccessToken();
+  if (token) return token;
+
+  const refresh = getRefreshToken();
+  if (!refresh) return null;
+
+  try {
+    const r = await fetch(REFRESH_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh }),
+    });
+    if (!r.ok) return null;
+    const data = await r.json();
+    if (data.access) {
+      localStorage.setItem('access_token', data.access);
+      return data.access;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/* ---- Default State ---- */
+const defaultState = {
+  name: '',
+  title: '',
+  quote: '',
+  about: '',
+  links: { linkedin: '', github: '', other: '' },
+  profilePic: '',
+  skills: [],
+  experiences: [],
+  projects: [],
+  educationsMini: [],
+};
+
+const $ = (id) => document.getElementById(id);
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    return raw ? JSON.parse(raw) : structuredClone(defaultState);
+  } catch {
+    return structuredClone(defaultState);
+  }
+}
+
+async function saveState(){
+  try {
+    const token = await ensureAccessToken();     // -----> get a good token
+    if (!token) throw new Error('No JWT available');
+
+    const res = await fetch('/api/profile/', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        name:  state.name,
+        title: state.title,
+        quote: state.quote,
+        about: state.about,
+        linkedin:  state.links.linkedin,
+        github:    state.links.github,
+        other_link: state.links.other,
+        skills:      state.skills,
+        experiences: state.experiences,
+        projects:    state.projects,
+        educations:  state.educationsMini
+      })
+    });
+
+    if (!res.ok) throw new Error('Failed to save profile');
+    toast('✅ Profile saved to server');
+  } catch (err) {
+    console.error(err);
+    toast('⚠️ Error saving profile');
+  }
+}
+
+
+/* ---- UI State ---- */
+let state = loadState();
+let editMode = false;
+let snapshot = null;
+
+/* ---- Renders ---- */
+function renderBasics() {
+  $('inputName').value = state.name || '';
+  $('inputTitle').value = state.title || '';
+  $('inputQuote').value = state.quote || '';
+  $('aboutArea').value = state.about || '';
+  $('linkLinkedIn').value = state.links.linkedin || '';
+  $('linkGitHub').value = state.links.github || '';
+  $('linkOther').value = state.links.other || '';
+  if (state.profilePic) $('profilePic').src = state.profilePic;
+}
+
+function renderSkills() {
+  const c = $('skillsContainer');
+  c.innerHTML = '';
+  if (!state.skills?.length) {
+    c.innerHTML = `<span class="text-gray-400 text-sm italic">No skills added yet.</span>`;
+    return;
+  }
+  state.skills.forEach((s, i) => {
+    const chip = document.createElement('span');
+    chip.className =
+      'px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs flex items-center gap-1';
+    chip.innerHTML = `<span>${s}</span><button class="hidden text-blue-700/70 hover:text-blue-900" data-role="del-skill" data-idx="${i}">&times;</button>`;
+    if (editMode)
+      chip.querySelector('[data-role="del-skill"]').classList.remove('hidden');
+    chip.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-role="del-skill"]');
+      if (btn && editMode) {
+        state.skills.splice(+btn.dataset.idx, 1);
+        saveAll();
+      }
+    });
+    c.appendChild(chip);
+  });
+}
+
+function renderExperiences() {
+  const c = $('experienceContainer');
+  c.innerHTML = '';
+  if (!state.experiences?.length) {
+    c.innerHTML = `<p class="text-gray-400 text-sm italic">No experience added yet.</p>`;
+    return;
+  }
+  state.experiences.forEach((e, i) => {
+    const div = document.createElement('div');
+    div.className =
+      'border border-gray-200 rounded-lg p-4 hover:border-ur-blue transition';
+    div.innerHTML = `
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h4 class="font-medium text-gray-900">${e.role || 'Role'} — ${
+      e.company || 'Company'
+    }</h4>
+          <p class="text-sm text-gray-500">${e.duration || ''}</p>
+          <p class="text-sm text-gray-700 mt-1">${e.desc || ''}</p>
+        </div>
+        <button class="hidden text-red-500 text-sm hover:underline" data-role="del-exp" data-idx="${i}">Delete</button>
+      </div>`;
+    if (editMode)
+      div.querySelector('[data-role="del-exp"]').classList.remove('hidden');
+    div.addEventListener('click', (ev) => {
+      const b = ev.target.closest('[data-role="del-exp"]');
+      if (b && editMode) {
+        state.experiences.splice(+b.dataset.idx, 1);
+        saveAll();
+      }
+    });
+    c.appendChild(div);
+  });
+}
+
+function renderProjects() {
+  const c = $('projectsContainer');
+  c.innerHTML = '';
+  if (!state.projects?.length) {
+    c.innerHTML = `<p class="text-gray-400 text-sm italic">No projects added yet.</p>`;
+    return;
+  }
+  state.projects.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className =
+      'p-4 border border-gray-200 rounded-lg hover:border-ur-blue transition';
+    const safeLink = p.link
+      ? `<a class="text-sm text-blue-600 hover:underline mt-2 inline-block" href="${p.link}" target="_blank">View Project →</a>`
+      : '';
+    card.innerHTML = `
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h4 class="font-medium text-gray-900">${p.name || 'Project Name'}</h4>
+          <p class="text-sm text-gray-700 mt-1">${p.desc || ''}</p>
+          ${safeLink}
+        </div>
+        <button class="hidden text-red-500 text-sm hover:underline" data-role="del-proj" data-idx="${i}">Delete</button>
+      </div>`;
+    if (editMode)
+      card.querySelector('[data-role="del-proj"]').classList.remove('hidden');
+    card.addEventListener('click', (ev) => {
+      const b = ev.target.closest('[data-role="del-proj"]');
+      if (b && editMode) {
+        state.projects.splice(+b.dataset.idx, 1);
+        saveAll();
+      }
+    });
+    c.appendChild(card);
+  });
+}
+
+function renderEduMini() {
+  const list = $('eduMiniList');
+  list.innerHTML = '';
+  if (!state.educationsMini?.length) {
+    list.innerHTML = `<p class="text-gray-400 text-sm italic">No education added yet.</p>`;
+    return;
+  }
+  state.educationsMini.forEach((ed, i) => {
+    const item = document.createElement('div');
+    item.className = 'flex items-start gap-3';
+    item.innerHTML = `
+      <div class="mt-1 text-ur-blue">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 4.5-9 4.5L3 7.5 12 3z"></path><path d="M21 14l-9 4.5L3 14v-4l9 4.5 9-4.5v4z"></path></svg>
+      </div>
+      <div class="flex-1">
+        <p class="font-medium">${ed.school || 'School / University'}</p>
+        <p class="text-sm text-gray-500">${ed.field || 'Field of Study'}</p>
+        <p class="text-xs text-gray-400 italic">${ed.ach || ''}</p>
+      </div>`;
+    list.appendChild(item);
+  });
+}
+
+function setInputsDisabled(disabled) {
+  [
+    'inputName',
+    'inputTitle',
+    'inputQuote',
+    'aboutArea',
+    'linkLinkedIn',
+    'linkGitHub',
+    'linkOther',
+  ].forEach((id) => {
+    const el = $(id);
+    if (el) el.disabled = disabled;
+  });
+}
+
+/* ---- Toast ---- */
+function toast(text) {
+  const box = document.createElement('div');
+  box.className =
+    'fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white px-4 py-2 rounded-lg shadow';
+  box.textContent = text;
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 1400);
+}
+
+/* ---- Save & Load ---- */
+async function loadProfileFromAPI(){
+  try {
+    const token = await ensureAccessToken();     // -----> get a good token
+    if (!token) throw new Error('No JWT available');
+
+    const res = await fetch('/api/profile/', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error('Failed to fetch profile');
+
+    const data = await res.json();
+
+    // ///// map server -> state
+    state.name   = data.name   || '';
+    state.title  = data.title  || '';
+    state.quote  = data.quote  || '';
+    state.about  = data.about  || '';
+    state.links.linkedin = data.linkedin   || '';
+    state.links.github   = data.github     || '';
+    state.links.other    = data.other_link || '';
+    state.skills       = Array.isArray(data.skills) ? data.skills : [];
+    state.experiences  = Array.isArray(data.experiences) ? data.experiences : [];
+    state.projects     = Array.isArray(data.projects) ? data.projects : [];
+    state.educationsMini = Array.isArray(data.educations) ? data.educations : [];
+
+    renderAll();
+  } catch (err) {
+    console.error(err);
+    toast('⚠️ Unable to load profile');
+  }
+}
+
+
+async function saveAll() {
+  state.name = $('inputName').value.trim();
+  state.title = $('inputTitle').value.trim();
+  state.quote = $('inputQuote').value.trim();
+  state.about = $('aboutArea').value.trim();
+  state.links.linkedin = $('linkLinkedIn').value.trim();
+  state.links.github = $('linkGitHub').value.trim();
+  state.links.other = $('linkOther').value.trim();
+
+  try {
+    await saveStateToServer();
+    toast('✅ Profile saved');
+  } catch (e) {
+    console.error(e);
+    toast('⚠️ Save failed');
+  }
+  renderAll();
+}
+
+/* ---- Init ---- */
+function renderAll() {
+  renderBasics();
+  renderSkills();
+  renderExperiences();
+  renderProjects();
+  renderEduMini();
+}
+
+(async function init() {
+  renderAll();
+  setInputsDisabled(true);
+  await loadProfileFromAPI();
+})();
+</script>
+
+<script>
+function addSkill() {
+  const v = document.getElementById('skillInput').value.trim();
+  if (!v) return toast("Enter skill first");
+  (state.skills ||= []).push(v);
+  document.getElementById('skillInput').value = '';
+  closeModal('skillModal');
+  renderSkills();
+  saveProfileToServer();
+}
+
+function addExperience() {
+  const e = {
+    role: document.getElementById('expRole').value.trim(),
+    company: document.getElementById('expCompany').value.trim(),
+    duration: document.getElementById('expDuration').value.trim(),
+    desc: document.getElementById('expDesc').value.trim(),
+  };
+  if (!e.role && !e.company) return toast("Enter role or company");
+  (state.experiences ||= []).push(e);
+  ['expRole','expCompany','expDuration','expDesc'].forEach(id => document.getElementById(id).value = '');
+  closeModal('expModal');
+  renderExperiences();
+  saveProfileToServer();
+}
+
+function addProject() {
+  const p = {
+    name: document.getElementById('projName').value.trim(),
+    link: document.getElementById('projLink').value.trim(),
+    desc: document.getElementById('projDesc').value.trim(),
+  };
+  if (!p.name) return toast("Project name required");
+  (state.projects ||= []).push(p);
+  ['projName','projLink','projDesc'].forEach(id => document.getElementById(id).value = '');
+  closeModal('projModal');
+  renderProjects();
+  saveProfileToServer();
+}
+
+function addMiniEducation() {
+  const ed = {
+    school: document.getElementById('miniSchool').value.trim(),
+    field: document.getElementById('miniField').value.trim(),
+    ach: document.getElementById('miniAch').value.trim(),
+  };
+  if (!ed.school) return toast("Enter school name");
+  (state.educationsMini ||= []).push(ed);
+  ['miniSchool','miniField','miniAch'].forEach(id => document.getElementById(id).value = '');
+  closeModal('eduMiniModal');
+  renderEduMini();
+  saveProfileToServer();
+}
+</script>
+
+<script>
+async function saveProfileToServer() {
+  const token = await ensureAccessToken();
+  if (!token) return toast("⚠️ No JWT, please re-login");
+
+  try {
+    const res = await fetch('/api/profile/', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: document.getElementById('inputName').value.trim(),
+        title: document.getElementById('inputTitle').value.trim(),
+        quote: document.getElementById('inputQuote').value.trim(),
+        about: document.getElementById('aboutArea').value.trim(),
+        linkedin: document.getElementById('linkLinkedIn').value.trim(),
+        github: document.getElementById('linkGitHub').value.trim(),
+        other_link: document.getElementById('linkOther').value.trim(),
+        skills: state.skills || [],
+        experiences: state.experiences || [],
+        projects: state.projects || [],
+        educations: state.educationsMini || [],
+      }),
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+    toast('✅ Profile saved successfully');
+  } catch (err) {
+    console.error(err);
+    toast('⚠️ Error saving profile');
+  }
+}
+</script>
+
+<script>
+async function saveAll() {
+  state.name = document.getElementById('inputName').value.trim();
+  state.title = document.getElementById('inputTitle').value.trim();
+  state.quote = document.getElementById('inputQuote').value.trim();
+  state.about = document.getElementById('aboutArea').value.trim();
+  state.links.linkedin = document.getElementById('linkLinkedIn').value.trim();
+  state.links.github = document.getElementById('linkGitHub').value.trim();
+  state.links.other = document.getElementById('linkOther').value.trim();
+
+  await saveProfileToServer();
+  renderAll();
+  toast("💾 Changes saved to server");
+
+  editActive = false;
+  document.getElementById('saveBar').classList.add('hidden');
+  document.getElementById('editToggle').textContent = 'Edit Profile';
+  ['inputName','inputTitle','inputQuote','aboutArea','linkLinkedIn','linkGitHub','linkOther']
+    .forEach(id => document.getElementById(id).disabled = true);
+}
+</script>
+
+
+<script>
+/* =========================================
+   Edit / Cancel / Save Button Behaviour
+   ========================================= */
+
+let editActive = false;
+let snapshotCopy = null;
+
+function toggleEditMode() {
+  const editBtn = document.getElementById('editToggle');
+  const saveBar = document.getElementById('saveBar');
+  const editableIds = [
+    'inputName','inputTitle','inputQuote',
+    'aboutArea','linkLinkedIn','linkGitHub','linkOther'
+  ];
+
+  if (!editActive) {
+    // ---- ENTER EDIT MODE ----
+    editActive = true;
+    snapshotCopy = JSON.parse(JSON.stringify(state));   // backup
+    editBtn.textContent = 'Cancel Edit';
+    saveBar.classList.remove('hidden');
+    editableIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = false;
+    });
+    document.querySelectorAll('.is-disabled')
+      .forEach(el => el.classList.remove('is-disabled'));
+  } else {
+    // ---- CANCEL EDIT ----
+    editActive = false;
+    state = JSON.parse(JSON.stringify(snapshotCopy));   // restore old data
+    renderAll();
+    editBtn.textContent = 'Edit Profile';
+    saveBar.classList.add('hidden');
+    editableIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = true;
+    });
+    document.querySelectorAll('#btnAddSkill,#btnAddExp,#btnAddProj,#btnAddEduMini,#btnEditAbout')
+      .forEach(el => el.classList.add('is-disabled'));
+    toast('Cancelled changes');
+  }
+}
+
+async function saveAll() {
+  // ---- collect values from inputs ----
+  state.name  = document.getElementById('inputName').value.trim();
+  state.title = document.getElementById('inputTitle').value.trim();
+  state.quote = document.getElementById('inputQuote').value.trim();
+  state.about = document.getElementById('aboutArea').value.trim();
+  state.links.linkedin = document.getElementById('linkLinkedIn').value.trim();
+  state.links.github   = document.getElementById('linkGitHub').value.trim();
+  state.links.other    = document.getElementById('linkOther').value.trim();
+
+  try {
+    await saveStateToServer();     // reuse your working PUT call
+    toast('✅ Saved successfully');
+  } catch(err) {
+    console.error(err);
+    toast('⚠️ Error saving profile');
+  }
+
+  // ---- exit edit mode ----
+  editActive = false;
+  document.getElementById('saveBar').classList.add('hidden');
+  document.getElementById('editToggle').textContent = 'Edit Profile';
+  ['inputName','inputTitle','inputQuote','aboutArea','linkLinkedIn','linkGitHub','linkOther']
+    .forEach(id => document.getElementById(id).disabled = true);
+  document.querySelectorAll('#btnAddSkill,#btnAddExp,#btnAddProj,#btnAddEduMini,#btnEditAbout')
+    .forEach(el => el.classList.add('is-disabled'));
+  renderAll();
+}
+</script>
+
+<script>
+async function saveStateToServer() {
+  return await saveState();
+}
+</script>

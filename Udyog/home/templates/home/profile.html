@@ -1,8 +1,21 @@
+{%load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+@keyframes paPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(59,130,246,.45); }
+  70%  { box-shadow: 0 0 0 10px rgba(59,130,246,0); }
+  100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+}
+.pa-glow {
+  animation: paPulse 2s infinite;
+}
+</style>
+
   <title>My Profile • Udyog Refer</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -34,47 +47,127 @@
   <div class="flex min-h-screen">
 
     <!-- ========= Left Sidebar (fixed) ========= -->
-    <aside class="w-20 bg-gradient-to-b from-ur.blue800 via-blue-900 to-slate-900 text-white fixed top-0 bottom-0 left-0 z-40">
-      <div class="h-full flex flex-col items-center">
-        <!-- Logo -->
-        <a href="/" class="mt-6 mb-8">
-          <div class="w-10 h-10 grid place-items-center bg-white/10 rounded-xl ring-1 ring-white/20 shadow">
-            <span class="text-xs font-semibold">Ur</span>
-          </div>
-        </a>
+   <aside class="w-20 bg-gradient-to-b from-blue-800 via-blue-900 to-slate-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
 
-        <!-- Nav Icons -->
-        <nav class="flex-1 flex flex-col items-center justify-start gap-6 mt-2">
-          <a href="/active_referals" class="p-3 rounded-full hover:bg-white/10 transition" title="Referrals">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7a3 3 0 11-6 0 3 3 0 016 0z"></path><path fill-rule="evenodd" d="M2 13.5A4.5 4.5 0 016.5 9h7A4.5 4.5 0 0118 13.5V16a1 1 0 01-1 1H3a1 1 0 01-1-1v-2.5z" clip-rule="evenodd"></path></svg>
-          </a>
-          <a href="/tracker" class="p-3 rounded-full hover:bg-white/10 transition" title="Tracker">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3a1 1 0 000 2h2a1 1 0 000-2H3zM3 7a1 1 0 000 2h6a1 1 0 100-2H3zM3 11a1 1 0 000 2h10a1 1 0 100-2H3zM3 15a1 1 0 100 2h14a1 1 0 100-2H3z"></path></svg>
-          </a>
-          <a href="/profile" class="p-3 rounded-full bg-white/15 ring-1 ring-white/20 transition" title="Profile">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a4 4 0 00-4 4v1a4 4 0 108 0V6a4 4 0 00-4-4z"></path><path fill-rule="evenodd" d="M2 14a6 6 0 1116 0v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2z" clip-rule="evenodd"></path></svg>
-          </a>
-        </nav>
+        <!-- UR Logo -->
+<a href="/" class="mb-10">
+<img src="{% static 'img/ur_logo.ico' %}" alt="Udyog Refer Logo"
+     class="w-10 h-10 rounded-lg shadow-md hover:scale-105 transition-transform" />
 
-        <div class="mt-auto mb-4 text-[11px] text-white/60">© Udyog</div>
-      </div>
-    </aside>
+</a>
+
+
+
+        <div class="flex-1 flex flex-col justify-center space-y-6">
+          <!-- Active Referrals Icon -->
+          <a href="{% url 'active_referals' %}" class="relative group">
+            <div class="p-3 rounded-full bg-gray-800 ring-2 ring-white">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+</svg>
+
+            </div>
+          </a>
+
+          <!-- What's Hot Now Icon -->
+          <a href="{% url 'trending' %}" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+          </a>
+
+          <!-- My Tracker Icon -->
+          <a href="{% url 'tracker' %}" class="relative group">
+            <div class="p-3 rounded-full hover:bg-gray-700 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+</svg>
+
+            </div>
+          </a>
+        </div>
+      </aside>
+
 
     <!-- ========= Main Column ========= -->
     <div class="flex-1 ml-20 flex flex-col">
 
       <!-- Top Bar -->
-      <header class="sticky top-0 z-30 bg-white/70 backdrop-blur border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-        <h1 class="text-[22px] font-semibold">My Profile</h1>
-        <div class="flex items-center gap-3">
-          <button class="p-2 rounded-full hover:bg-gray-200" title="Notifications">
-            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+   <header class="sticky top-0 z-10 bg-white/20 backdrop-blur-sm border-b border-gray-200 flex justify-between items-center px-6 py-4 shadow">
+          <h1 class="text-2xl font-bold">Profile</h1>
+
+          <div class="flex items-center gap-6">
+
+            <!-- Right: Personal Assist (glow) + Settings + Logout -->
+          <div class="justify-self-end flex items-center gap-3">
+
+
+
+
+            <!-- Personal Assist trigger -->
+            <button type="button" onclick="openPAModal()" aria-label="Open Personal Assist"
+                    class="relative p-2 rounded hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+              <span class="absolute inset-0 rounded-full pa-glow pointer-events-none"></span>
+              <svg class="relative w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 6v.01M16.24 7.76v.01M18 12v.01M16.24 16.24v.01M12 18v.01M7.76 16.24v.01M6 12v.01M7.76 7.76v.01" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+             <!-- User Profile Icon and Trigger button -->
+          <div class="relative">
+          <button onclick="toggleProfileModal()"
+                  class="p-2 rounded hover:bg-gray-200 focus:outline-none"
+                  aria-label="User Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                class="w-6 h-6 text-gray-700">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
           </button>
-          <button class="p-2 rounded-full hover:bg-gray-200" title="Account">
-            <svg class="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a4 4 0 00-4 4v1a4 4 0 108 0V6a4 4 0 00-4-4z"></path><path fill-rule="evenodd" d="M2 14a6 6 0 1116 0v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2z" clip-rule="evenodd"></path></svg>
-          </button>
-        </div>
-      </header>
+
+          <!-- Profile Modal -->
+          <div id="profileModal"
+              class="hidden absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg">
+            <div class="px-4 py-3 border-b">
+              <p id="displayName" class="font-semibold text-gray-800">User</p>
+              <p id="displayEmail" class="text-sm text-gray-500">email@domain.com</p>
+
+            </div>
+            <ul class="py-2 text-sm text-gray-700">
+              <li><a href="{% url 'profile' %}" class="block px-4 py-2 hover:bg-gray-100">View Profile</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">See Plans</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Help</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Language</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Privacy</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Policy</a></li>
+            </ul>
+            <div class="border-t">
+              <a href="{% url 'login' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign Out</a>
+            </div>
+          </div>
+          </div>
+
+            <!-- Logout Icon -->
+            <a href="{% url 'login' %}" class="group relative">
+              <svg class="w-6 h-6 text-gray-600 hover:text-red-600 transition" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+              </svg>
+            </a>
+          </div>
+        </header>
+
 
       <!-- Main Content -->
       <main class="flex-1 px-6 md:px-10 py-8">
@@ -88,11 +181,16 @@
 
                 <!-- Avatar + Upload -->
                 <div class="relative mx-auto">
-                  <img id="profilePic" src="https://via.placeholder.com/160x160.png?text=Upload" class="w-36 h-36 rounded-full object-cover shadow-soft" alt="Profile Picture"/>
+<img id="profilePic"
+     src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><rect width='100%' height='100%' fill='%23e5e7eb'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-family='Inter' font-size='14'>Upload</text></svg>"
+     class="w-36 h-36 rounded-full object-cover shadow-soft"
+     alt="Profile Picture">
                   <button class="absolute bottom-1 right-1 p-2 bg-ur-blue text-white rounded-full shadow hover:bg-ur.blue700 transition"
                           title="Upload picture"
                           onclick="document.getElementById('uploadPic').click()">
-                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M4 3a2 2 0 00-2 2v4h2V5h10v4h2V5a2 2 0 00-2-2H4z"></path><path d="M4 13v2a2 2 0 002 2h8a2 2 0 002-2v-2H4z"></path></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+</svg>
                   </button>
                   <input id="uploadPic" type="file" accept="image/*" class="hidden" onchange="previewProfilePic(event)">
                 </div>
@@ -272,296 +370,630 @@
     </div>
   </div>
 
-  <!-- ================== App JS ================== -->
-  <script>
-    const STORE_KEY = 'ur_profile_v2';
 
-    const defaultState = {
-      name: '',
-      title: '',
-      quote: '',
-      about: '',
-      links: { linkedin: '', github: '', other: '' },
-      profilePic: '',
-      skills: [],
-      experiences: [],
-      projects: [],
-      educationsMini: [] // {school, field, ach}
+  <script>
+// ✅ Explicitly bind modal functions to window so inline onclicks work
+window.addSkill = typeof addSkill !== 'undefined' ? addSkill : () => toast('AddSkill not loaded');
+window.addExperience = typeof addExperience !== 'undefined' ? addExperience : () => toast('AddExperience not loaded');
+window.addProject = typeof addProject !== 'undefined' ? addProject : () => toast('AddProject not loaded');
+window.addMiniEducation = typeof addMiniEducation !== 'undefined' ? addMiniEducation : () => toast('AddMiniEducation not loaded');
+window.closeModal = typeof closeModal !== 'undefined' ? closeModal : () => {};
+</script>
+
+
+<script>
+/* ===============================================================
+   UDYOG REFER — PROFILE SCRIPT (FINAL REFINED VERSION)
+   =============================================================== */
+
+/* ----- GLOBAL HELPERS ----- */
+const $ = (id) => document.getElementById(id);
+const API_URL = "/api/profile/";
+const REFRESH_URL = "/api/token/refresh/";
+
+function toast(msg) {
+  const el = document.createElement("div");
+  el.className =
+    "fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white px-4 py-2 rounded-lg shadow";
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1500);
+}
+
+/* ----- JWT + TOKEN HELPERS ----- */
+/* ----- JWT + TOKEN HELPERS ----- */
+const NO_TOKEN_REDIRECT = "/no_token";   // 🔁 change path if needed
+
+function getAccessToken() {
+  return (
+    localStorage.getItem("access_token") ||
+    localStorage.getItem("access") ||
+    localStorage.getItem("token")
+  );
+}
+
+function getRefreshToken() {
+  return (
+    localStorage.getItem("refresh_token") ||
+    localStorage.getItem("refresh")
+  );
+}
+
+async function ensureAccessToken() {
+  let t = getAccessToken();
+  if (t) return t;
+
+  const r = getRefreshToken();
+  if (!r) {
+    // ⚠️ no refresh token — redirect immediately
+    window.location.href = NO_TOKEN_REDIRECT;
+    throw new Error("No refresh token");
+  }
+
+  try {
+    const res = await fetch(REFRESH_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh: r }),
+    });
+
+    if (!res.ok) {
+      // 🔥 refresh request failed — clear tokens & redirect
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      window.location.href = NO_TOKEN_REDIRECT;
+      throw new Error("Token refresh failed");
+    }
+
+    const data = await res.json();
+    if (data.access) {
+      localStorage.setItem("access_token", data.access);
+      return data.access;
+    } else {
+      // 🔁 got no access field — clear & redirect
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      window.location.href = NO_TOKEN_REDIRECT;
+      throw new Error("Access missing in response");
+    }
+  } catch (err) {
+    console.error("Token refresh error:", err);
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    window.location.href = NO_TOKEN_REDIRECT;
+    throw err;
+  }
+}
+
+
+async function loadProfileFromAPI() {
+  try {
+    const token = await ensureAccessToken();
+    if (!token) throw new Error("No JWT available");
+
+    const res = await fetch(API_URL, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // 🔥 If 401, redirect immediately
+    if (res.status === 401) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      window.location.href = "/no_token";
+      return;
+    }
+
+    if (!res.ok) throw new Error("Failed to fetch profile");
+
+    const data = await res.json();
+    state.name = data.name || "";
+    state.title = data.title || "";
+    state.quote = data.quote || "";
+    state.about = data.about || "";
+    state.links.linkedin = data.linkedin || "";
+    state.links.github = data.github || "";
+    state.links.other = data.other_link || "";
+    state.skills = data.skills || [];
+    state.experiences = data.experiences || [];
+    state.projects = data.projects || [];
+    state.educationsMini = data.educations || [];
+
+    renderAll();
+  } catch (error) {
+    console.error("Profile load error:", error);
+    toast("⚠️ Unable to load profile");
+
+    // 🚨 catch token_not_valid here too
+    if (
+      error.message.includes("token") ||
+      error.message.includes("JWT") ||
+      error.message.includes("401")
+    ) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      window.location.href = "/no_token";
+    }
+  }
+}
+
+
+/* ----- NETWORK HELPERS ----- */
+async function apiGet() {
+  const t = await ensureAccessToken();
+  if (!t) throw new Error("No token");
+  const res = await fetch(API_URL, { headers: { Authorization: `Bearer ${t}` } });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+async function apiPut(payload) {
+  const t = await ensureAccessToken();
+  if (!t) throw new Error("No token");
+  const res = await fetch(API_URL, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+/* ----- STATE ----- */
+window.state = {
+  name: "",
+  title: "",
+  quote: "",
+  about: "",
+  linkedin: "",
+  github: "",
+  other_link: "",
+  profile_pic: "",
+  skills: [],
+  experiences: [],
+  projects: [],
+  educations: [],
+};
+
+/* ----- DOM RENDERING ----- */
+function renderBasics(d) {
+  $("inputName").value = d.name || "";
+  $("inputTitle").value = d.title || "";
+  $("inputQuote").value = d.quote || "";
+  $("aboutArea").value = d.about || "";
+  $("linkLinkedIn").value = d.linkedin || "";
+  $("linkGitHub").value = d.github || "";
+  $("linkOther").value = d.other_link || "";
+  if (d.profile_pic) $("profilePic").src = d.profile_pic;
+}
+function renderSkills(list) {
+  const c = $("skillsContainer");
+  c.innerHTML = "";
+  if (!list?.length) {
+    c.innerHTML = `<span class="text-gray-400 text-sm italic">No skills added yet.</span>`;
+    return;
+  }
+  list.forEach((s) => {
+    const chip = document.createElement("span");
+    chip.className =
+      "px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs";
+    chip.textContent = s;
+    c.appendChild(chip);
+  });
+}
+function renderExperiences(list) {
+  const c = $("experienceContainer");
+  c.innerHTML = "";
+  if (!list?.length) {
+    c.innerHTML = `<p class="text-gray-400 text-sm italic">No experience added yet.</p>`;
+    return;
+  }
+  list.forEach((e) => {
+    const div = document.createElement("div");
+    div.className = "border border-gray-200 rounded-lg p-3";
+    div.innerHTML = `
+      <h4 class="font-medium">${e.role_name || "Role"} — ${e.company || "Company"}</h4>
+      <p class="text-sm text-gray-500">${e.duration || ""}</p>
+      <p class="text-sm text-gray-700">${e.description || ""}</p>`;
+    c.appendChild(div);
+  });
+}
+
+function renderProjects(list) {
+  const c = $("projectsContainer");
+  c.innerHTML = "";
+  if (!list?.length) {
+    c.innerHTML = `<p class="text-gray-400 text-sm italic">No projects added yet.</p>`;
+    return;
+  }
+  list.forEach((p) => {
+    const card = document.createElement("div");
+    card.className = "p-3 border border-gray-200 rounded-lg hover:border-ur-blue transition";
+    card.innerHTML = `
+      <h4 class="font-medium text-gray-900">${p.name || "Project"}</h4>
+      <p class="text-sm text-gray-700 mt-1">${p.brief || ""}</p>
+      ${p.link ? `<a href="${p.link}" target="_blank" class="text-blue-600 hover:underline text-sm">View Project →</a>` : ""}`;
+    c.appendChild(card);
+  });
+}
+
+function renderEduMini(list) {
+  const c = $("eduMiniList");
+  c.innerHTML = "";
+  if (!list?.length) {
+    c.innerHTML = `<p class="text-gray-400 text-sm italic">No education added yet.</p>`;
+    return;
+  }
+  list.forEach((ed) => {
+    const div = document.createElement("div");
+    div.className = "flex items-start gap-3";
+    div.innerHTML = `
+  <div class="mt-1 text-ur-blue">
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 3l9 4.5-9 4.5L3 7.5 12 3z"></path>
+      <path d="M21 14l-9 4.5L3 14v-4l9 4.5 9-4.5v4z"></path>
+    </svg>
+  </div>
+  <div class="flex-1">
+    <p class="font-medium">${ed.school || "School / University"}</p>
+    <p class="text-sm text-gray-500">${ed.field || ""}</p>
+    <p class="text-xs text-gray-400 italic">${ed.achievements || ""}</p>
+  </div>`;
+
+    c.appendChild(div);
+  });
+}
+function renderAll(d) {
+  renderBasics(d);
+  renderSkills(d.skills);
+  renderExperiences(d.experiences);
+  renderProjects(d.projects);
+  renderEduMini(d.educations);
+}
+
+/* ----- LOAD PROFILE ----- */
+async function loadProfile() {
+  try {
+    const d = await apiGet();
+    d.skills = Array.isArray(d.skills)
+      ? d.skills
+      : d.skills
+      ? String(d.skills).split(",").map((x) => x.trim())
+      : [];
+    d.experiences = Array.isArray(d.experiences) ? d.experiences : [];
+    d.projects = Array.isArray(d.projects) ? d.projects : [];
+    d.educations = Array.isArray(d.educations) ? d.educations : [];
+    window.state = d;
+    renderAll(d);
+    toast("✅ Profile loaded");
+  } catch (e) {
+    console.error(e);
+    toast("⚠️ Unable to load profile");
+  }
+}
+document.addEventListener("DOMContentLoaded", loadProfile);
+
+/* ----- EDIT / SAVE LOGIC ----- */
+let editActive = false;
+let snapshot = null;
+
+function toggleEditMode() {
+  const ids = [
+    "inputName",
+    "inputTitle",
+    "inputQuote",
+    "aboutArea",
+    "linkLinkedIn",
+    "linkGitHub",
+    "linkOther",
+  ];
+  const editBtn = $("editToggle"),
+    saveBar = $("saveBar");
+
+  if (!editActive) {
+    editActive = true;
+    snapshot = ids.reduce((a, id) => ((a[id] = $(id).value), a), {});
+    ids.forEach((id) => ($(id).disabled = false));
+    document
+      .querySelectorAll(
+        "#btnAddSkill,#btnAddExp,#btnAddProj,#btnAddEduMini,#btnEditAbout"
+      )
+      .forEach((el) => el.classList.remove("is-disabled"));
+    editBtn.textContent = "Cancel Edit";
+    saveBar.classList.remove("hidden");
+    toast("✏️ Edit mode enabled");
+  } else {
+    editActive = false;
+    ids.forEach((id) => ($(id).disabled = true));
+    Object.entries(snapshot).forEach(([id, val]) => ($(id).value = val));
+    document
+      .querySelectorAll(
+        "#btnAddSkill,#btnAddExp,#btnAddProj,#btnAddEduMini,#btnEditAbout"
+      )
+      .forEach((el) => el.classList.add("is-disabled"));
+    editBtn.textContent = "Edit Profile";
+    saveBar.classList.add("hidden");
+    toast("❌ Changes discarded");
+  }
+}
+async function saveAll() {
+  const payload = {
+    name: $("inputName").value.trim(),
+    title: $("inputTitle").value.trim(),
+    quote: $("inputQuote").value.trim(),
+    about: $("aboutArea").value.trim(),
+    linkedin: $("linkLinkedIn").value.trim(),
+    github: $("linkGitHub").value.trim(),
+    other_link: $("linkOther").value.trim(),
+    experiences: window.state.experiences || [],     // ✅ added
+  projects: window.state.projects || [],           // ✅ added
+  educations: window.state.educationsMini || [],   // ✅ added
+
+  };
+  try {
+    const updated = await apiPatch(payload);
+
+    window.state = { ...window.state, ...updated };
+    renderAll(window.state);
+    $("saveBar").classList.add("hidden");
+    $("editToggle").textContent = "Edit Profile";
+    editActive = false;
+    document
+      .querySelectorAll("input, textarea")
+      .forEach((el) => (el.disabled = true));
+    document
+      .querySelectorAll(
+        "#btnAddSkill,#btnAddExp,#btnAddProj,#btnAddEduMini,#btnEditAbout"
+      )
+      .forEach((el) => el.classList.add("is-disabled"));
+    toast("✅ Profile updated");
+  } catch (e) {
+    console.error(e);
+    toast("⚠️ Error saving profile");
+  }
+}
+
+/* ----- MODAL CONTROLS ----- */
+function openAddSkillModal() {
+  if (!editActive) return toast("Enable edit mode first");
+  $("skillModal").classList.remove("hidden");
+}
+function openAddExperienceModal() {
+  if (!editActive) return toast("Enable edit mode first");
+  $("expModal").classList.remove("hidden");
+}
+function openAddProjectModal() {
+  if (!editActive) return toast("Enable edit mode first");
+  $("projModal").classList.remove("hidden");
+}
+function openEducationMiniModal() {
+  if (!editActive) return toast("Enable edit mode first");
+  $("eduMiniModal").classList.remove("hidden");
+}
+function closeModal(id) {
+  $(id).classList.add("hidden");
+}
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape")
+    document
+      .querySelectorAll(".fixed.inset-0.grid.place-items-center")
+      .forEach((m) => m.classList.add("hidden"));
+});
+
+/* ----- APPEND TO PROFILE SAFELY ----- */
+async function appendAndPersist(field, newItem) {
+  try {
+    const fresh = await apiGet();
+    const next = { ...fresh };
+
+    // Normalize arrays
+    next.skills      = Array.isArray(next.skills) ? [...next.skills] : [];
+    next.experiences = Array.isArray(next.experiences) ? [...next.experiences] : [];
+    next.projects    = Array.isArray(next.projects) ? [...next.projects] : [];
+    next.educations  = Array.isArray(next.educations) ? [...next.educations] : [];
+
+    // Strict content checker
+    const hasContent = (obj) =>
+      obj && Object.values(obj).some(v => typeof v === "string" && v.trim().length > 0);
+
+    // ---- Update the changed field only ----
+    if (field === "skills") {
+      const val = String(newItem ?? "").trim();
+      if (val && !next.skills.includes(val)) next.skills.push(val);
+    } else if (["projects", "experiences", "educations"].includes(field)) {
+      next[field] = next[field].filter(hasContent);
+      if (hasContent(newItem)) next[field].push(newItem);
+    }
+
+    // ✅ Build the full profile payload (includes all arrays)
+    const payload = {
+      name: next.name || "",
+      title: next.title || "",
+      quote: next.quote || "",
+      about: next.about || "",
+      linkedin: next.linkedin || "",
+      github: next.github || "",
+      other_link: next.other_link || "",
+      skills: next.skills.map(s => s),
+      experiences: next.experiences.map(e => ({
+        role_name: (e.role_name ?? "").trim(),
+        company:   (e.company ?? "").trim(),
+        duration:  (e.duration ?? "").trim(),
+        description: (e.description ?? "").trim(),
+      })),
+      projects: next.projects.map(p => ({
+        name: (p.name ?? "").trim(),
+        link: (p.link ?? "").trim(),
+        brief: (p.brief ?? "").trim(),
+      })),
+      educations: next.educations.map(ed => ({
+        school: (ed.school ?? "").trim(),
+        field:  (ed.field ?? "").trim(),
+        achievements: (ed.achievements ?? "").trim(),
+      })),
     };
 
-    const $ = (id) => document.getElementById(id);
+    // Persist the full payload
+    const updated = await apiPatch(payload);
+    window.state = { ...window.state, ...updated };
+    renderAll(window.state);
+    toast("✅ Changes saved successfully");
+    return true;
 
-    function loadState(){
-      try {
-        const raw = localStorage.getItem(STORE_KEY);
-        return raw ? JSON.parse(raw) : structuredClone(defaultState);
-      } catch(e) { return structuredClone(defaultState); }
+  } catch (err) {
+    console.error("appendAndPersist error:", err);
+    toast("⚠️ Update failed");
+    return false;
+  }
+}
+
+async function apiPatch(payload) {
+  const token = await ensureAccessToken();
+  const res = await fetch(API_URL, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (res.status === 401) {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  window.location.href = "/no_token";
+  return;
+}
+
+
+  if (!res.ok) {
+    let msg = `PATCH failed (${res.status})`;
+    try {
+      const txt = await res.text();
+      msg += `: ${txt}`;
+      console.error("PATCH error body:", txt);
+    } catch (_) {}
+    throw new Error(msg);
+  }
+  return await res.json();
+}
+
+
+/* ----- ADD MODAL ACTIONS ----- */
+async function addSkill() {
+  const v = $("skillInput").value.trim();
+  if (!v) return toast("Enter a skill");
+  const ok = await appendAndPersist("skills", v);
+  if (ok) {
+    $("skillInput").value = "";
+    closeModal("skillModal");
+    toast("✅ Skill added");
+  }
+}
+async function addExperience() {
+  const e = {
+    role_name: $("expRole").value.trim(),     // ✅ fixed
+    company: $("expCompany").value.trim(),
+    duration: $("expDuration").value.trim(),
+    description: $("expDesc").value.trim(),   // ✅ fixed
+  };
+  if (!e.role_name && !e.company) return toast("Add role or company");
+  const ok = await appendAndPersist("experiences", e);
+  if (ok) {
+    closeModal("expModal");
+    $("expRole").value =
+      $("expCompany").value =
+      $("expDuration").value =
+      $("expDesc").value = "";
+    toast("✅ Experience added");
+  }
+}
+
+async function addProject() {
+  const p = {
+    name: $("projName").value.trim(),
+    link: $("projLink").value.trim(),
+    brief: $("projDesc").value.trim(),
+
+  };
+  if (!p.name) return toast("Project name required");
+  const ok = await appendAndPersist("projects", p);
+  if (ok) {
+    closeModal("projModal");
+    $("projName").value = $("projLink").value = $("projDesc").value = "";
+    toast("✅ Project added");
+  }
+}
+async function addMiniEducation() {
+  const ed = {
+    school: $("miniSchool").value.trim(),
+    field: $("miniField").value.trim(),
+    achievements: $("miniAch").value.trim(),
+
+  };
+  if (!ed.school) return toast("Enter school");
+  const ok = await appendAndPersist("educations", ed);
+  if (ok) {
+    closeModal("eduMiniModal");
+    $("miniSchool").value = $("miniField").value = $("miniAch").value = "";
+    toast("✅ Education added");
+  }
+}
+
+/* ----- EXPORT GLOBAL FUNCTIONS FOR HTML ONCLICK ----- */
+window.toggleEditMode = toggleEditMode;
+window.saveAll = saveAll;
+window.addSkill = addSkill;
+window.addExperience = addExperience;
+window.addProject = addProject;
+window.addMiniEducation = addMiniEducation;
+window.openAddSkillModal = openAddSkillModal;
+window.openAddExperienceModal = openAddExperienceModal;
+window.openAddProjectModal = openAddProjectModal;
+window.openEducationMiniModal = openEducationMiniModal;
+window.closeModal = closeModal;
+</script>
+
+
+<script>
+  function openPAModal() {
+    const m = document.getElementById('paModal');
+    m.classList.remove('hidden'); 
+    m.classList.add('flex');
+    document.getElementById('msgPA')?.focus();
+  }
+
+  function closePAModal() {
+    const m = document.getElementById('paModal');
+    m.classList.add('hidden'); 
+    m.classList.remove('flex');
+  }
+</script>
+
+<script>
+  document.getElementById("displayName").textContent = localStorage.getItem("username");
+  document.getElementById("displayEmail").textContent = localStorage.getItem("email");
+</script>
+
+
+<script>
+  function toggleProfileModal() {
+    const modal = document.getElementById('profileModal');
+    modal.classList.toggle('hidden');
+  }
+
+  // Close if clicked outside
+  document.addEventListener('click', (e) => {
+    const modal = document.getElementById('profileModal');
+    if (!modal.contains(e.target) &&
+        !e.target.closest('button[onclick="toggleProfileModal()"]')) {
+      modal.classList.add('hidden');
     }
-    function saveState(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+  });
+</script>
 
-    let state = loadState();
-    let editMode = false;
-    let snapshot = null;
-
-    // ================= Renderers ==================
-    function renderBasics(){
-      $('inputName').value  = state.name || '';
-      $('inputTitle').value = state.title || '';
-      $('inputQuote').value = state.quote || '';
-      $('aboutArea').value  = state.about || '';
-      $('linkLinkedIn').value = state.links.linkedin || '';
-      $('linkGitHub').value   = state.links.github   || '';
-      $('linkOther').value    = state.links.other    || '';
-      if(state.profilePic) $('profilePic').src = state.profilePic;
-    }
-
-    function renderSkills(){
-      const c = $('skillsContainer');
-      c.innerHTML = '';
-      if(!state.skills?.length){
-        c.innerHTML = `<span class="text-gray-400 text-sm italic">No skills added yet.</span>`;
-        return;
-      }
-      state.skills.forEach((s, i) => {
-        const chip = document.createElement('span');
-        chip.className = 'px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs flex items-center gap-1';
-        chip.innerHTML = `<span>${s}</span><button class="hidden text-blue-700/70 hover:text-blue-900" data-role="del-skill" data-idx="${i}">&times;</button>`;
-        if(editMode) chip.querySelector('[data-role="del-skill"]').classList.remove('hidden');
-        chip.addEventListener('click', (e)=>{
-          const btn = e.target.closest('[data-role="del-skill"]');
-          if(btn && editMode){ state.skills.splice(+btn.dataset.idx,1); saveState(); renderSkills(); }
-        });
-        c.appendChild(chip);
-      });
-    }
-
-    function renderExperiences(){
-      const c = $('experienceContainer');
-      c.innerHTML = '';
-      if(!state.experiences?.length){
-        c.innerHTML = `<p class="text-gray-400 text-sm italic">No experience added yet.</p>`;
-        return;
-      }
-      state.experiences.forEach((e, i) => {
-        const div = document.createElement('div');
-        div.className = 'border border-gray-200 rounded-lg p-4 hover:border-ur-blue transition';
-        div.innerHTML = `
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <h4 class="font-medium text-gray-900">${e.role || 'Role'} — ${e.company || 'Company'}</h4>
-              <p class="text-sm text-gray-500">${e.duration || ''}</p>
-              <p class="text-sm text-gray-700 mt-1">${e.desc || ''}</p>
-            </div>
-            <button class="hidden text-red-500 text-sm hover:underline" data-role="del-exp" data-idx="${i}">Delete</button>
-          </div>`;
-        if(editMode) div.querySelector('[data-role="del-exp"]').classList.remove('hidden');
-        div.addEventListener('click',(ev)=>{
-          const b = ev.target.closest('[data-role="del-exp"]');
-          if(b && editMode){ state.experiences.splice(+b.dataset.idx,1); saveState(); renderExperiences(); }
-        });
-        c.appendChild(div);
-      });
-    }
-
-    function renderProjects(){
-      const c = $('projectsContainer');
-      c.innerHTML = '';
-      if(!state.projects?.length){
-        c.innerHTML = `<p class="text-gray-400 text-sm italic">No projects added yet.</p>`;
-        return;
-      }
-      state.projects.forEach((p, i) => {
-        const card = document.createElement('div');
-        card.className = 'p-4 border border-gray-200 rounded-lg hover:border-ur-blue transition';
-        const safeLink = p.link ? `<a class="text-sm text-blue-600 hover:underline mt-2 inline-block" href="${p.link}" target="_blank">View Project →</a>` : '';
-        card.innerHTML = `
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <h4 class="font-medium text-gray-900">${p.name || 'Project Name'}</h4>
-              <p class="text-sm text-gray-700 mt-1">${p.desc || ''}</p>
-              ${safeLink}
-            </div>
-            <button class="hidden text-red-500 text-sm hover:underline" data-role="del-proj" data-idx="${i}">Delete</button>
-          </div>`;
-        if(editMode) card.querySelector('[data-role="del-proj"]').classList.remove('hidden');
-        card.addEventListener('click',(ev)=>{
-          const b = ev.target.closest('[data-role="del-proj"]');
-          if(b && editMode){ state.projects.splice(+b.dataset.idx,1); saveState(); renderProjects(); }
-        });
-        c.appendChild(card);
-      });
-    }
-
-    function renderEduMini(){
-      const list = $('eduMiniList');
-      list.innerHTML = '';
-      if(!state.educationsMini?.length){
-        list.innerHTML = `<p class="text-gray-400 text-sm italic">No education added yet.</p>`;
-        return;
-      }
-      state.educationsMini.forEach((ed, i)=>{
-        const item = document.createElement('div');
-        item.className = 'flex items-start gap-3';
-        item.innerHTML = `
-          <div class="mt-1 text-ur-blue">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 4.5-9 4.5L3 7.5 12 3z"></path><path d="M21 14l-9 4.5L3 14v-4l9 4.5 9-4.5v4z"></path></svg>
-          </div>
-          <div class="flex-1">
-            <p class="font-medium">${ed.school || 'School / University'}</p>
-            <p class="text-sm text-gray-500">${ed.field || 'Field of Study'}</p>
-            <p class="text-xs text-gray-400 italic">${ed.ach || ''}</p>
-          </div>
-          <button class="hidden text-red-500 text-sm hover:underline" data-role="del-edu" data-idx="${i}">Delete</button>`;
-        if(editMode) item.querySelector('[data-role="del-edu"]').classList.remove('hidden');
-        item.addEventListener('click',(ev)=>{
-          const b = ev.target.closest('[data-role="del-edu"]');
-          if(b && editMode){ state.educationsMini.splice(+b.dataset.idx,1); saveState(); renderEduMini(); }
-        });
-        list.appendChild(item);
-      });
-    }
-
-    // ================= Edit Mode ==================
-    function setInputsDisabled(disabled){
-      ['inputName','inputTitle','inputQuote','aboutArea','linkLinkedIn','linkGitHub','linkOther'].forEach(id=>{
-        const el=$(id);
-        el.disabled = disabled;
-      });
-      // enable/disable add buttons
-      ['btnAddSkill','btnAddExp','btnAddProj','btnAddEduMini','btnEditAbout'].forEach(id=>{
-        const el=$(id);
-        if(disabled) el.classList.add('is-disabled'); else el.classList.remove('is-disabled');
-      });
-    }
-
-    function toggleEditMode(){
-      editMode = !editMode;
-      if(editMode){
-        snapshot = JSON.parse(JSON.stringify(state)); // backup
-        $('editToggle').textContent = 'Cancel Edit';
-        $('saveBar').classList.remove('hidden');
-        setInputsDisabled(false);
-        renderSkills(); renderExperiences(); renderProjects(); renderEduMini();
-      } else {
-        state = JSON.parse(JSON.stringify(snapshot)); // restore
-        renderAll();
-        $('saveBar').classList.add('hidden');
-        $('editToggle').textContent = 'Edit Profile';
-        setInputsDisabled(true);
-      }
-    }
-
-    function cancelEdit(){
-      editMode=false;
-      state = JSON.parse(JSON.stringify(snapshot));
-      renderAll();
-      $('saveBar').classList.add('hidden');
-      $('editToggle').textContent = 'Edit Profile';
-      setInputsDisabled(true);
-      toast('Cancelled');
-    }
-
-    function saveAll(){
-      // Pull values from inputs
-      state.name  = $('inputName').value.trim();
-      state.title = $('inputTitle').value.trim();
-      state.quote = $('inputQuote').value.trim();
-      state.about = $('aboutArea').value.trim();
-      state.links.linkedin = $('linkLinkedIn').value.trim();
-      state.links.github   = $('linkGitHub').value.trim();
-      state.links.other    = $('linkOther').value.trim();
-
-      saveState();
-      editMode=false;
-      $('saveBar').classList.add('hidden');
-      $('editToggle').textContent = 'Edit Profile';
-      setInputsDisabled(true);
-      renderAll();
-      toast('Saved successfully');
-    }
-
-    // ================= Modals / Actions ==================
-    function openEditAbout(){ if(!editMode) return; $('aboutInput').value=$('aboutArea').value; $('aboutModal').classList.remove('hidden'); }
-    function applyAboutFromModal(){ $('aboutArea').value = $('aboutInput').value; closeModal('aboutModal'); }
-    function openAddSkillModal(){ if(!editMode) return; $('skillModal').classList.remove('hidden'); }
-    function openAddExperienceModal(){ if(!editMode) return; $('expModal').classList.remove('hidden'); }
-    function openAddProjectModal(){ if(!editMode) return; $('projModal').classList.remove('hidden'); }
-    function openEducationMiniModal(){ if(!editMode) return; $('eduMiniModal').classList.remove('hidden'); }
-    function closeModal(id){ $(id).classList.add('hidden'); }
-
-    function addSkill(){
-      const v = $('skillInput').value.trim();
-      if(!v) return;
-      (state.skills ||= []).push(v);
-      $('skillInput').value='';
-      saveState(); renderSkills(); closeModal('skillModal');
-    }
-
-    function addExperience(){
-      const e = {
-        role: $('expRole').value.trim(),
-        company: $('expCompany').value.trim(),
-        duration: $('expDuration').value.trim(),
-        desc: $('expDesc').value.trim()
-      };
-      if(!e.role && !e.company) return;
-      (state.experiences ||= []).push(e);
-      saveState(); renderExperiences(); closeModal('expModal');
-      $('expRole').value=$('expCompany').value=$('expDuration').value=$('expDesc').value='';
-    }
-
-    function addProject(){
-      const p = {
-        name: $('projName').value.trim(),
-        link: $('projLink').value.trim(),
-        desc: $('projDesc').value.trim()
-      };
-      if(!p.name) return;
-      (state.projects ||= []).push(p);
-      saveState(); renderProjects(); closeModal('projModal');
-      $('projName').value=$('projLink').value=$('projDesc').value='';
-    }
-
-    function addMiniEducation(){
-      const ed = {
-        school: $('miniSchool').value.trim(),
-        field:  $('miniField').value.trim(),
-        ach:    $('miniAch').value.trim()
-      };
-      if(!ed.school) return;
-      (state.educationsMini ||= []).push(ed);
-      saveState(); renderEduMini(); closeModal('eduMiniModal');
-      $('miniSchool').value=$('miniField').value=$('miniAch').value='';
-    }
-
-    // ================= Avatar ==================
-    function previewProfilePic(e){
-      const f = e.target.files[0]; if(!f) return;
-      const reader = new FileReader();
-      reader.onload = (ev)=>{ state.profilePic = ev.target.result; saveState(); $('profilePic').src=state.profilePic; }
-      reader.readAsDataURL(f);
-    }
-
-    // ================= Utilities ==================
-    function toast(text){
-      const box = document.createElement('div');
-      box.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white px-4 py-2 rounded-lg shadow';
-      box.textContent = text;
-      document.body.appendChild(box);
-      setTimeout(()=> box.remove(), 1400);
-    }
-
-    function renderAll(){
-      renderBasics();
-      renderSkills();
-      renderExperiences();
-      renderProjects();
-      renderEduMini();
-    }
-
-    // Init
-    renderAll();
-    setInputsDisabled(true);
-  </script>
 </body>
 </html>
+
+

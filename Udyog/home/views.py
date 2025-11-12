@@ -6,7 +6,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from .models import User, referal_req, Referer, Referral_post, SeekerRequest, Referral_post
-from .serializers import UserSerializer, Referalrequestserializer, RefererSerializer, ReferralPostSerializer, JobSerializer,SeekerRequestSerializer
+from .serializers import (UserSerializer,
+                        Referalrequestserializer, 
+                        RefererSerializer,
+                        ReferralPostSerializer, 
+                        JobSerializer,
+                        SeekerRequestSerializer,
+                        ProfileSerializer)
 from .permissions import IsReferrerOnCreate
 from django.shortcuts import redirect, get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -22,6 +28,12 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from rest_framework.pagination import PageNumberPagination
 from home.models import SeekerRequest
+from .models import Profile
+from django.shortcuts import redirect
+from django.conf import settings
+import requests
+from django.utils.crypto import get_random_string
+from django.contrib.auth import login as auth_login
 
 
 
@@ -43,11 +55,56 @@ def landing(request):
 def profile(request):
     return render(request, 'home/profile.html')
 
+def my_profile(request):
+    return render(request, 'home/my_profile.html')
+
 
 # Create your views here.
 def login(request):
     return render(request, 'home/login.html')
 
+
+def google_callback(request):
+    code = request.GET.get("code")
+    if not code:
+        return redirect("/login")
+
+    token_data = {
+        "code": code,
+        "client_id": settings.GOOGLE_CLIENT_ID,
+        "client_secret": settings.GOOGLE_CLIENT_SECRET,
+        "redirect_uri": "http://localhost:8000/api/google/callback/",
+        "grant_type": "authorization_code",
+    }
+
+    token_resp = requests.post("https://oauth2.googleapis.com/token", data=token_data).json()
+    access_token = token_resp.get("access_token")
+
+    if not access_token:
+        return redirect("/login")
+
+    userinfo = requests.get(
+        "https://www.googleapis.com/oauth2/v2/userinfo",
+        headers={"Authorization": f"Bearer {access_token}"}
+    ).json()
+
+    email = userinfo.get("email")
+    name = userinfo.get("name", email.split("@")[0])  # fallback if no name
+
+    # Check if user already exists
+    user = User.objects.filter(email=email).first()
+
+    if not user:
+        # Generate random password for Google users
+        random_password = get_random_string(12)
+        user = User.objects.create_user(username=name, email=email, password=random_password)
+
+    # Log them in
+    auth_login(request, user)
+
+
+    # Redirect to your launchpad
+    return redirect("/launchpad")
 
 class LoginAPIView(APIView):
     serializer_class = MyTokenObtainPairSerializer
@@ -375,6 +432,24 @@ def tracker_stats(request):
     apps_sent = SeekerRequest.objects.filter(requester_id=user.id).count()
     return Response({"applications_sent": apps_sent})
 
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def referer_tracker_stats(request):
+    user = request.user
+
+    # A. Refers posted
+    refers_posted = Referral_post.objects.filter(user_id=user.id).count()
+
+    # B. Referral updates (requests received by this referer)
+    referral_updates = SeekerRequest.objects.filter(referrer_id=user.id).count()
+
+    return Response({
+        "refers_posted": refers_posted,
+        "referral_updates": referral_updates
+    })
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 
@@ -394,4 +469,70 @@ def tracker_stats(request):
         "applications_sent": apps_sent,
         "status_updates": status_updates
     })
+
+
+#API Profile Viewset
+
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet to handle Profile CRUD operations for the logged-in user.
+    - GET → fetch current user's profile
+    - PUT/PATCH → update profile
+    - POST → create profile (auto-links to user)
+    """
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Each user can only access their own profile
+        return Profile.objects.filter(user=self.request.user)
+    
+    def get_object(self):
+        return Profile.objects.get_or_create(user=self.request.user)[0]
+
+
+    def list(self, request, *args, **kwargs):
+        """
+        GET /api/profile/ → returns the current user's profile
+        """
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        """
+        POST /api/profile/ → only allowed once (creates if missing)
+        """
+        if Profile.objects.filter(user=request.user).exists():
+            return Response({"detail": "Profile already exists."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        """
+        PUT /api/profile/ → update the current user's profile
+        """
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        serializer = self.get_serializer(profile, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def list(self, request, *args, **kwargs):
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        """
+        PATCH /api/profile/ → partial update for current user's profile
+        """
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+        serializer = self.get_serializer(profile, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 

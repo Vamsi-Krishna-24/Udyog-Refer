@@ -169,7 +169,7 @@
                         <p id="displayEmail" class="text-sm text-gray-500">email@domain.com</p>
                      </div>
                      <ul class="py-2 text-sm text-gray-700">
-                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">View Profile</a></li>
+                        <li><a href="{% url 'my_profile' %}" class="block px-4 py-2 hover:bg-gray-100">View Profile</a></li>
                         <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">See Plans</a></li>
                         <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Help</a></li>
                         <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Language</a></li>
@@ -369,7 +369,7 @@
             <h3 class="text-lg font-semibold text-gray-800">Applicant Details</h3>
             <p id="applicantMessage" class="text-sm text-gray-700 bg-gray-50 border rounded-md p-3"></p>
             <p class="text-sm text-gray-600">
-               Resume: <a id="resumeLink" href="#" class="text-blue-600 hover:underline">Download PDF</a>
+               Resume: <a id="resumeLink" href="#" class="text-blue-600 hover:underline">View Resume Here</a>
             </p>
             <div class="flex gap-3 pt-2">
                <button id="drawerAccept" class="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700">Accept</button>
@@ -1197,10 +1197,19 @@ window.openCardsModal = function(role) {
               modal.classList.remove("flex");
             }
           }
+      </script>
 
-         
-         
-           
+      <script>
+        const file = document.getElementById('uploadPic').files[0];
+        const formData = new FormData();
+        formData.append('profile_pic', file);
+
+        const res = await fetch(API_URL, {
+          method: 'PATCH',
+          headers: { Authorization: `Bearer ${TOKEN}` },
+          body: formData
+        });
+
       </script>
        <script src="{% static 'js/roleGuard.js' %}"></script>
 

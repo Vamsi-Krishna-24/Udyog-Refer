@@ -39,7 +39,8 @@
       </div>
 
       <!-- Social Buttons -->
-      <button class="w-full py-3 bg-[#1e293b] hover:bg-[#334155] text-gray-200 border border-gray-700 rounded-lg transition flex items-center justify-center gap-2">
+      <button onclick="loginWithGoogle()"
+      class="w-full py-3 bg-[#1e293b] hover:bg-[#334155] text-gray-200 border border-gray-700 rounded-lg transition flex items-center justify-center gap-2">
         <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google"> Continue with Google
       </button>
       <button class="w-full py-3 bg-[#1e293b] hover:bg-[#334155] text-gray-200 border border-gray-700 rounded-lg transition flex items-center justify-center gap-2">
@@ -82,5 +83,21 @@
         }
       });
     </script>
+
+
+<script>
+function loginWithGoogle() {
+  const params = new URLSearchParams({
+    client_id: "89385722038-m21hg6qe37os45ij3kg42k4u0ikt7fm3.apps.googleusercontent.com",   ///// replace with actual one
+    redirect_uri: "http://localhost:8000/api/google/callback/",
+    response_type: "code",
+    scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid",
+    access_type: "offline",
+    prompt: "select_account"
+  });
+  window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+}
+</script>
+
   </body>
 </html>
