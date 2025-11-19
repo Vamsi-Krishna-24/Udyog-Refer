@@ -1,4 +1,5 @@
-from django.shortcuts import render
+# Udyog/home/middleware.py
+from django.shortcuts import redirect
 
 class RoleAccessMiddleware:
     def __init__(self, get_response):
@@ -6,28 +7,20 @@ class RoleAccessMiddleware:
 
     def __call__(self, request):
         user = getattr(request, "user", None)
+        path = request.path
 
-        if user and user.is_authenticated:
-            role = getattr(user, "role", None)
+        # Skip middleware checks for APIs and unauthenticated users
+        if path.startswith("/api/") or not user or not user.is_authenticated:
+            return self.get_response(request)
 
-            # --- Referrer-only pages ---
-            if (
-                request.path.startswith("/referer_home")
-                or request.path.startswith("/my_tracker")
-            ):
-                if role != "referrer":
-                    print(f"[ROLE MIDDLEWARE] Access denied → Referrer-only page | Role={role}")
-                    return render(request, "access_denied.html", {"required_role": "Referrer"})
-            
-            # --- Referee-only pages ---
-            elif (
-                request.path.startswith("/active_referals")
-                or request.path.startswith("/trending")
-                or (request.path == "/tracker")  # exact match only
-            ):
-                if role != "referee":
-                    print(f"[ROLE MIDDLEWARE] Access denied → Referee-only page | Role={role}")
-                    return render(request, "access_denied.html", {"required_role": "Referee"})
+        role = getattr(user, "role", None)
 
-        response = self.get_response(request)
-        return response
+        # Allow referrers
+        if path.startswith("/referer_home") and role != "referrer":
+            return redirect("/access_denied")
+
+        # Allow referees
+        if path.startswith("/active_referals") and role != "referee":
+            return redirect("/access_denied")
+
+        return self.get_response(request)

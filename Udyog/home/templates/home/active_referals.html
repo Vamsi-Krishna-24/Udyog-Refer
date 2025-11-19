@@ -13,26 +13,24 @@
     <link rel="icon" type="image/png" href="{% static 'img/ur_logo.ico' %}">
 
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script>
-(function storeTokensFromURL(){
-  const url = new URL(window.location.href);
-  const access = url.searchParams.get("access");
-  const refresh = url.searchParams.get("refresh");
-  const name = url.searchParams.get("name");
-  const email = url.searchParams.get("email");
+  const params = new URLSearchParams(window.location.search);
+  const access = params.get("access");
+  const refresh = params.get("refresh");
+  const email = params.get("email");
+  const role = params.get("role");
 
-  if (access && refresh) {
+  if (access) {
     localStorage.setItem("access_token", access);
     localStorage.setItem("refresh_token", refresh);
-    if (name) localStorage.setItem("username", name);
-    if (email) localStorage.setItem("email", email);
-
-    // Clean up URL
-    const clean = window.location.origin + window.location.pathname;
-    window.history.replaceState({}, document.title, clean);
+    localStorage.setItem("email", email);
+    localStorage.setItem("role", role);
   }
-})();
+
+  // simple access check
+  if (!localStorage.getItem("access_token")) {
+    window.location.href = "/login";
+  }
 </script>
 
       <!-- Tiny CSS for the glowing Personal Assist button -->
@@ -93,6 +91,8 @@
     user-select: none;
   }
 </style>
+
+
 
   </head>
 
@@ -198,11 +198,12 @@
 
             </div>
             <ul class="py-2 text-sm text-gray-700">
-              <li><a href="{% url 'profile' %}" class="block px-4 py-2 hover:bg-gray-100">View Profile</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">View Profile</a></li>
               <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">See Plans</a></li>
               <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Help</a></li>
-              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Privacy and Data Policy</a></li>
-
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Language</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Privacy</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Policy</a></li>
             </ul>
             <div class="border-t">
               <a href="{% url 'login' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign Out</a>
@@ -557,42 +558,19 @@ And we're just getting started. Currently under development ⚙️.....
 <!--Script 02-->
 <!-- JWT guard + Live referrals (single script) -->
 <script>
-
-  await new Promise(r => setTimeout(r, 400));
-
   const token = localStorage.getItem("access_token");
   let allReferrals = [];  
   let currentReferralId = null; 
   let currentPage = 1;
   const pageSize = 10;
 
-  (async function secureStart() {
-  const ok = await refreshTokenIfNeeded();   ///// ensures valid token first
-  if (!ok) {
-  console.warn("Token refresh failed, redirecting to login.");
-  return (window.location.href = "/login");
-}
-  
-const freshToken = localStorage.getItem("access_token");
-
-// small delay so token settles before ping
-await new Promise(r => setTimeout(r, 500));
-
-try {
-  const pong = await fetch("/api/protected-ping/", {
-    headers: { "Authorization": `Bearer ${freshToken}` }
-  });
-
-  if (pong.status === 401) {
-    console.warn("Ping 401 — forcing login.");
-    window.location.href = "/login";
-  } else {
-    console.log("Ping ok — staying on page.");
-  }
-} catch (err) {
-  console.error("Ping failed:", err);
-}
-})
+  (async function guard() {
+    if (!token) return (window.location.href = "/no_token");
+    const pong = await fetch("/api/protected-ping/", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!pong.ok) window.location.href = "/no_token";
+  })();
 
   const grid = document.getElementById("referralsGrid");
 
@@ -712,7 +690,7 @@ function card(r, idx) {
     `;
 
     for (let i = 1; i <= totalPages; i++) {
-      buttons += `
+      buttons += `a
         <button onclick="changePage(${i})"
                 class="px-3 py-1 rounded ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}">
           ${i}
@@ -1022,13 +1000,13 @@ closeReferralDrawer();
   }
 }
 
-
 </script>
- <script src="{% static 'js/roleGuard.js' %}"></script>
+
+
 
 
 
   </body>
 </html>
 
-  
+

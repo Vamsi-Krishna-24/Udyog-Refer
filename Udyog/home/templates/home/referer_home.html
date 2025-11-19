@@ -8,25 +8,27 @@
       <!--SCRIPT 01, CDN for Tailwind-->
       <script src="https://cdn.tailwindcss.com"></script>
 
-      <script>
-(function storeTokensFromURL(){
-  const url = new URL(window.location.href);
-  const access = url.searchParams.get("access");
-  const refresh = url.searchParams.get("refresh");
-  const name = url.searchParams.get("name");
-  const email = url.searchParams.get("email");
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const access = params.get("access");
+  const refresh = params.get("refresh");
+  const email = params.get("email");
+  const role = params.get("role");
 
-  if (access && refresh) {
+  if (access) {
     localStorage.setItem("access_token", access);
     localStorage.setItem("refresh_token", refresh);
-    if (name) localStorage.setItem("username", name);
-    if (email) localStorage.setItem("email", email);
-
-    const clean = window.location.origin + window.location.pathname;
-    window.history.replaceState({}, document.title, clean);
+    localStorage.setItem("email", email);
+    localStorage.setItem("role", role);
   }
-})();
+
+  // simple access check
+  if (!localStorage.getItem("access_token")) {
+    window.location.href = "/login";
+  }
 </script>
+
+
 
      
 

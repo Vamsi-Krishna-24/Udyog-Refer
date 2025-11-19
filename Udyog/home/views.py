@@ -68,6 +68,7 @@ def login(request):
     return render(request, 'home/login.html')
 
 # views.py
+@api_view(['GET'])
 def google_callback(request):
     code = request.GET.get("code")
     if not code:
@@ -80,48 +81,45 @@ def google_callback(request):
         "redirect_uri": "http://127.0.0.1:8000/api/google/callback/",
         "grant_type": "authorization_code",
     }
+
     token_resp = requests.post("https://oauth2.googleapis.com/token", data=token_data).json()
     google_access = token_resp.get("access_token")
     if not google_access:
         return redirect("/no_token")
 
-    # --- get Google profile ---
     userinfo = requests.get(
         "https://www.googleapis.com/oauth2/v2/userinfo",
         headers={"Authorization": f"Bearer {google_access}"}
     ).json()
+
     email = userinfo.get("email")
     name = userinfo.get("name", email.split("@")[0])
 
-    # --- ensure local user exists ---
     user, created = User.objects.get_or_create(
-    email=email,
-    defaults={
-        "username": name,
-        "password": make_password(get_random_string(12)),  # <-- hashed password
-    }
-)
+        email=email,
+        defaults={
+            "username": name,
+            "password": make_password(get_random_string(12)),
+        }
+    )
 
-    # --- create JWT tokens just like manual login ---
+    # create tokens
     refresh = RefreshToken.for_user(user)
     access = str(refresh.access_token)
 
-    # --- log in Django session (optional) ---
+    # save session
     auth_login(request, user)
 
-    # --- redirect based on role ---
-    if not user.role:
-        next_path = "/launchpad"
-    elif user.role == "referrer":
-        next_path = "/referer_home"
+    # prepare redirect based on role
+    if user.role == "referrer":
+        redirect_url = "/referer_home"
     elif user.role == "referee":
-        next_path = "/active_referals"
+        redirect_url = "/active_referals"
     else:
-        next_path = "/launchpad"
+        redirect_url = "/launchpad"
 
-
-    return redirect(f"{next_path}?email={email}&name={name}&access={access}&refresh={refresh}")
-
+    # Instead of redirecting immediately → return tokens as query
+    return redirect(f"{redirect_url}?access={access}&refresh={refresh}&email={email}&role={user.role}")
 class LoginAPIView(APIView):
     serializer_class = MyTokenObtainPairSerializer
     def post(self, request):
