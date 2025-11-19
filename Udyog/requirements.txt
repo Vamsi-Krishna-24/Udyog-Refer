@@ -10,3 +10,4 @@ channels
 daphne
 redis
 Pillow
+requests
