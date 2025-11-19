@@ -8,11 +8,14 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
 
+
+
+
   <script>
 function loginWithGoogle() {
   const params = new URLSearchParams({
-    client_id: "89385722038-m21hg6qe37os45ij3kg42k4u0ikt7fm3.apps.googleusercontent.com",   ///// replace with actual one
-    redirect_uri: "http://localhost:8000/api/google/callback/",
+    client_id: "89385722038-m21hg6qe37os45ij3kg42k4u0ikt7fm3.apps.googleusercontent.com",  
+    redirect_uri: "http://127.0.0.1:8000/api/google/callback/",
     response_type: "code",
     scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid",
     access_type: "offline",
@@ -48,6 +51,18 @@ async function signup(){
   }
 }
 </script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const email = params.get("email");
+const name = params.get("name");
+
+if (email && name) {
+  localStorage.setItem("email", email);
+  localStorage.setItem("username", name);
+}
+</script>
+
 
 
 </head>

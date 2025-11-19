@@ -7,6 +7,27 @@
       <link rel="icon" type="image/png" href="{% static 'img/ur_logo.ico' %}">
       <!--SCRIPT 01, CDN for Tailwind-->
       <script src="https://cdn.tailwindcss.com"></script>
+
+      <script>
+(function storeTokensFromURL(){
+  const url = new URL(window.location.href);
+  const access = url.searchParams.get("access");
+  const refresh = url.searchParams.get("refresh");
+  const name = url.searchParams.get("name");
+  const email = url.searchParams.get("email");
+
+  if (access && refresh) {
+    localStorage.setItem("access_token", access);
+    localStorage.setItem("refresh_token", refresh);
+    if (name) localStorage.setItem("username", name);
+    if (email) localStorage.setItem("email", email);
+
+    const clean = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, clean);
+  }
+})();
+</script>
+
      
 
       <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>

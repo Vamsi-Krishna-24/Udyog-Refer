@@ -1,103 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>UDYOG REFER</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <title>UDYOG REFER</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-  <body class="bg-[#0d1117] min-h-screen flex items-center justify-center text-white">
-    <div class="flex flex-col items-center space-y-6 text-center">
-      <!-- Title -->
-      <div>
-        <div class="text-6xl font-extrabold text-gray-200 tracking-widest">UR</div>
-        <div class="text-4xl font-semibold text-gray-200 mt-2">UDYOG REFER</div>
-        <div class="text-2xl font-bold mt-10">Welcome!</div>
-      </div>
+<body class="bg-[#0d1117] min-h-screen flex items-center justify-center text-white">
 
-      <!-- Buttons -->
-      <div class="flex flex-col items-center space-y-5 w-80">
-        <!-- Refer (referrer) -->
-        <button
-          class="w-full py-3 bg-blue-500 rounded-lg hover:bg-blue-700 font-semibold"
-          onclick="setRoleAndGo('referrer', '/refer')"
-        >
-          I can REFER
-        </button>
-
-        <!-- Referral (referee) -->
-        <button
-          class="w-full py-3 bg-blue-700 rounded-lg hover:bg-blue-500 font-semibold"
-          onclick="setRoleAndGo('referee', '/referal_req')"
-        >
-          I want a REFERRAL
-        </button>
-
-        <!-- Logout -->
-        <div class="mt-8">
-          <a href="/login" onclick="localStorage.removeItem('uid'); localStorage.removeItem('email');">
-            <button class="text-sm text-red-400 hover:text-red-200 underline">Logout</button>
-          </a>
-        </div>
-      </div>
+  <div class="flex flex-col items-center space-y-6 text-center">
+    <!-- Title -->
+    <div>
+      <div class="text-6xl font-extrabold text-gray-200 tracking-widest">UR</div>
+      <div class="text-4xl font-semibold text-gray-200 mt-2">UDYOG REFER</div>
+      <div class="text-2xl font-bold mt-10">Welcome!</div>
     </div>
 
-    <script>
-      // read identifiers saved after signup
-      const USER_ID = localStorage.getItem('uid') ? parseInt(localStorage.getItem('uid')) : null;
-      const USER_EMAIL = localStorage.getItem('email') || '';
+    <!-- Buttons -->
+    <div class="flex flex-col items-center space-y-5 w-80">
 
-      // (optional) CSRF token helper (only needed if CSRF middleware is on)
-      function getCookie(name){
-        const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-        return m ? m.pop() : '';
+      <button
+        class="w-full py-3 bg-blue-500 rounded-lg hover:bg-blue-700 font-semibold"
+        onclick="setRoleAndGo('referrer', '/referer_home')">
+        I can REFER
+      </button>
+
+      <button
+        class="w-full py-3 bg-blue-700 rounded-lg hover:bg-blue-500 font-semibold"
+        onclick="setRoleAndGo('referee', '/active_referals')">
+        I want a REFERRAL
+      </button>
+
+      <!-- Logout -->
+      <div class="mt-8">
+        <a href="login" onclick="localStorage.clear();">
+          <button class="text-sm text-red-400 hover:text-red-200 underline">Logout</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MASTER SCRIPT -->
+  <script>
+  /* -----------------------------------------------------------
+      1. CAPTURE GOOGLE CALLBACK PARAMS
+  ------------------------------------------------------------*/
+  const params = new URLSearchParams(window.location.search);
+  const access = params.get("access");
+  const refresh = params.get("refresh");
+  const email = params.get("email");
+  const name = params.get("name");
+
+  /* -----------------------------------------------------------
+      2. SAVE TOKENS FROM GOOGLE LOGIN
+  ------------------------------------------------------------*/
+  if (access && refresh) {
+    console.log("✅ Tokens received:", access, refresh);
+    localStorage.setItem("access_token", access);
+    localStorage.setItem("refresh_token", refresh);
+  }
+
+  /* -----------------------------------------------------------
+      3. SAVE BASIC USER INFO (EMAIL + NAME)
+  ------------------------------------------------------------*/
+  if (email) {
+    localStorage.setItem("email", email);
+    localStorage.setItem("username", name || email.split("@")[0]);
+  }
+
+  /* -----------------------------------------------------------
+      4. ROLE SELECTION LOGIC
+  ------------------------------------------------------------*/
+  async function setRoleAndGo(role, nextUrl) {
+    try {
+      const USER_ID = localStorage.getItem("uid"); // for manual signups
+      const USER_EMAIL = localStorage.getItem("email");
+
+      if (!USER_ID && !USER_EMAIL) {
+        alert("Session expired. Please log in again.");
+        return (window.location.href = "/login");
       }
-      const csrftoken = getCookie('csrftoken');
 
-      async function setRoleAndGo(role, nextUrl){
-        try {
-          if (!USER_ID && !USER_EMAIL){
-            alert('Please sign up again.');
-            window.location.href = '/signup';
-            return;
-          }
-          const payload = { role };
-          if (USER_ID) payload.user_id = USER_ID; else payload.email = USER_EMAIL;
+      const payload = USER_ID
+        ? { role, user_id: parseInt(USER_ID) }
+        : { role, email: USER_EMAIL };
 
-          console.log('POST /api/set-role/ →', payload);
+      console.log("POST /api/set-role/ →", payload);
 
-          const res = await fetch('/api/set-role/', {   // absolute path ✅
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': csrftoken,                 // harmless if empty
-            },
-            body: JSON.stringify(payload),
-          });
+      const res = await fetch("/api/set-role/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token") || ""}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-          if (!res.ok){
-            const text = await res.text();
-            console.error('set-role failed', res.status, text);
-            if (res.status === 404) alert('Endpoint not found: /api/set-role/');
-            else if (res.status === 403) alert('CSRF blocked POST (403).');
-            else alert('Failed to set role. Check console.');
-            return;
-          }
+      const data = await res.json();
 
-          const data = await res.json();
-          console.log('set-role ok →', data);
-
-          // never use launchpad again
-          localStorage.removeItem('uid');
-          localStorage.removeItem('email');
-
-          // prefer server redirect if provided
-          window.location.href = data.redirect || nextUrl;
-        } catch (e) {
-          console.error(e);
-          alert('Something went wrong. See console.');
-        }
+      if (!res.ok) {
+        console.error("ROLE SET ERROR →", data);
+        alert("Failed to set role. Check console.");
+        return;
       }
-    </script>
-  </body>
+
+      console.log("✅ ROLE SAVED →", data);
+
+      // cleanup only UID
+      localStorage.removeItem("uid");
+
+      // navigate to server-defined page or fallback
+      window.location.href = data.redirect || nextUrl;
+    } catch (err) {
+      console.error("❌ setRoleAndGo error:", err);
+      alert("Something went wrong. Check console.");
+    }
+  }
+  </script>
+</body>
 </html>

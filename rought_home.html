@@ -1,302 +1,564 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profile | Udyog Refer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 font-[Inter]">
-  <div class="flex min-h-screen">
+from django.shortcuts import render
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from .models import User, referal_req, Referer, Referral_post, SeekerRequest, Referral_post
+from .serializers import (UserSerializer,
+                        Referalrequestserializer, 
+                        RefererSerializer,
+                        ReferralPostSerializer, 
+                        JobSerializer,
+                        SeekerRequestSerializer,
+                        ProfileSerializer)
+from .permissions import IsReferrerOnCreate
+from django.shortcuts import redirect, get_object_or_404
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from .token_serializer import MyTokenObtainPairSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.conf import settings
+from rest_framework import viewsets
+from .models import Job
+from .serializers import JobSerializer
+from rest_framework import viewsets, filters, serializers
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from rest_framework.pagination import PageNumberPagination
+from home.models import SeekerRequest
+from .models import Profile
+from django.shortcuts import redirect
+from django.conf import settings
+import requests
+from django.utils.crypto import get_random_string
+from django.contrib.auth import login as auth_login
+from django.http import HttpResponseRedirect
 
-    <!-- ===== SIDEBAR ===== -->
-    <aside class="w-20 bg-gradient-to-b from-blue-800 via-blue-900 to-slate-900 text-white flex flex-col items-center py-6 fixed top-0 bottom-0">
-      <a href="/" class="mb-10"><img src="/static/img/ur_logo.ico" class="w-10 h-10 rounded-lg shadow-md hover:scale-105 transition-transform" /></a>
-      <div class="flex-1 flex flex-col justify-center space-y-6">
-        <a href="/active_referals" class="p-3 rounded-full hover:bg-gray-700 transition"><i class="fa-solid fa-user-group text-xl"></i></a>
-        <a href="/trending" class="p-3 rounded-full hover:bg-gray-700 transition"><i class="fa-solid fa-fire text-xl"></i></a>
-        <a href="/tracker" class="p-3 rounded-full hover:bg-gray-700 transition"><i class="fa-solid fa-chart-line text-xl"></i></a>
-        <a href="/profile" class="p-3 bg-gray-700 rounded-full"><i class="fa-solid fa-user text-xl"></i></a>
-      </div>
-    </aside>
 
-    <!-- ===== MAIN SECTION ===== -->
-    <div class="flex-1 ml-20 flex flex-col">
-      <header class="sticky top-0 z-10 bg-white border-b border-gray-200 flex justify-between items-center px-6 py-4 shadow-sm">
-        <h1 class="text-2xl font-semibold">Profile</h1>
-        <div class="flex gap-4">
-          <button class="hover:bg-gray-200 p-2 rounded-full"><i class="fa-solid fa-moon text-gray-600"></i></button>
-          <button class="hover:bg-gray-200 p-2 rounded-full"><i class="fa-solid fa-bell text-gray-600"></i></button>
-          <button class="hover:bg-gray-200 p-2 rounded-full"><i class="fa-solid fa-user-circle text-gray-600"></i></button>
-        </div>
-      </header>
 
-      <!-- ===== MAIN CONTENT ===== -->
-      <main class="flex-1 px-10 py-10 space-y-10">
 
-        <!-- PROFILE GRID -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-          <!-- LEFT CARD -->
-          <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center">
-            <div class="relative">
-              <img id="profilePic" src="https://i.pravatar.cc/150" alt="Profile" class="w-32 h-32 rounded-full shadow-md mb-4 object-cover">
-              <button onclick="document.getElementById('uploadPic').click()" class="absolute bottom-3 right-3 bg-blue-600 p-2 rounded-full text-white shadow-md hover:bg-blue-700"><i class="fa-solid fa-camera"></i></button>
-              <input id="uploadPic" type="file" accept="image/*" class="hidden" onchange="previewProfilePic(event)">
-            </div>
 
-            <h2 id="displayName" class="text-xl font-semibold text-gray-800 mt-2">Vamsi Krishna Surisetti</h2>
-            <p id="displayTitle" class="text-gray-500 text-sm">Data Analyst and Data Scientist</p>
-            <p id="displayQuote" class="text-gray-600 text-sm mt-4 italic">“Applying data-driven insights for impactful decisions.”</p>
+class NameCreateAPIView(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Name saved!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            
 
-            <div class="mt-6 flex gap-3 text-gray-600">
-              <a href="#" id="linkedinLink" class="hover:text-blue-600"><i class="fa-brands fa-linkedin text-xl"></i></a>
-              <a href="#" id="githubLink" class="hover:text-gray-800"><i class="fa-brands fa-github text-xl"></i></a>
-              <a href="#" id="otherLink" class="hover:text-pink-600"><i class="fa-brands fa-instagram text-xl"></i></a>
-            </div>
 
-            <button id="editToggle" onclick="toggleEditMode()" 
-  class="mt-6 w-full py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm transition">
-  Edit Profile
-</button>
+def landing(request):
+    return render(request, 'home/landing.html')
 
-<!-- Add this Save Changes button below main container (hidden initially) -->
-<div id="saveContainer" class="hidden fixed bottom-6 right-10 z-40">
-  <button onclick="saveProfileData()" 
-    class="px-6 py-3 bg-blue-600 text-white text-sm rounded-lg shadow-lg hover:bg-blue-700">
-    💾 Save Changes
-  </button>
-</div>
+def profile(request):
+    return render(request, 'home/profile.html')
 
-          </div>
+def my_profile(request):
+    return render(request, 'home/my_profile.html')
 
-          <!-- RIGHT COLUMN -->
-          <div class="col-span-2 space-y-8">
 
-            <!-- ABOUT -->
-            <section class="bg-white rounded-2xl shadow-md p-6">
-              <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">About</h3>
-              <p id="displayAbout" class="text-gray-700 text-sm leading-relaxed">
-                I’m a data enthusiast passionate about Python, SQL, and problem-solving. Skilled in machine learning, data visualization, and analytics tools like Tableau & Power BI.
-              </p>
-              <button onclick="openEditAboutModal()" class="mt-3 text-blue-600 text-sm hover:underline">✎ Edit About</button>
-            </section>
+# Create your views here.
+def login(request):
+    return render(request, 'home/login.html')
 
-            <!-- EXPERIENCE -->
-            <section class="bg-white rounded-2xl shadow-md p-6">
-              <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Professional Experience</h3>
-              <div id="experienceContainer" class="space-y-4">
-                <div class="border border-gray-200 rounded-lg p-4">
-                  <h4 class="font-medium text-gray-900">Data Analyst — TCS</h4>
-                  <p class="text-sm text-gray-500">2022 – Present</p>
-                  <p class="text-gray-600 text-sm mt-1">Predictive models for analytics.</p>
-                </div>
-              </div>
-              <button onclick="openAddExperienceModal()" class="mt-3 text-blue-600 text-sm hover:underline">+ Add New Experience</button>
-            </section>
+# views.py
 
-            <!-- PROJECTS -->
-            <section class="bg-white rounded-2xl shadow-md p-6">
-              <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Personal Projects</h3>
-              <div id="projectsContainer" class="grid md:grid-cols-2 gap-4">
-                <div class="p-4 border border-gray-200 rounded-lg">
-                  <h4 class="font-medium text-gray-900">Udyog Refer Platform</h4>
-                  <p class="text-sm text-gray-600 mt-1">Referral-based job network.</p>
-                  <a href="#" class="text-sm text-blue-600 hover:underline mt-2 inline-block">View Project →</a>
-                </div>
-              </div>
-              <button onclick="openAddProjectModal()" class="mt-3 text-blue-600 text-sm hover:underline">+ Add New Project</button>
-            </section>
-          </div>
-        </div>
-      </main>
-    </div>
-  </div>
+@api_view(['GET'])
+def google_callback(request):
+    code = request.GET.get("code")
 
-  <!-- ====== EDIT PROFILE MODAL ====== -->
-  <div id="editProfileModal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-    <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6">
-      <h2 class="text-lg font-semibold mb-4">Edit Profile</h2>
-      <div class="space-y-4">
-        <input id="nameInput" type="text" placeholder="Name" class="w-full border p-2 rounded" />
-        <input id="titleInput" type="text" placeholder="Title" class="w-full border p-2 rounded" />
-        <input id="quoteInput" type="text" placeholder="Quote" class="w-full border p-2 rounded" />
-        <input id="linkedinInput" type="url" placeholder="LinkedIn URL" class="w-full border p-2 rounded" />
-        <input id="githubInput" type="url" placeholder="GitHub URL" class="w-full border p-2 rounded" />
-      </div>
-      <div class="flex justify-end gap-3 mt-6">
-        <button onclick="closeModal('editProfileModal')" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-        <button onclick="saveProfile()" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
-      </div>
-    </div>
-  </div>
+    if not code:
+        return Response({"detail": "Missing code"}, status=400)
 
-  <!-- ====== EDIT ABOUT MODAL ====== -->
-  <div id="editAboutModal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-    <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6">
-      <h2 class="text-lg font-semibold mb-4">Edit About</h2>
-      <textarea id="aboutInput" rows="5" class="w-full border p-2 rounded"></textarea>
-      <div class="flex justify-end gap-3 mt-6">
-        <button onclick="closeModal('editAboutModal')" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-        <button onclick="saveAbout()" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== ADD EXPERIENCE MODAL ====== -->
-  <div id="addExperienceModal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-    <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6">
-      <h2 class="text-lg font-semibold mb-4">Add Experience</h2>
-      <div class="space-y-3">
-        <input id="expTitle" type="text" placeholder="Role — Company" class="w-full border p-2 rounded" />
-        <input id="expDuration" type="text" placeholder="Duration (e.g. 2021 – 2023)" class="w-full border p-2 rounded" />
-        <textarea id="expDesc" rows="3" placeholder="Short Description" class="w-full border p-2 rounded"></textarea>
-      </div>
-      <div class="flex justify-end gap-3 mt-6">
-        <button onclick="closeModal('addExperienceModal')" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-        <button onclick="addExperience()" class="px-4 py-2 bg-blue-600 text-white rounded">Add</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== ADD PROJECT MODAL ====== -->
-  <div id="addProjectModal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-    <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6">
-      <h2 class="text-lg font-semibold mb-4">Add Project</h2>
-      <div class="space-y-3">
-        <input id="projName" type="text" placeholder="Project Name" class="w-full border p-2 rounded" />
-        <textarea id="projDesc" rows="3" placeholder="Short Description" class="w-full border p-2 rounded"></textarea>
-        <input id="projLink" type="url" placeholder="Project Link" class="w-full border p-2 rounded" />
-      </div>
-      <div class="flex justify-end gap-3 mt-6">
-        <button onclick="closeModal('addProjectModal')" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-        <button onclick="addProject()" class="px-4 py-2 bg-blue-600 text-white rounded">Add</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://kit.fontawesome.com/a2e0e6ad8f.js" crossorigin="anonymous"></script>
-  <script>
-    function previewProfilePic(e) {
-      const file = e.target.files[0];
-      if (file) document.getElementById('profilePic').src = URL.createObjectURL(file);
+    # 1. Exchange code for access_token
+    token_url = "https://oauth2.googleapis.com/token"
+    data = {
+        "code": code,
+        "client_id": "89385722038-m21hg6qe37os45ij3kg42k4u0ikt7fm3.apps.googleusercontent.com",
+        "client_secret": "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",
+        "redirect_uri": "http://localhost:8000/api/google/callback/",
+        "grant_type": "authorization_code"
     }
-    function openEditProfileModal() { document.getElementById('editProfileModal').classList.remove('hidden'); }
-    function openEditAboutModal() { document.getElementById('editAboutModal').classList.remove('hidden'); }
-    function openAddExperienceModal() { document.getElementById('addExperienceModal').classList.remove('hidden'); }
-    function openAddProjectModal() { document.getElementById('addProjectModal').classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-    function saveProfile() {
-      document.getElementById('displayName').innerText = document.getElementById('nameInput').value;
-      document.getElementById('displayTitle').innerText = document.getElementById('titleInput').value;
-      document.getElementById('displayQuote').innerText = `“${document.getElementById('quoteInput').value}”`;
-      document.getElementById('linkedinLink').href = document.getElementById('linkedinInput').value;
-      document.getElementById('githubLink').href = document.getElementById('githubInput').value;
-      closeModal('editProfileModal');
-    }
-    function saveAbout() {
-      document.getElementById('displayAbout').innerText = document.getElementById('aboutInput').value;
-      closeModal('editAboutModal');
-    }
-    function addExperience() {
-      const title = document.getElementById('expTitle').value;
-      const duration = document.getElementById('expDuration').value;
-      const desc = document.getElementById('expDesc').value;
-      const div = document.createElement('div');
-      div.className = "border border-gray-200 rounded-lg p-4 hover:border-blue-400 transition";
-      div.innerHTML = `<h4 class='font-medium text-gray-900'>${title}</h4><p class='text-sm text-gray-500'>${duration}</p><p class='text-gray-600 text-sm mt-1'>${desc}</p>`;
-      document.getElementById('experienceContainer').appendChild(div);
-      closeModal('addExperienceModal');
-    }
-    function addProject() {
-      const name = document.getElementById('projName').value;
-      const desc = document.getElementById('projDesc').value;
-      const link = document.getElementById('projLink').value;
-      const div = document.createElement('div');
-      div.className = "p-4 border border-gray-200 rounded-lg hover:border-blue-400 transition";
-      div.innerHTML = `<h4 class='font-medium text-gray-900'>${name}</h4><p class='text-sm text-gray-600 mt-1'>${desc}</p><a href='${link}' target='_blank' class='text-sm text-blue-600 hover:underline mt-2 inline-block'>View Project →</a>`;
-      document.getElementById('projectsContainer').appendChild(div);
-      closeModal('addProjectModal');
-    }
-  </script>
+    token_res = requests.post(token_url, data=data).json()
+    google_access = token_res.get("access_token")
 
-  <script>
-let editMode = false;
+    if not google_access:
+        return Response({"detail": "Invalid Google token"}, status=400)
 
-// enable / disable edit mode
-function toggleEditMode() {
-  editMode = !editMode;
+    # 2. Fetch profile
+    userinfo = requests.get(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        headers={"Authorization": f"Bearer {google_access}"}
+    ).json()
 
-  const editableFields = [
-    { id: 'displayName', placeholder: 'Enter your name' },
-    { id: 'displayTitle', placeholder: 'Enter your title' },
-    { id: 'displayQuote', placeholder: 'Enter your quote' },
-    { id: 'displayAbout', placeholder: 'Write your about section' }
-  ];
+    email = userinfo["email"]
+    name = userinfo.get("name", email.split("@")[0])
 
-  if (editMode) {
-    document.getElementById('editToggle').innerText = "Cancel Edit";
-    document.getElementById('saveContainer').classList.remove('hidden');
+    # 3. Check if user exists
+    user, created = User.objects.get_or_create(email=email, defaults={
+        "username": name,
+    })
 
-    editableFields.forEach(f => {
-      const el = document.getElementById(f.id);
-      const val = el.innerText.trim().replace(/^“|”$/g, ''); // remove fancy quotes
-      el.dataset.original = val; // store old value
-      el.innerHTML = `
-        <input type="text"
-          value="${val}"
-          placeholder="${f.placeholder}"
-          class="w-full border border-gray-300 px-2 py-1 rounded text-sm focus:ring-1 focus:ring-blue-500 bg-white"
-        />
-      `;
-    });
-  } else {
-    cancelEditChanges();
-  }
-}
+        # 4. Generate JWT tokens (THIS WAS MISSING)
+        # 5. Generate JWT tokens
+    refresh = RefreshToken.for_user(user)
+    access = str(refresh.access_token)
 
-// cancel editing and restore old text
-function cancelEditChanges() {
-  const editableFields = ['displayName','displayTitle','displayQuote','displayAbout'];
-  editableFields.forEach(id => {
-    const el = document.getElementById(id);
-    const original = el.dataset.original || "";
-    el.textContent = original;
-  });
-  document.getElementById('editToggle').innerText = "Edit Profile";
-  document.getElementById('saveContainer').classList.add('hidden');
-  editMode = false;
-}
+    # 6. Role-based redirect
+    if user.role:  # user already selected role
+        if user.role == "referrer":
+            return redirect(
+                f"/referer_home?access={access}&refresh={refresh}"
+            )
+        if user.role == "referee":
+            return redirect(
+                f"/active_referals?access={access}&refresh={refresh}"
+            )
 
-// save edits and keep new text visible
-function saveProfileData() {
-  const fields = ['displayName','displayTitle','displayQuote','displayAbout'];
+    # 7. First-time Google user → launchpad
+    redirect_url = (
+        "/launchpad?"
+        f"email={email}"
+        f"&name={name}"
+        f"&access={access}"
+        f"&refresh={str(refresh)}"
+    )
+    return redirect(redirect_url)
 
-  fields.forEach(id => {
-    const el = document.getElementById(id);
-    const inputVal = el.querySelector('input')?.value?.trim() || el.innerText;
-    el.textContent = inputVal;
-    el.dataset.original = inputVal;
-  });
 
-  // mini save success animation
-  const btn = document.querySelector('#saveContainer button');
-  btn.innerHTML = "✅ Saved!";
-  btn.classList.add('bg-green-600','hover:bg-green-700');
-  
-  setTimeout(() => {
-    btn.innerHTML = "💾 Save Changes";
-    btn.classList.remove('bg-green-600','hover:bg-green-700');
-    document.getElementById('saveContainer').classList.add('hidden');
-    document.getElementById('editToggle').innerText = "Edit Profile";
-    editMode = false;
-  }, 1200);
-}
-</script>
 
-</body>
-</html>
+class LoginAPIView(APIView):
+    serializer_class = MyTokenObtainPairSerializer
+    def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
+        user = authenticate(request, username=email, password=password)
+        if user is None:
+            return Response({"error": "Invalid credentials"}, status=401)
+
+        # -----> mint tokens + add custom claims
+        refresh = RefreshToken.for_user(user)
+        refresh['role'] = getattr(user, 'role', None)   # -----> custom claim
+        refresh['email'] = getattr(user, 'email', None)
+
+        # -----> correct redirect by role
+        if user.role == 'referrer':
+            next_path = '/referer_home'
+        elif user.role == 'referee':
+            next_path = '/active_referals'
+        else:
+            next_path = '/launchpad'
+
+        return Response({
+    "redirect": next_path,
+    "access": str(refresh.access_token),
+    "refresh": str(refresh),
+    "role": user.role,
+    "email": user.email,
+    "username": user.username,
+    "id": user.id
+    
+}, status=200)
+
+    
+class ReferralRequestAPIView(APIView):
+    def post(self, request):
+        serializer = Referalrequestserializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Referral data saved!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class RefererAPIView(APIView):
+    def post(self,request):
+        serializer = RefererSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Referer data saved!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
+    
+
+def signup(request):
+    return render(request, 'home/signup.html')
+
+
+class SignupAPIView(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                "message": "User created successfully",
+                "user_id": user.id,
+                "email":user.email
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def launchpad(request):
+    return render(request, 'home/launchpad.html')
+
+
+class SetRoleView(APIView):
+    # permission_classes = [permissions.IsAuthenticated]  # -----> REMOVE for now
+
+    def post(self, request):
+        role = (request.data.get("role") or "").strip().lower()
+        user_id = request.data.get("user_id")  # -----> coming from localStorage
+        email = request.data.get("email")
+
+        valid_values = {User.ROLE_REFERRER, User.ROLE_REFEREE}
+        if role not in valid_values:
+            return Response({"error": "role must be 'referrer' or 'referee'"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # -----> fetch the correct user explicitly
+        if user_id:
+            user = get_object_or_404(User, id=user_id)
+        elif email:
+            user = get_object_or_404(User, email=email)
+        else:
+            return Response({"error": "Provide user_id or email"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # -----> update & persist
+        user.role = role
+        user.save(update_fields=["role"])
+
+        # -----> tell frontend where to go next
+        redirect_path = "/referer_home" if role == User.ROLE_REFERRER else "/active_referals"
+        return Response({"ok": True, "role": role, "redirect": redirect_path},
+                        status=status.HTTP_200_OK)
+
+
+def test(request):
+    return render(request, 'home/test.html')
+
+def referer(request):
+    return render(request, 'home/referer.html')
+
+
+def referal_req(request):
+    return render(request, 'home/referal_req.html')
+
+def active_referals(request):
+    return render(request, 'home/active_referals.html')
+
+
+
+class ProtectedPingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"detail": "Token is valid"})
+
+
+def trending(request):
+    return render(request, 'home/trending.html')
+
+def tracker(request):
+    return render(request, 'home/tracker.html')
+
+
+def my_tracker(request):
+    return render(request, 'home/my_tracker.html')
+
+def referer_home(request):
+    return render(request, 'home/referer_home.html')
+
+
+
+##There is no Token/ User trying to login without password
+def no_token(request):
+    return render(request, 'home/no_token.html')
+
+def access_denied(request):
+    return render(request, "home/access_denied.html")
+
+
+#extra added for authorising
+
+class MyTokenView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+    
+class ActiveReferralsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"message": "This is a protected route"})
+    
+
+
+# defining a class so that when Referer posts then that will hit up in the screen of Referer
+class ReferralPostListCreate(APIView):               # ///// /api/referrals/ (GET, POST)
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        qs = Referral_post.objects.select_related("referrer").order_by("-created_at")
+        data = ReferralPostSerializer(qs, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        # only referrers can create
+        if getattr(request.user, "role", "").lower() != "referrer":
+            return Response({"detail": "Only referrers can post."},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        ser = ReferralPostSerializer(data=request.data)
+        if not ser.is_valid():
+            return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        obj = ser.save(referrer=request.user)        # ///// attach logged-in user
+        return Response(ReferralPostSerializer(obj).data,
+                        status=status.HTTP_201_CREATED)
+
+
+
+class ReferralPostViewSet(viewsets.ModelViewSet):
+    serializer_class = ReferralPostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['role', 'experience_required', 'location', 'company_name']
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # 🧠 Step 1 — Base queryset
+        if user.role == "referrer":
+            qs = Referral_post.objects.filter(user=user).order_by("-created_at")
+        else:
+            qs = Referral_post.objects.all().order_by("-created_at")
+
+        # 🧠 Step 2 — Apply search filters (if provided)
+        role = self.request.query_params.get("role")
+        exp = self.request.query_params.get("experience")
+        loc = self.request.query_params.get("location")
+        comp = self.request.query_params.get("company")
+
+        if role:
+            qs = qs.filter(role__icontains=role)
+        if exp:
+            qs = qs.filter(experience_required__icontains=exp)
+        if loc:
+            qs = qs.filter(location__icontains=loc)
+        if comp:
+            qs = qs.filter(company_name__icontains=comp)
+
+        return qs
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+
+
+
+
+##TEST View to check passage of user role back to server
+class MeAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        u = request.user
+        return Response({
+            "id": u.id,
+            "email": getattr(u, "email", None),
+            "role": getattr(u, "role", None),   # -----> your custom field
+            "is_staff": getattr(u, "is_staff", False),
+        })
+    
+class JobViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = JobSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["company", "position", "location", "description"]
+
+    def get_queryset(self):
+        qs = Job.objects.order_by("-published_at", "-created_at")
+        loc = self.request.query_params.get("location")
+        if loc:
+            qs = qs.filter(location__icontains=loc)
+        return qs
+
+
+#API View for Seeker Request
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from rest_framework import viewsets, permissions, serializers
+from .models import SeekerRequest, Referral_post
+from .serializers import SeekerRequestSerializer
+
+
+#API View for Seeker Request
+from rest_framework import viewsets, permissions, status, serializers
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from .models import SeekerRequest, Referral_post
+from .serializers import SeekerRequestSerializer
+
+
+class SeekerRequestViewSet(viewsets.ModelViewSet):
+    queryset = SeekerRequest.objects.all().order_by("-created_at")
+    serializer_class = SeekerRequestSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        post_id = self.request.data.get("referral_post")
+        referral_post = Referral_post.objects.get(id=post_id)
+
+        if referral_post.user == self.request.user:
+            raise serializers.ValidationError("You cannot request your own referral post.")
+
+        serializer.save(
+            requester=self.request.user,
+            referrer=referral_post.user,
+            referral_post=referral_post
+        )
+
+    @action(detail=True, methods=["post"])
+    def accept(self, request, pk=None):
+        seeker_request = self.get_object()
+        if seeker_request.status != "PENDING":
+            return Response({"detail": "Already finalized."},
+                            status=status.HTTP_400_BAD_REQUEST)
+        reason = request.data.get("reason", "").strip()
+        seeker_request.status = "ACCEPTED"
+        if reason:
+            seeker_request.reason = reason
+        seeker_request.save()
+        return Response({"status": "accepted"})
+
+
+    @action(detail=True, methods=["post"])
+    def reject(self, request, pk=None):
+        seeker_request = self.get_object()
+        if seeker_request.status != "PENDING":
+            return Response({"detail": "Already finalized."},
+                            status=status.HTTP_400_BAD_REQUEST)
+        reason = request.data.get("reason", "").strip()
+        seeker_request.status = "REJECTED"
+        seeker_request.reason = reason
+        seeker_request.save()
+        return Response({"status": "rejected"})
+
+# Getting the Stats of the user for Tracker Page
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def tracker_stats(request):
+    user = request.user
+    # count how many applications this user sent
+    apps_sent = SeekerRequest.objects.filter(requester_id=user.id).count()
+    return Response({"applications_sent": apps_sent})
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def referer_tracker_stats(request):
+    user = request.user
+
+    # A. Refers posted
+    refers_posted = Referral_post.objects.filter(user_id=user.id).count()
+
+    # B. Referral updates (requests received by this referer)
+    referral_updates = SeekerRequest.objects.filter(referrer_id=user.id).count()
+
+    return Response({
+        "refers_posted": refers_posted,
+        "referral_updates": referral_updates
+    })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+
+def tracker_stats(request):
+    user = request.user
+
+    # total applications sent by this seeker
+    apps_sent = SeekerRequest.objects.filter(requester_id=user.id).count()
+
+    # total referrals with status ACCEPTED or REJECTED
+    status_updates = SeekerRequest.objects.filter(
+        requester_id=user.id,
+        status__in=["ACCEPTED", "REJECTED"]
+    ).count()
+
+    return Response({
+        "applications_sent": apps_sent,
+        "status_updates": status_updates
+    })
+
+
+#API Profile Viewset
+
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet to handle Profile CRUD operations for the logged-in user.
+    - GET → fetch current user's profile
+    - PUT/PATCH → update profile
+    - POST → create profile (auto-links to user)
+    """
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Each user can only access their own profile
+        return Profile.objects.filter(user=self.request.user)
+    
+    def get_object(self):
+        return Profile.objects.get_or_create(user=self.request.user)[0]
+
+
+    def list(self, request, *args, **kwargs):
+        """
+        GET /api/profile/ → returns the current user's profile
+        """
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        """
+        POST /api/profile/ → only allowed once (creates if missing)
+        """
+        if Profile.objects.filter(user=request.user).exists():
+            return Response({"detail": "Profile already exists."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        """
+        PUT /api/profile/ → update the current user's profile
+        """
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        serializer = self.get_serializer(profile, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def list(self, request, *args, **kwargs):
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        """
+        PATCH /api/profile/ → partial update for current user's profile
+        """
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+        serializer = self.get_serializer(profile, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
+from django.contrib.auth import login as auth_login
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from django.http import JsonResponse
 from .models import User, referal_req, Referer, Referral_post, SeekerRequest, Referral_post
 from .serializers import (UserSerializer,
                         Referalrequestserializer, 
@@ -33,7 +35,9 @@ from django.shortcuts import redirect
 from django.conf import settings
 import requests
 from django.utils.crypto import get_random_string
-from django.contrib.auth import login as auth_login
+from django.http import HttpResponseRedirect
+from django.contrib.auth.hashers import make_password
+
 
 
 
@@ -63,7 +67,7 @@ def my_profile(request):
 def login(request):
     return render(request, 'home/login.html')
 
-
+# views.py
 def google_callback(request):
     code = request.GET.get("code")
     if not code:
@@ -73,38 +77,50 @@ def google_callback(request):
         "code": code,
         "client_id": settings.GOOGLE_CLIENT_ID,
         "client_secret": settings.GOOGLE_CLIENT_SECRET,
-        "redirect_uri": "http://localhost:8000/api/google/callback/",
+        "redirect_uri": "http://127.0.0.1:8000/api/google/callback/",
         "grant_type": "authorization_code",
     }
-
     token_resp = requests.post("https://oauth2.googleapis.com/token", data=token_data).json()
-    access_token = token_resp.get("access_token")
+    google_access = token_resp.get("access_token")
+    if not google_access:
+        return redirect("/no_token")
 
-    if not access_token:
-        return redirect("/login")
-
+    # --- get Google profile ---
     userinfo = requests.get(
         "https://www.googleapis.com/oauth2/v2/userinfo",
-        headers={"Authorization": f"Bearer {access_token}"}
+        headers={"Authorization": f"Bearer {google_access}"}
     ).json()
-
     email = userinfo.get("email")
-    name = userinfo.get("name", email.split("@")[0])  # fallback if no name
+    name = userinfo.get("name", email.split("@")[0])
 
-    # Check if user already exists
-    user = User.objects.filter(email=email).first()
+    # --- ensure local user exists ---
+    user, created = User.objects.get_or_create(
+    email=email,
+    defaults={
+        "username": name,
+        "password": make_password(get_random_string(12)),  # <-- hashed password
+    }
+)
 
-    if not user:
-        # Generate random password for Google users
-        random_password = get_random_string(12)
-        user = User.objects.create_user(username=name, email=email, password=random_password)
+    # --- create JWT tokens just like manual login ---
+    refresh = RefreshToken.for_user(user)
+    access = str(refresh.access_token)
 
-    # Log them in
+    # --- log in Django session (optional) ---
     auth_login(request, user)
 
+    # --- redirect based on role ---
+    if not user.role:
+        next_path = "/launchpad"
+    elif user.role == "referrer":
+        next_path = "/referer_home"
+    elif user.role == "referee":
+        next_path = "/active_referals"
+    else:
+        next_path = "/launchpad"
 
-    # Redirect to your launchpad
-    return redirect("/launchpad")
+
+    return redirect(f"{next_path}?email={email}&name={name}&access={access}&refresh={refresh}")
 
 class LoginAPIView(APIView):
     serializer_class = MyTokenObtainPairSerializer
@@ -138,8 +154,6 @@ class LoginAPIView(APIView):
     "id": user.id
     
 }, status=200)
-
-    
 class ReferralRequestAPIView(APIView):
     def post(self, request):
         serializer = Referalrequestserializer(data=request.data)

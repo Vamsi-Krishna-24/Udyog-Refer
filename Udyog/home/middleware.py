@@ -10,18 +10,24 @@ class RoleAccessMiddleware:
         if user and user.is_authenticated:
             role = getattr(user, "role", None)
 
-            # Referrer-only pages
-            if request.path.startswith("/referer_home") or request.path.startswith("/my_tracker"):
-                if role != "referrer":
-                    return render(request, "access_denied.html", {"required_role": "Referrer"})
-
-            # Referee-only pages
+            # --- Referrer-only pages ---
             if (
+                request.path.startswith("/referer_home")
+                or request.path.startswith("/my_tracker")
+            ):
+                if role != "referrer":
+                    print(f"[ROLE MIDDLEWARE] Access denied → Referrer-only page | Role={role}")
+                    return render(request, "access_denied.html", {"required_role": "Referrer"})
+            
+            # --- Referee-only pages ---
+            elif (
                 request.path.startswith("/active_referals")
                 or request.path.startswith("/trending")
-                or request.path.startswith("/tracker")
+                or (request.path == "/tracker")  # exact match only
             ):
                 if role != "referee":
+                    print(f"[ROLE MIDDLEWARE] Access denied → Referee-only page | Role={role}")
                     return render(request, "access_denied.html", {"required_role": "Referee"})
 
-        return self.get_response(request)
+        response = self.get_response(request)
+        return response
