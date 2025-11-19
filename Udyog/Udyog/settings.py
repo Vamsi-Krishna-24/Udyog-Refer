@@ -22,11 +22,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Quick-start development settings - unsuitable for production
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=m6kivik)0cz^d57)+6&s0+3ze7vbugmu*68ns$y0&ajqp!3^%'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-key")
+DEBUG = os.environ.get("DEBUG", "FALSE").upper() == "TRUE"
 
 ALLOWED_HOSTS = ['udyog-refer.onrender.com', 'localhost', '127.0.0.1',
                  'udyog-refer-89385722038.asia-south1.run.app',
