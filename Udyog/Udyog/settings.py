@@ -30,6 +30,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['udyog-refer.onrender.com', 'localhost', '127.0.0.1',
                  'udyog-refer-89385722038.asia-south1.run.app',
+                 'https://udyog-refer-beta-89385722038.asia-south1.run.app',
+                 '.run.app'
                  '*']
 
 
