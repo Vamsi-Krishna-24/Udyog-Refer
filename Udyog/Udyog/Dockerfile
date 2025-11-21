@@ -21,4 +21,4 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8080
 
 # Start server
-CMD gunicorn Udyog.wsgi:application --bind 0.0.0.0:8080
+CMD exec gunicorn --bind :$PORT Udyog.wsgi:application
