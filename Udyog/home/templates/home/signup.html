@@ -1,30 +1,164 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Sign Up | Udyog Refer</title>
   <link rel="icon" type="image/png" href="{% static 'img/ur_logo.ico' %}">
-
   <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
+<body class="min-h-screen bg-gradient-to-r from-blue-800 via-blue-900 to-slate-900 text-white font-sans flex items-center justify-center px-10 py-16">
 
+<!-- MAIN WRAPPER — 30% / 70% -->
+<div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-[30%_2%_68%] gap-6">
 
+  <!-- LEFT — SIGNUP CARD (small size scale 5/10) -->
+  <div class="bg-[#0f172a]/70 backdrop-blur-sm border border-white/10 rounded-3xl shadow-2xl p-10 h-full flex flex-col justify-start">
 
-  <script>
-function loginWithGoogle() {
-  const params = new URLSearchParams({
-    client_id: "89385722038-m21hg6qe37os45ij3kg42k4u0ikt7fm3.apps.googleusercontent.com",  
-    redirect_uri: "http://127.0.0.1:8000/api/google/callback/",
-    response_type: "code",
-    scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid",
-    access_type: "offline",
-    prompt: "select_account"
-  });
-  window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
-}
-</script>
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-semibold tracking-tight text-white">Create Account</h1>
+      <p class="text-sm text-gray-300 mt-1">Join Udyog Refer Today</p>
+    </div>
 
+    <div class="space-y-5">
+      <input id="name" type="text" placeholder="Full Name"
+        class="w-full px-4 py-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <input id="email" type="email" placeholder="Email"
+        class="w-full px-4 py-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <input id="password" type="password" placeholder="Password"
+        class="w-full px-4 py-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <button onclick="signup()"
+        class="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition">
+        Create Account
+      </button>
+
+      <p id="response" class="text-sm text-red-400 text-center"></p>
+    </div>
+
+    <div class="flex items-center justify-center text-gray-400 text-sm gap-3 mt-6">
+      <span class="w-20 h-px bg-gray-500"></span> OR <span class="w-20 h-px bg-gray-500"></span>
+    </div>
+
+    <button onclick="loginWithGoogle()"
+      class="w-full py-3 bg-[#1e293b] hover:bg-[#334155] text-gray-200 border border-gray-700 rounded-lg transition flex items-center justify-center gap-2 mt-4">
+      <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5">
+      Continue with Google
+    </button>
+
+    <p class="text-center text-sm text-gray-400 mt-4">
+      Already have an account?
+      <a href="{% url 'login' %}" class="text-blue-400 hover:underline">Log in</a>
+    </p>
+  </div>
+
+  <!-- MIDDLE — DIVIDER LINE -->
+  <div class="hidden lg:flex items-stretch justify-center">
+    <div class="w-px bg-white/20"></div>
+  </div>
+
+  <!-- RIGHT — BIG NUTSHELL SECTION (scale 9/10) -->
+  <div class="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-10 flex flex-col">
+
+    <!-- TITLE -->
+    <h2 class="text-3xl font-extrabold text-white text-center mb-8">
+      what we do in a NUTSHELL?
+    </h2>
+
+    <!-- BIG ANIMATION BOX -->
+    <div class="w-full h-[480px] rounded-3xl border border-white/20 bg-white/5 relative overflow-hidden">
+
+      <!-- LEFT Avatar -->
+      <div class="absolute left-6 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1 z-20">
+        <div class="w-16 h-16 rounded-full bg-blue-600 text-white grid place-items-center text-lg font-bold shadow-xl">R</div>
+        <div class="text-sm font-semibold text-white">Referrer</div>
+        <div class="text-xs text-gray-300">Posts refer</div>
+      </div>
+
+      <!-- RIGHT Avatar -->
+      <div class="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1 z-20">
+        <div class="w-16 h-16 rounded-full bg-indigo-600 text-white grid place-items-center text-lg font-bold shadow-xl">S</div>
+        <div class="text-sm font-semibold text-white">Seeker</div>
+        <div class="text-xs text-gray-300">Requests refer</div>
+      </div>
+
+      <!-- Platform tag -->
+      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 backdrop-blur-md bg-white/60 border border-white/20 rounded-xl shadow-lg px-6 py-3 text-center z-10">
+        <p class="text-sm font-semibold text-gray-900">Udyog Refer Platform</p>
+      </div>
+
+      <!-- HUGE ANIMATION SVG (FULL SCALE) -->
+      <svg viewBox="0 0 1200 380" class="absolute inset-0 w-full h-full">
+
+        <defs>
+          <path id="path-top" d="M120,210 Q600,40 1080,210" />
+          <path id="path-bottom" d="M1080,170 Q600,340 120,170" />
+        </defs>
+
+        <use href="#path-top" stroke="#e5e7eb" stroke-width="3" fill="none"/>
+        <use href="#path-bottom" stroke="#e5e7eb" stroke-width="3" fill="none"/>
+
+        <!-- Refer -->
+        <g>
+          <rect rx="10" ry="10" width="120" height="32" fill="#dbeafe" stroke="#60a5fa" stroke-width="2"/>
+          <text x="12" y="21" font-size="12" fill="#1e3a8a" font-weight="600">Refer Card</text>
+          <animateMotion dur="3s" repeatCount="indefinite" path="M120,210 Q600,40 1080,210"/>
+        </g>
+
+        <circle r="6" fill="#3b82f6">
+          <animateMotion dur="3s" repeatCount="indefinite" path="M120,210 Q600,40 1080,210"/>
+        </circle>
+
+        <!-- Apply -->
+        <g>
+          <rect rx="10" ry="10" width="126" height="32" fill="#ffedd5" stroke="#fb923c" stroke-width="2"/>
+          <text x="10" y="21" font-size="12" fill="#7c2d12" font-weight="600">Apply Request</text>
+          <animateMotion begin="3s" dur="3s" repeatCount="indefinite" path="M1080,170 Q600,340 120,170"/>
+        </g>
+
+        <circle r="6" fill="#f97316">
+          <animateMotion begin="3s" dur="3s" repeatCount="indefinite" path="M1080,170 Q600,340 120,170"/>
+        </circle>
+
+        <!-- ACCEPT -->
+        <g>
+          <use href="#path-top" stroke="#22c55e" stroke-width="3" fill="none"/>
+          <g>
+            <rect rx="10" ry="10" width="126" height="32" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+            <text x="16" y="21" font-size="12" fill="#166534" font-weight="700">Accepted</text>
+            <animateMotion begin="6s" dur="3s" repeatCount="indefinite" path="M120,210 Q600,40 1080,210"/>
+          </g>
+        </g>
+
+        <!-- REJECT -->
+        <g>
+          <use href="#path-bottom" stroke="#ef4444" stroke-width="3" fill="none"/>
+          <g>
+            <rect rx="10" ry="10" width="120" height="32" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+            <text x="16" y="21" font-size="12" fill="#7f1d1d" font-weight="700">Rejected</text>
+            <animateMotion begin="12s" dur="3s" repeatCount="indefinite" path="M120,170 Q600,340 1080,170"/>
+          </g>
+        </g>
+
+      </svg>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.accept-chip { animation: acceptFade 15s linear infinite; }
+@keyframes acceptFade { 0%,58%{opacity:0} 60%,70%{opacity:1} 72%,100%{opacity:0} }
+
+.reject-chip { animation: rejectFade 15s linear infinite; }
+@keyframes rejectFade { 0%,85%{opacity:0} 88%,98%{opacity:1} 100%{opacity:0} }
+</style>
+
+<!-- SCRIPTS -->
 <script>
 async function signup(){
   const data = {
@@ -34,88 +168,36 @@ async function signup(){
   };
 
   const response = await fetch('/api/signup/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(data)
   });
 
   const resData = await response.json();
 
   if (response.status === 201) {
-    // store values for launchpad to use
     localStorage.setItem('uid', String(resData.user_id));
-    localStorage.setItem('email', resData.email); // optional but useful
+    localStorage.setItem('email', resData.email);
     window.location.href = '/launchpad';
   } else {
-    document.getElementById('response').innerText = JSON.stringify(resData);
+    document.getElementById('response').innerHTML = JSON.stringify(resData);
   }
 }
 </script>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const email = params.get("email");
-const name = params.get("name");
-
-if (email && name) {
-  localStorage.setItem("email", email);
-  localStorage.setItem("username", name);
+function loginWithGoogle() {
+  const params = new URLSearchParams({
+    client_id:"89385722038-m21hg6qe37os45ij3kg42k4u0ikt7fm3.apps.googleusercontent.com",
+    redirect_uri:"http://127.0.0.1:8000/api/google/callback/",
+    response_type:"code",
+    scope:"https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid",
+    access_type:"offline",
+    prompt:"select_account"
+  });
+  window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
 }
 </script>
 
-
-
-</head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center px-4">
-
-  <div class="w-full max-w-md bg-gray-900 p-8 space-y-6">
-    <!-- Logo -->
-    <div class="text-center">
-      <h1 class="text-4xl font-bold text-white">UR</h1>
-      <p class="text-xl font-semibold mt-2">Create Account</p>
-      <p class="text-sm text-gray-400">Join Udhyog Refer Today</p>
-    </div>
-
-    <!-- Sign Up form (REST version, no form tag) -->
-    <div class="space-y-4">
-      <input id="name" type="text" placeholder="Full Name"
-        class="w-full px-4 py-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
-        required />
-      <input id="email" type="email" placeholder="Email"
-        class="w-full px-4 py-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
-        required />
-      <input id="password" type="password" placeholder="Password"
-        class="w-full px-4 py-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
-        required />
-
-      <button onclick="signup()" ///// REST trigger
-        class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg font-semibold transition">
-        Create Account
-      </button>
-
-      <p id="response" class="text-sm text-center text-red-400"></p>  <!-- feedback box -->
-    </div>
-
-    <div class="flex items-center justify-center text-gray-400 text-sm gap-3">
-        <span class="w-20 h-px bg-gray-500"></span> OR <span class="w-20 h-px bg-gray-500"></span>
-      </div>
-
-      <!-- Social Buttons -->
-      <button onclick="loginWithGoogle()"
-      class="w-full py-3 bg-[#1e293b] hover:bg-[#334155] text-gray-200 border border-gray-700 rounded-lg transition flex items-center justify-center gap-2">
-        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google"> Continue with Google
-      </button>
-      <button class="w-full py-3 bg-[#1e293b] hover:bg-[#334155] text-gray-200 border border-gray-700 rounded-lg transition flex items-center justify-center gap-2">
-        <img src="https://www.svgrepo.com/show/448234/linkedin.svg" class="w-5 h-5" alt="LinkedIn"> Continue with LinkedIn
-      </button>
-
-    <!-- Switch to login -->
-    <p class="text-center text-sm text-gray-400">
-      Already have an account?
-      <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Log in</a>
-    </p>
-  </div>
-
-  
 </body>
 </html>
