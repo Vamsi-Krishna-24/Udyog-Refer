@@ -37,7 +37,7 @@ import requests
 from django.utils.crypto import get_random_string
 from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import make_password
-
+from django.contrib.sites.shortcuts import get_current_site
 
 
 
@@ -71,6 +71,10 @@ def login(request):
 @api_view(['GET'])
 def google_callback(request):
     code = request.GET.get("code")
+    current_site = get_current_site(request)
+    base_url = f"https://{current_site.domain}" if not settings.DEBUG else "http://127.0.0.1:8000"
+    redirect_uri = f"{base_url}/api/google/callback/"
+    
     if not code:
         return redirect("/login")
 
@@ -78,7 +82,7 @@ def google_callback(request):
         "code": code,
         "client_id": settings.GOOGLE_CLIENT_ID,
         "client_secret": settings.GOOGLE_CLIENT_SECRET,
-        "redirect_uri": "http://127.0.0.1:8000/api/google/callback/",
+        "redirect_uri": request.build_absolute_uri("/api/google/callback/"),
         "grant_type": "authorization_code",
     }
 
