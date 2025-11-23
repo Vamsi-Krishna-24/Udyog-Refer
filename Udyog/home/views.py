@@ -85,7 +85,7 @@ def google_callback(request):
         "code": code,
         "client_id": settings.GOOGLE_CLIENT_ID,
         "client_secret": settings.GOOGLE_CLIENT_SECRET,
-        "redirect_uri": request.build_absolute_uri("/api/google/callback/"),
+        "redirect_uri": request.build_absolute_uri("/api/google/callback/").replace("http://", "https://"),
         "grant_type": "authorization_code",
     }
 
