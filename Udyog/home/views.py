@@ -38,6 +38,7 @@ from django.utils.crypto import get_random_string
 from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import make_password
 from django.contrib.sites.shortcuts import get_current_site
+import requests
 
 
 
@@ -67,16 +68,18 @@ def my_profile(request):
 def login(request):
     return render(request, 'home/login.html')
 
-# views.py
-@api_view(['GET'])
+# views.py@api_view(['GET'])
 def google_callback(request):
     code = request.GET.get("code")
     current_site = get_current_site(request)
     base_url = f"https://{current_site.domain}" if not settings.DEBUG else "http://127.0.0.1:8000"
     redirect_uri = f"{base_url}/api/google/callback/"
-    
+
     if not code:
         return redirect("/login")
+
+    # ✅ Print what Cloud Run / local actually sees
+    print("Redirect URI seen by backend:", request.build_absolute_uri("/api/google/callback/"))
 
     token_data = {
         "code": code,
@@ -89,6 +92,7 @@ def google_callback(request):
     token_resp = requests.post("https://oauth2.googleapis.com/token", data=token_data).json()
     google_access = token_resp.get("access_token")
     if not google_access:
+        print("Google token exchange failed:", token_resp)
         return redirect("/no_token")
 
     userinfo = requests.get(
@@ -114,7 +118,7 @@ def google_callback(request):
     # save session
     auth_login(request, user)
 
-    # prepare redirect based on role
+    # redirect based on role
     if user.role == "referrer":
         redirect_url = "/referer_home"
     elif user.role == "referee":
@@ -122,8 +126,10 @@ def google_callback(request):
     else:
         redirect_url = "/launchpad"
 
-    # Instead of redirecting immediately → return tokens as query
+    # attach tokens in query for FE
     return redirect(f"{redirect_url}?access={access}&refresh={refresh}&email={email}&role={user.role}")
+
+
 class LoginAPIView(APIView):
     serializer_class = MyTokenObtainPairSerializer
     def post(self, request):
