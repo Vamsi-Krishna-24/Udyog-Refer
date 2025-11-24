@@ -11,3 +11,4 @@ daphne
 redis
 Pillow
 requests
+psycopg2-binary
