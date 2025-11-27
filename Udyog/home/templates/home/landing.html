@@ -66,11 +66,17 @@
     }
 
     /* Large inner rounded “canvas” to give boundaries across the whole page */
-    .page-shell {
-      border: 1px solid hsl(214, 32%, 92%);
-      border-radius: 32px;
-      box-shadow: 0 10px 30px -12px rgba(59,130,246,.15);
-    }
+    .page-shell:hover {
+  border-color: hsl(221,83%,53%);
+  box-shadow:
+      0 0 0 2px hsl(221,83%,53%) inset,
+      0 0 40px 8px rgba(59,130,246,.25),
+      0 12px 40px -10px rgba(59,130,246,.25);
+  border-radius: 32px; /* keep your smooth curve */
+  transition: all .25s ease;
+}
+
+
 
     /* Section separators for clear scroll cues */
     .section-wrap {
@@ -100,9 +106,9 @@
   <!-- ===================== LEFT FIXED VERTICAL BAR ===================== -->
   <!-- stays forever; content scrolls independently -->
   <aside class="fixed left-4 top-1/2 -translate-y-1/2 z-50">
-    <a href="#waitlist"
+    <a href="{% url 'signup' %}"
        class="vbar select-none px-3 py-4 rounded-2xl gradient-hero text-white font-semibold shadow-glow hover:opacity-95 transition">
-      JOIN&nbsp;THE&nbsp;WAITLIST
+      Let's&nbsp;get&nbsp;STARTED
     </a>
   </aside>
 
@@ -150,9 +156,10 @@
 
             <!-- CTAs -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <a href="#waitlist" class="px-8 py-3 rounded-lg gradient-hero text-white font-semibold shadow-glow hover:shadow-xl transition-all flex items-center gap-2">
-                Join the Waitlist →
-              </a>
+              <a href="{% url 'signup' %}" class="px-8 py-3 rounded-lg gradient-hero text-white font-semibold shadow-glow hover:shadow-xl transition-all flex items-center gap-2">
+  Get Started →
+</a>
+
               <a href="#how" class="px-8 py-3 rounded-lg border-2 border-blue-600 text-blue-600 font-semibold hover:bg-blue-50 transition-all">
                 Learn More
               </a>
@@ -279,7 +286,7 @@
                 </div>
               </div>
 
-              <a href="#seeker" class="w-full inline-flex justify-center px-6 py-3 rounded-lg gradient-hero text-white font-semibold shadow-soft hover:shadow-glow transition-all">Get Started as Seeker</a>
+              <a href="{% url 'signup' %}" class="w-full inline-flex justify-center px-6 py-3 rounded-lg gradient-hero text-white font-semibold shadow-soft hover:shadow-glow transition-all">Get Started as Seeker</a>
             </div>
 
             <!-- Referrer -->
@@ -326,7 +333,7 @@
                 </div>
               </div>
 
-              <a href="#referrer" class="w-full inline-flex justify-center px-6 py-3 rounded-lg border-2 border-blue-600 text-blue-600 font-semibold hover:bg-blue-50 transition-all">Get Started as Referrer</a>
+              <a href="{% url 'signup' %}" class="w-full inline-flex justify-center px-6 py-3 rounded-lg border-2 border-blue-600 text-blue-600 font-semibold hover:bg-blue-50 transition-all">Get Started as Referrer</a>
             </div>
           </div>
         </div>
@@ -398,28 +405,28 @@
               <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <a href="#join" class="px-8 py-3 rounded-lg bg-white text-blue-600 font-semibold shadow-soft hover:bg-white/90 transition-all flex items-center gap-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                  Join the Waitlist
+                  Get Started
                 </a>
                 <a href="#demo" class="px-8 py-3 rounded-lg bg-transparent border-2 border-white text-white font-semibold hover:bg-white/10 transition-all flex items-center gap-2">
-                  Schedule a Demo
+                  Learn More
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                 </a>
               </div>
 
               <div class="flex flex-wrap items-center justify-center gap-8 pt-6 text-white/80">
                 <div class="text-center">
-                  <div class="text-3xl font-bold">1000+</div>
-                  <div class="text-sm">Early Adopters</div>
+                  <div class="text-3xl font-bold">👥+</div>
+                  <div class="text-sm">Growing Early Access Community</div>
                 </div>
                 <div class="w-px h-12 bg-white/20"></div>
                 <div class="text-center">
-                  <div class="text-3xl font-bold">50+</div>
-                  <div class="text-sm">Partner Companies</div>
+                  <div class="text-3xl font-bold">🤝+</div>
+                  <div class="text-sm">Professionals Already Exploring Udyog Refer</div>
                 </div>
                 <div class="w-px h-12 bg-white/20"></div>
                 <div class="text-center">
-                  <div class="text-3xl font-bold">95%</div>
-                  <div class="text-sm">Success Rate</div>
+                  <div class="text-3xl font-bold">⚡️</div>
+                  <div class="text-sm">No Old postings </div>
                 </div>
               </div>
 
@@ -436,44 +443,49 @@
               <h3 class="text-2xl font-bold gradient-hero bg-clip-text">Udyog Refer</h3>
               <p class="text-sm text-gray-600">The trust-based referral ecosystem where opportunities move faster through people, not portals.</p>
               <div class="flex gap-3">
-                <a href="#" class="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 transition-colors" aria-label="LinkedIn">
+                 <a href="https://www.linkedin.com/in/udhyog-refer/" class="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 transition-colors" aria-label="LinkedIn">
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 </a>
-                <a href="#" class="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 transition-colors" aria-label="Twitter">
+                <a href="https://x.com/UdhyogRefer" class="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 transition-colors" aria-label="Twitter">
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
                 </a>
-                <a href="#" class="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 transition-colors" aria-label="Email">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                </a>
+                <a href="mailto:udhyog.refer@gmail.com"
+   class="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 transition-colors"
+   aria-label="Email">
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+  </svg>
+</a>
               </div>
             </div>
 
             <div>
               <h4 class="font-semibold mb-4">For Seekers</h4>
               <ul class="space-y-2 text-sm text-gray-600">
-                <li><a href="#" class="hover:text-blue-600 transition-colors">Find Referrals</a></li>
-                <li><a href="#" class="hover:text-blue-600 transition-colors">Browse Jobs</a></li>
-                <li><a href="#" class="hover:text-blue-600 transition-colors">Upload Resume</a></li>
-                <li><a href="#" class="hover:text-blue-600 transition-colors">Track Applications</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-blue-600 transition-colors">Find Referrals</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-blue-600 transition-colors">Browse Jobs</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-blue-600 transition-colors">Upload Resume</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-blue-600 transition-colors">Track Applications</a></li>
               </ul>
             </div>
 
             <div>
               <h4 class="font-semibold mb-4">For Referrers</h4>
               <ul class="space-y-2 text-sm text-gray-600">
-                <li><a href="#" class="hover:text-blue-600 transition-colors">Post Openings</a></li>
-                <li><a href="#" class="hover:text-blue-600 transition-colors">View Requests</a></li>
-                <li><a href="#" class="hover:text-blue-600 transition-colors">Earn Rewards</a></li>
-                <li><a href="#" class="hover:text-blue-600 transition-colors">Track Impact</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-blue-600 transition-colors">Post Openings</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-blue-600 transition-colors">View Requests</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-blue-600 transition-colors">Earn Rewards</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-blue-600 transition-colors">Track Impact</a></li>
               </ul>
             </div>
 
             <div>
               <h4 class="font-semibold mb-4">Company</h4>
               <ul class="space-y-2 text-sm text-gray-600">
-                <li><a href="#" class="hover:text-blue-600 transition-colors">About Us</a></li>
-                <li><a href="#" class="hover:text-blue-600 transition-colors">How It Works</a></li>
-                <li><a href="#" class="hover:text-blue-600 transition-colors">Contact</a></li>
+                <li><a href="https://www.linkedin.com/in/udhyog-refer/" class="hover:text-blue-600 transition-colors">About Us</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-blue-600 transition-colors">How It Works</a></li>
+                <li><a href="https://x.com/UdhyogRefer" class="hover:text-blue-600 transition-colors">Contact</a></li>
                 <li><a href="#" class="hover:text-blue-600 transition-colors">Privacy Policy</a></li>
               </ul>
             </div>
