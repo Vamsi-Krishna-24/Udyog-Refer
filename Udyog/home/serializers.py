@@ -5,7 +5,7 @@ from .models import User, SeekerRequest
 from django.utils import timezone
 from datetime import timedelta
 from django.utils.timesince import timesince
-from .models import Profile, Experience, Project, Education
+from .models import Profile, Experience, Project, Education, Random1
 
 
 
@@ -221,3 +221,10 @@ class ProfileSerializer(serializers.ModelSerializer):
             Education.objects.create(profile=instance, **edu)
 
         return instance
+
+
+
+class RandomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Random1
+        fields = ["name"]

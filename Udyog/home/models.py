@@ -239,3 +239,5 @@ class Education(models.Model):
 
 
     
+class Random1(models.Model):
+    name = models.CharField(max_length=100)
