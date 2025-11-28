@@ -105,16 +105,17 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'neondb',
-        'USER': 'neondb_owner',
-        'PASSWORD': 'npg_QA27IStqbngy',
-        'HOST': 'ep-morning-union-a1e6ibtj-pooler.ap-southeast-1.aws.neon.tech',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
         'OPTIONS': {
             'sslmode': 'require',
         },
     }
 }
+
 
 
 AUTH_USER_MODEL = 'home.User'
