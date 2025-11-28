@@ -105,14 +105,21 @@ CHANNEL_LAYERS = {
 
 
 DATABASES = {
-    "default": dj_database_url.parse(
-        os.environ.get(
-            "DATABASE_URL",
-            "postgresql://neondb_owner:npg_QA27IStqbngy@ep-morning-union-a1e6ibtj-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
-        ),
-        conn_max_age=600,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
 }
+
+
+
 
 
 
