@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
+import dj_database_url
 
  
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +28,7 @@ DEBUG = os.environ.get("DEBUG", "FALSE").upper() == "TRUE"
 
 ALLOWED_HOSTS = ['udyog-refer.onrender.com', 'localhost', '127.0.0.1',
                  'udyog-refer-89385722038.asia-south1.run.app',
-                 'https://udyog-refer-beta-89385722038.asia-south1.run.app',
+                 'udyog-refer-beta-89385722038.asia-south1.run.app',
                  '.run.app',
                  '*']
 
@@ -102,18 +103,15 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
-        'OPTIONS': {
-            'sslmode': 'require',
-        },
-    }
+    "default": dj_database_url.parse(
+        os.environ.get(
+            "DATABASE_URL",
+            "postgresql://neondb_owner:npg_QA27IStqbngy@ep-morning-union-a1e6ibtj-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+        ),
+        conn_max_age=600,
+    )
 }
 
 
