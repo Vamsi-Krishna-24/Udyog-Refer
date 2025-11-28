@@ -4,21 +4,25 @@ FROM python:3.11-slim
 # Set work directory
 WORKDIR /app
 
-# Prevent Python from buffering stdout/stderr
 ENV PYTHONUNBUFFERED=1
 
-# Copy dependency list and install
+# Install system dependencies (required for psycopg2)
+RUN apt-get update \
+    && apt-get install -y build-essential libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project
+# Copy project
 COPY . .
 
-# Collect static files (optional for now)
-# REMOVE THIS LINE - static handled differently on Cloud Run
+# 🔥 Collect static files
+RUN python manage.py collectstatic --noinput
 
-# Expose port 8080 (Cloud Run expects this)
+# Expose port
 EXPOSE 8080
 
-# Start server
-CMD gunicorn Udyog.wsgi:application --bind 0.0.0.0:8080
+# Run server
+CMD ["gunicorn", "Udyog.wsgi:application", "--bind", "0.0.0.0:8080"]
