@@ -9,13 +9,13 @@ ENV PYTHONUNBUFFERED=1
 
 # Copy dependency list and install
 COPY requirements.txt .
-# REMOVE THIS LINE - static handled differently on Cloud Run
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the entire project
 COPY . .
 
 # Collect static files (optional for now)
-RUN python manage.py collectstatic --noinput
+# REMOVE THIS LINE - static handled differently on Cloud Run
 
 # Expose port 8080 (Cloud Run expects this)
 EXPOSE 8080
