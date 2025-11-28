@@ -12,3 +12,4 @@ redis
 Pillow
 requests
 psycopg2-binary
+pathlib

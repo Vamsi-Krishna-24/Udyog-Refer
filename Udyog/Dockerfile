@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Copy dependency list and install
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# REMOVE THIS LINE - static handled differently on Cloud Run
 
 # Copy the entire project
 COPY . .
