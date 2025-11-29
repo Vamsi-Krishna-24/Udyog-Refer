@@ -1,17 +1,17 @@
 from home.models import User
 
 email = "admin@udyogrefer.com"
-password = "Admin@123"
 username = "SuperAdmin"
+password = "Admin@123"
 
 if not User.objects.filter(email=email).exists():
-    print("Creating superuser...")
     User.objects.create_superuser(
         email=email,
         username=username,
         password=password,
-        name="Admin",      # important if your model requires name
-        role="admin"
+        role="admin",
+        is_verified=True,
     )
+    print("Superadmin created successfully.")
 else:
-    print("Superuser already exists.")
+    print("Superadmin already exists.")
