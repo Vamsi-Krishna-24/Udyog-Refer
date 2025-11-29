@@ -15,3 +15,5 @@ if not User.objects.filter(email=email).exists():
     print("Superadmin created successfully.")
 else:
     print("Superadmin already exists.")
+
+
