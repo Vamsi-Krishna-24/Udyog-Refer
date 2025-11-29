@@ -62,6 +62,13 @@ ALLOWED_HOSTS = [
 ]
 
 
+CSRF_TRUSTED_ORIGINS = [
+    "*.run.app",
+    "udyog-refer-beta-89385722038.asia-south1.run.app",
+    "udyog-refer-service-89385722038.asia-south1.run.app",
+]
+
+
 # ----------------------------------------------------
 # APPLICATIONS
 # ----------------------------------------------------
