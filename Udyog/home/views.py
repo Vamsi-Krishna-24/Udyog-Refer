@@ -401,9 +401,21 @@ from .serializers import SeekerRequestSerializer
 
 
 class SeekerRequestViewSet(viewsets.ModelViewSet):
-    queryset = SeekerRequest.objects.all().order_by("-created_at")
     serializer_class = SeekerRequestSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.role == "seeker":
+            return SeekerRequest.objects.filter(
+                requester=user
+            ).select_related("referral_post", "referrer").order_by("-created_at")
+
+        if user.role == "referrer":
+            return SeekerRequest.objects.filter(
+                referrer=user
+            ).select_related("referral_post", "requester").order_by("-created_at")
 
     def perform_create(self, serializer):
         post_id = self.request.data.get("referral_post")
@@ -430,7 +442,6 @@ class SeekerRequestViewSet(viewsets.ModelViewSet):
             seeker_request.reason = reason
         seeker_request.save()
         return Response({"status": "accepted"})
-
 
     @action(detail=True, methods=["post"])
     def reject(self, request, pk=None):
