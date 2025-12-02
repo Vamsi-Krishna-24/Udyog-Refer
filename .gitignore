@@ -1,0 +1,26 @@
+# Python junk
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+db.sqlite3
+/staticfiles/
+media/
+
+# Virtual env
+UR/
+
+# VSCode
+.vscode/
+
+# Local env variables
+.env
+
+# Bytecode
+*.py[cod]
+*$py.class
+
+# macOS junk
+.DS_Store
