@@ -58,6 +58,8 @@ ALLOWED_HOSTS = [
     'udyog-refer-89385722038.asia-south1.run.app',
     'udyog-refer-beta-89385722038.asia-south1.run.app',
     '.run.app',
+    'https://udhyogrefer.com/',
+    'https://beta.udhyogrefer.com/',
     '*'
 ]
 
